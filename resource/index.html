@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>警务数字证书管理系统</title>
+  <style>
+    :root {
+      --cyan: #45f4ff;
+      --cyan-soft: rgba(69, 244, 255, .62);
+      --cyan-dim: rgba(69, 244, 255, .18);
+      --blue-950: #031a3f;
+      --blue-900: #05265a;
+      --blue-800: #073b7e;
+      --blue-700: #075396;
+      --green: #23d17f;
+      --gray: #8a96a1;
+      --white: #f6fbff;
+      --danger: #ffcf4a;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      background: #020c1e;
+      color: var(--white);
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .viewport {
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .kiosk-frame {
+      position: relative;
+      width: 800px;
+      height: 1280px;
+      overflow: visible;
+    }
+
+    .kiosk {
+      position: relative;
+      width: 800px;
+      height: 1280px;
+      overflow: hidden;
+      isolation: isolate;
+      background:
+        linear-gradient(rgba(3, 18, 49, .18), rgba(3, 18, 49, .24)),
+        url("imgs/background.png") center / cover no-repeat,
+        radial-gradient(circle at 50% 0%, #0c6cb8 0, var(--blue-900) 34%, var(--blue-950) 100%);
+      box-shadow: 0 0 60px rgba(0, 0, 0, .48);
+      transform-origin: left top;
+    }
+
+    .kiosk::before,
+    .kiosk::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .kiosk::before {
+      background:
+        radial-gradient(circle at 50% 36%, rgba(67, 228, 255, .16), transparent 35%),
+        linear-gradient(90deg, rgba(69, 244, 255, .08) 1px, transparent 1px),
+        linear-gradient(rgba(69, 244, 255, .08) 1px, transparent 1px);
+      background-size: auto, 46px 46px, 46px 46px;
+      mask-image: linear-gradient(to bottom, transparent 0, #000 18%, #000 94%, transparent 100%);
+    }
+
+    .kiosk::after {
+      background:
+        radial-gradient(ellipse at 50% 104%, rgba(67, 228, 255, .35), transparent 34%),
+        linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .18));
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: 48px 54px 44px;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .topline {
+      position: relative;
+      height: 78px;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      text-shadow: 0 5px 0 rgba(4, 18, 42, .9), 0 0 18px rgba(69, 244, 255, .34);
+      font-size: 54px;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .topline::before,
+    .topline::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 180px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      box-shadow: 0 0 16px var(--cyan);
+    }
+
+    .topline::before {
+      left: 0;
+    }
+
+    .topline::after {
+      right: 0;
+    }
+
+    .home-title {
+      margin-top: 112px;
+      text-align: center;
+    }
+
+    .home-title h1 {
+      margin: 0;
+      font-size: 62px;
+      line-height: 1.12;
+      font-weight: 900;
+      text-shadow: 0 6px 0 rgba(2, 12, 31, .85), 0 0 22px rgba(101, 246, 255, .24);
+    }
+
+    .home-title p {
+      margin: 28px 0 0;
+      font-size: 32px;
+      font-weight: 800;
+      text-shadow: 0 3px 0 rgba(2, 12, 31, .9);
+    }
+
+    .home-actions {
+      margin: 142px auto 0;
+      width: 300px;
+      display: grid;
+      gap: 80px;
+    }
+
+    .tile-button {
+      position: relative;
+      height: 250px;
+      border: 4px solid var(--cyan);
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(202, 244, 255, .45), rgba(13, 61, 105, .8) 47%, rgba(40, 157, 213, .22) 48%, rgba(5, 31, 76, .92)),
+        rgba(5, 65, 111, .78);
+      box-shadow:
+        0 0 0 6px rgba(69, 244, 255, .18),
+        inset 0 0 34px rgba(69, 244, 255, .52),
+        0 0 34px rgba(69, 244, 255, .8);
+    }
+
+    .tile-button:active,
+    .primary-action:active,
+    .neon-button:active {
+      transform: scale(.98);
+    }
+
+    .tile-content {
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+    }
+
+    .doc-icon {
+      width: 104px;
+      height: 104px;
+      position: relative;
+      border: 10px solid #bdfbff;
+      border-radius: 20px 20px 30px 30px;
+      filter: drop-shadow(0 0 10px rgba(69, 244, 255, .8));
+    }
+
+    .doc-icon-retrieve::before {
+      content: "";
+      position: absolute;
+      width: 38px;
+      height: 38px;
+      top: -10px;
+      left: -10px;
+      border-right: 10px solid #bdfbff;
+      border-bottom: 10px solid #bdfbff;
+      border-radius: 0 0 12px 0;
+      background: rgba(7, 70, 120, .75);
+    }
+
+    .doc-icon-store::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 58px;
+      width: 0;
+      height: 0;
+      border-left: 14px solid transparent;
+      border-right: 14px solid transparent;
+      border-top: 20px solid #bdfbff;
+      transform: translateX(-50%);
+      filter: drop-shadow(0 0 6px rgba(69, 244, 255, .8));
+    }
+
+    .tile-label {
+      font-size: 46px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(4, 20, 45, .9);
+    }
+
+    .settings-button {
+      margin: 58px auto 0;
+      display: grid;
+      gap: 16px;
+      justify-items: center;
+      width: 220px;
+      color: rgba(229, 251, 255, .72);
+      background: transparent;
+      font-size: 28px;
+    }
+
+    .gear {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      border: 8px solid rgba(141, 214, 230, .8);
+      border-radius: 50%;
+      box-shadow: 0 0 12px rgba(69, 244, 255, .36);
+    }
+
+    .gear::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: rgba(141, 214, 230, .92);
+    }
+
+    .subtitle {
+      margin: 0;
+      text-align: center;
+      font-size: 40px;
+      line-height: 1.35;
+      font-weight: 900;
+      text-shadow: 0 4px 0 rgba(3, 15, 37, .8);
+    }
+
+    .subtitle.small {
+      font-size: 34px;
+      color: #dff9ff;
+    }
+
+    .panel {
+      border: 2px solid rgba(126, 240, 255, .82);
+      background: rgba(3, 47, 99, .68);
+      box-shadow:
+        inset 0 0 30px rgba(36, 174, 255, .28),
+        0 0 22px rgba(69, 244, 255, .24);
+      backdrop-filter: blur(6px);
+    }
+
+    .info-panel {
+      position: relative;
+      height: 250px;
+      margin-top: 70px;
+      padding: 40px 42px;
+      border-radius: 12px;
+    }
+
+    .info-grid {
+      display: grid;
+      gap: 14px;
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.18;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-grid;
+      min-width: 86px;
+      height: 48px;
+      padding: 0 18px;
+      place-items: center;
+      color: #fff;
+      background: var(--green);
+      font-size: 30px;
+      font-weight: 900;
+      box-shadow: 0 0 16px rgba(35, 209, 127, .48);
+    }
+
+    .badge.free {
+      background: #22c5db;
+    }
+
+    .badge.warn {
+      background: var(--danger);
+      color: #082248;
+    }
+
+    .side-status {
+      position: absolute;
+      right: 34px;
+      top: 56px;
+      min-width: 116px;
+      height: 58px;
+      border: 2px solid var(--cyan);
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, #22ddef, #1594cb);
+      font-size: 28px;
+      font-weight: 900;
+      box-shadow: 0 0 18px rgba(69, 244, 255, .4);
+    }
+
+    .slot-panel {
+      margin-top: 34px;
+      height: 400px;
+      padding: 54px 38px 40px;
+      border-radius: 12px;
+    }
+
+    .slot-row {
+      height: 136px;
+      border: 1px solid rgba(126, 240, 255, .62);
+      border-radius: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 10px;
+      background: rgba(0, 24, 58, .28);
+    }
+
+    .slot-row + .slot-row {
+      margin-top: 58px;
+    }
+
+    .lock-slot {
+      position: relative;
+      min-width: 0;
+      border-radius: 7px;
+      border: 2px solid rgba(245, 251, 255, .72);
+      background:
+        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
+        linear-gradient(145deg, #e8f3fb, #758696);
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, .45), 0 3px 8px rgba(0, 0, 0, .35);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .lock-slot.active {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
+        linear-gradient(145deg, #dbfff2, #57d496);
+      border-color: #c7ffe8;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, .6), 0 0 22px rgba(35, 209, 127, .78);
+    }
+
+    .lock-slot.target {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
+        linear-gradient(145deg, #86fbff, #15bed1);
+      border-color: var(--cyan);
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, .58), 0 0 24px rgba(69, 244, 255, .9);
+    }
+
+    .lock-slot::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 38px;
+      width: 27px;
+      height: 27px;
+      border-radius: 50%;
+      background: #05101e;
+      transform: translateX(-50%);
+      box-shadow: 0 0 0 8px rgba(221, 234, 242, .72);
+    }
+
+    .lock-slot::after {
+      content: attr(data-num);
+      position: absolute;
+      left: 50%;
+      bottom: 6px;
+      transform: translateX(-50%);
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,.85);
+      pointer-events: none;
+    }
+
+    .slot-labels {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 20px 0 390px;
+      color: #f0fbff;
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .primary-action {
+      width: 420px;
+      height: 94px;
+      margin: 72px auto 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(180deg, #24d7f1, #0b6eb1);
+      border: 3px solid rgba(197, 255, 255, .88);
+      border-radius: 12px;
+      box-shadow: 0 0 18px rgba(69, 244, 255, .62), inset 0 0 24px rgba(255, 255, 255, .16);
+    }
+
+    .primary-action:disabled {
+      opacity: .45;
+      cursor: default;
+    }
+
+    .bottom-tip {
+      margin: 64px 0 0;
+      text-align: center;
+      font-size: 42px;
+      font-weight: 900;
+      text-shadow: 0 3px 0 rgba(2, 12, 31, .9);
+    }
+
+    .auth-card,
+    .login-card {
+      width: 580px;
+      margin: 210px auto 0;
+      border-radius: 36px;
+      padding: 56px 58px 48px;
+    }
+
+    .face-ring {
+      width: 260px;
+      height: 260px;
+      margin: 0 auto 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 4px solid rgba(69, 244, 255, .78);
+      background: radial-gradient(circle, rgba(69, 244, 255, .18), rgba(3, 33, 78, .78) 66%);
+      box-shadow: inset 0 0 34px rgba(69, 244, 255, .38), 0 0 36px rgba(69, 244, 255, .42);
+    }
+
+    .face-ring::before {
+      content: "";
+      width: 136px;
+      height: 136px;
+      border-radius: 50%;
+      border: 18px solid rgba(223, 251, 255, .86);
+      border-bottom-color: transparent;
+      box-shadow: inset 0 0 0 28px rgba(223, 251, 255, .18);
+    }
+
+    .auth-state {
+      text-align: center;
+      font-size: 38px;
+      font-weight: 900;
+    }
+
+    .form-field {
+      width: 100%;
+      height: 88px;
+      margin-bottom: 42px;
+      padding: 0 34px;
+      border: 2px solid rgba(222, 247, 255, .78);
+      border-radius: 14px;
+      color: #fff;
+      background: rgba(4, 38, 82, .42);
+      outline: 0;
+      font-size: 34px;
+      font-weight: 800;
+      box-shadow: inset 0 0 18px rgba(47, 167, 255, .24);
+    }
+
+    .form-field::placeholder {
+      color: rgba(255, 255, 255, .82);
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 42px;
+      margin-top: 14px;
+    }
+
+    .neon-button {
+      height: 86px;
+      border: 3px solid var(--cyan);
+      border-radius: 42px;
+      color: var(--cyan);
+      background: rgba(5, 31, 77, .78);
+      font-size: 34px;
+      font-weight: 900;
+      box-shadow: 0 0 18px rgba(69, 244, 255, .38), inset 0 0 18px rgba(69, 244, 255, .2);
+    }
+
+    .status-switch {
+      margin: 78px auto 66px;
+      display: grid;
+      gap: 26px;
+      justify-items: center;
+    }
+
+    .status-switch h2 {
+      margin: 0;
+      font-size: 42px;
+      line-height: 1.2;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 34px;
+      width: 520px;
+    }
+
+    .segment {
+      height: 68px;
+      border-radius: 34px;
+      color: #fff;
+      background: var(--gray);
+      font-size: 34px;
+      font-weight: 900;
+    }
+
+    .segment.active {
+      background: #12aeb8;
+      box-shadow: 0 0 20px rgba(69, 244, 255, .48);
+    }
+
+    .manage-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+      width: 620px;
+      margin: 0 auto;
+    }
+
+    .manage-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .manage-slot {
+      height: 70px;
+      color: #fff;
+      background: rgba(5, 54, 105, .76);
+      border: 3px solid var(--cyan);
+      border-radius: 12px;
+      box-shadow: 0 0 14px rgba(69, 244, 255, .52), inset 0 0 18px rgba(69, 244, 255, .18);
+      font-size: 26px;
+      font-weight: 900;
+    }
+
+    .manage-slot.free {
+      background: rgba(132, 139, 145, .72);
+    }
+
+    .mini-reg {
+      height: 50px;
+      padding: 0 14px;
+      border: 2px solid var(--cyan);
+      border-radius: 10px;
+      color: var(--cyan);
+      background: rgba(5, 31, 77, .78);
+      font-size: 20px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .mini-reg:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
+    .reg-form {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: rgba(2, 12, 30, .72);
+    }
+
+    .reg-form > div {
+      width: 520px;
+      padding: 32px 40px 28px;
+      border: 2px solid rgba(126, 240, 255, .72);
+      border-radius: 20px;
+      background: rgba(3, 33, 75, .94);
+      text-align: center;
+    }
+
+    .reg-form.hidden {
+      display: none;
+    }
+
+    .reg-face-state {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      color: var(--cyan);
+    }
+
+    .reg-field {
+      margin-bottom: 18px;
+    }
+
+    .hardware-panel {
+      position: absolute;
+      left: 46px;
+      right: 46px;
+      bottom: 36px;
+      height: 188px;
+      padding: 18px 20px;
+      border-radius: 12px;
+    }
+
+    .hardware-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 20px;
+      font-weight: 900;
+      color: rgba(231, 251, 255, .9);
+    }
+
+    .hardware-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .mini-button {
+      height: 36px;
+      border: 1px solid rgba(69, 244, 255, .9);
+      border-radius: 6px;
+      background: rgba(6, 75, 130, .72);
+      color: #eaffff;
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .log {
+      height: 74px;
+      padding: 8px 10px;
+      overflow: hidden;
+      border: 1px solid rgba(69, 244, 255, .28);
+      border-radius: 6px;
+      background: rgba(0, 10, 24, .34);
+      color: rgba(221, 249, 255, .88);
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.45;
+      white-space: pre-line;
+    }
+
+    .back-button {
+      position: absolute;
+      left: 38px;
+      top: 42px;
+      z-index: 10;
+      width: 58px;
+      height: 58px;
+      border: 2px solid rgba(69, 244, 255, .8);
+      border-radius: 50%;
+      background: rgba(5, 46, 100, .72);
+      box-shadow: 0 0 14px rgba(69, 244, 255, .32);
+    }
+
+    .back-button::before {
+      content: "";
+      position: absolute;
+      left: 22px;
+      top: 17px;
+      width: 18px;
+      height: 18px;
+      border-left: 5px solid #dffcff;
+      border-bottom: 5px solid #dffcff;
+      transform: rotate(45deg);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport">
+    <div class="kiosk-frame" id="kioskFrame">
+      <section class="kiosk" id="kiosk">
+        <section class="screen active" id="homeScreen">
+          <div class="home-title">
+            <h1>警务数字证书管理系统</h1>
+            <p>安全认证&nbsp;&nbsp;规范管理&nbsp;&nbsp;精准追溯</p>
+          </div>
+
+          <div class="home-actions">
+            <button class="tile-button" data-mode="retrieve" aria-label="领取证书">
+              <span class="tile-content">
+                <span class="doc-icon doc-icon-retrieve"></span>
+                <span class="tile-label">领取</span>
+              </span>
+            </button>
+            <button class="tile-button" data-mode="store" aria-label="存放证书">
+              <span class="tile-content">
+                <span class="doc-icon doc-icon-store"></span>
+                <span class="tile-label">存放</span>
+              </span>
+            </button>
+          </div>
+
+          <button class="settings-button" id="settingsButton" aria-label="系统设置">
+            <span>系统设置</span>
+            <span class="gear"></span>
+          </button>
+        </section>
+
+      <section class="screen" id="authScreen">
+        <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
+        <div class="topline">人脸识别</div>
+        <section class="auth-card panel">
+          <div class="face-ring"></div>
+          <div class="auth-state" id="authState">正在核验身份...</div>
+        </section>
+      </section>
+
+      <section class="screen" id="certificateScreen">
+        <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
+        <div class="topline">证书存取管理</div>
+        <p class="subtitle small" id="certSubtitle">人脸识别核验成功</p>
+
+        <section class="info-panel panel">
+          <div class="info-grid">
+            <div class="info-row"><span>警&nbsp;&nbsp;号:</span><strong id="policeNo">666661</strong></div>
+            <div class="info-row"><span>证书号:</span><strong id="certNo">CERT-2026-066661</strong></div>
+            <div class="info-row"><span>锁孔位置:</span><strong id="slotPos">第1排第5号</strong></div>
+          </div>
+          <div class="side-status" id="sideStatus">在用</div>
+        </section>
+
+        <section class="slot-panel panel" aria-label="锁孔阵列">
+          <div class="slot-row" id="slotRowA"></div>
+          <div class="slot-row" id="slotRowB"></div>
+        </section>
+
+        <button class="primary-action" id="primaryAction">开锁</button>
+        <p class="bottom-tip" id="bottomTip">请取出证书后关闭锁孔</p>
+      </section>
+
+      <section class="screen" id="loginScreen">
+        <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
+        <div class="topline">管理员登录</div>
+        <section class="login-card panel">
+          <input class="form-field" id="username" autocomplete="off" placeholder="用户名" value="admin">
+          <input class="form-field" id="password" type="password" placeholder="密码" value="123456">
+          <div class="button-row">
+            <button class="neon-button" id="loginButton">登录</button>
+            <button class="neon-button" onclick="goBack()">取消</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="manageScreen">
+        <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
+        <div class="topline">锁位管理</div>
+        <section class="status-switch">
+          <h2>锁位状态</h2>
+          <div class="segmented">
+            <button class="segment active" data-filter="free">未使用</button>
+            <button class="segment" data-filter="used">在用</button>
+          </div>
+        </section>
+        <section class="manage-list" id="manageList"></section>
+        <section class="reg-form hidden" id="regForm">
+          <div>
+            <div class="reg-face-state" id="regFaceState">正在识别人脸...</div>
+            <input class="form-field reg-field" id="regPoliceNo" placeholder="警号">
+            <input class="form-field reg-field" id="regName" placeholder="姓名">
+            <div class="button-row">
+              <button class="neon-button" id="regSave">保存</button>
+              <button class="neon-button" id="regCancel">取消</button>
+            </div>
+          </div>
+        </section>
+        <section class="hardware-panel panel">
+          <div class="hardware-title">
+            <span>硬件调试 / Android WebView Bridge</span>
+            <span id="bridgeState">模拟模式</span>
+          </div>
+          <div class="hardware-actions">
+            <button class="mini-button" data-action="openSerial">打开串口</button>
+            <button class="mini-button" data-action="getLockSt">门锁状态</button>
+            <button class="mini-button" data-action="getAllTag">全部标签</button>
+            <button class="mini-button" data-action="openLock">外门开锁</button>
+          </div>
+          <div class="log" id="hardwareLog"></div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    function isUidEmpty(uid) {
+      return !uid || /^(0{16}|0{2}(:?00){7})$/.test(uid);
+    }
+
+    function isUidDisconnected(uid) {
+      return /^(F{16}|F{2}(:?FF){7})$/i.test(uid);
+    }
+
+    const state = {
+      mode: "retrieve",
+      currentScreen: "homeScreen",
+      filter: "free",
+      selectedSlot: { layer: 1, numb: 5 },
+      slots: Array.from({ length: 10 }, (_, index) => ({
+        layer: index < 5 ? 1 : 2,
+        numb: index % 5 + 1,
+        uid: "",
+        used: false,
+        policeNo: ""
+      }))
+    };
+    // 预设演示数据：第一排第5个和第二排第2个为当前用户(警号666661)在用
+    [4, 6].forEach(i => {
+      state.slots[i].uid = i === 4 ? "E3341122908904E0" : "1122334455667788";
+      state.slots[i].used = true;
+      state.slots[i].policeNo = "666661";
+    });
+    [8, 9, 10].forEach(i => {
+      const s = state.slots[i - 1];
+      s.uid = "AABBCCDDEEFF0011";
+      s.used = true;
+      s.policeNo = `88888${i}`;
+    });
+
+    const screens = ["homeScreen", "authScreen", "certificateScreen", "loginScreen", "manageScreen"];
+    const navHistory = [];
+    const kioskFrame = document.getElementById("kioskFrame");
+    const kiosk = document.getElementById("kiosk");
+    const hardwareLog = document.getElementById("hardwareLog");
+    const bridgeState = document.getElementById("bridgeState");
+
+    function scaleKiosk() {
+      const scale = Math.min(window.innerWidth / 800, window.innerHeight / 1280, 1);
+      kioskFrame.style.width = `${800 * scale}px`;
+      kioskFrame.style.height = `${1280 * scale}px`;
+      kiosk.style.transform = `scale(${scale})`;
+    }
+
+    function showScreen(screenId, recordNav = true) {
+      if (recordNav && state.currentScreen !== screenId) {
+        navHistory.push(state.currentScreen);
+      }
+      state.currentScreen = screenId;
+      screens.forEach((id) => document.getElementById(id).classList.toggle("active", id === screenId));
+    }
+
+    function goBack() {
+      let prev = navHistory.pop();
+      while (prev === "authScreen") prev = navHistory.pop();
+      if (prev && screens.includes(prev)) {
+        showScreen(prev, false);
+      }
+    }
+
+    function startAuth(mode) {
+      state.mode = mode;
+      showScreen("authScreen");
+      document.getElementById("authState").textContent = "正在核验身份...";
+      invokeAndroid({ action: "heartBeatPongToAndroidClient" });
+      setTimeout(() => {
+        document.getElementById("authState").textContent = "人脸识别通过，已开柜门";
+        openLock();
+      }, 700);
+      setTimeout(() => {
+        getAllTag();
+      }, 1700);
+    }
+
+    function renderCertificate(mode) {
+      const isStore = mode === "store";
+      state.selectedSlot = null;
+      document.getElementById("certSubtitle").textContent = "人脸识别核验成功";
+      document.getElementById("policeNo").textContent = "666661";
+      document.getElementById("certNo").textContent = "CERT-2026-066661";
+      document.getElementById("slotPos").textContent = "";
+      document.getElementById("sideStatus").textContent = "";
+      document.getElementById("primaryAction").textContent = isStore ? "确认存放" : "开锁";
+      document.getElementById("primaryAction").disabled = true;
+      document.getElementById("bottomTip").textContent = "请选择锁孔";
+      const firstOp = renderSlotGrid(mode);
+      if (firstOp) selectSlot(firstOp.slot, firstOp.button);
+    }
+
+    function renderSlotGrid(mode) {
+      const rows = [document.getElementById("slotRowA"), document.getElementById("slotRowB")];
+      rows.forEach((row) => row.replaceChildren());
+      const policeNo = document.getElementById("policeNo").textContent;
+      let firstOperable = null;
+      state.slots.forEach((slot, index) => {
+        const button = document.createElement("button");
+        button.className = "lock-slot";
+        button.type = "button";
+        button.dataset.num = index + 1;
+        button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
+        const clickable = slot.policeNo === policeNo;
+        if (clickable) button.classList.add("active");
+        if (clickable) {
+          button.addEventListener("click", (e) => selectSlot(slot, button));
+          if (!firstOperable) firstOperable = { slot, button };
+        }
+        rows[slot.layer - 1].appendChild(button);
+      });
+      return firstOperable;
+    }
+
+    function selectSlot(slot, btn) {
+      state.selectedSlot = { layer: slot.layer, numb: slot.numb };
+      document.querySelectorAll(".lock-slot.target").forEach(el => el.classList.remove("target"));
+      if (btn) btn.classList.add("target");
+      document.getElementById("slotPos").textContent = `第${slot.layer}排第${slot.numb}号`;
+      const free = !slot.used;
+      document.getElementById("sideStatus").textContent = free ? "空闲" : "在用";
+      document.getElementById("primaryAction").disabled = false;
+    }
+
+    function renderManageList() {
+      const list = document.getElementById("manageList");
+      list.replaceChildren();
+      document.getElementById("regForm").classList.add("hidden");
+      state.slots
+        .filter((slot) => state.filter === "used" ? slot.used : !slot.used)
+        .slice(0, 10)
+        .forEach((slot, i) => {
+          const item = document.createElement("div");
+          item.className = "manage-item";
+
+          const btn = document.createElement("button");
+          btn.className = `manage-slot ${slot.used ? "" : "free"}`;
+          btn.type = "button";
+          btn.textContent = slot.used ? `警号${slot.policeNo}` : `孔${slot.numb} 未使用`;
+          btn.addEventListener("click", () => {
+            state.selectedSlot = { layer: slot.layer, numb: slot.numb };
+            invokeAndroid({ action: "openMotorLock", layer: slot.layer, numb: slot.numb });
+          });
+          item.appendChild(btn);
+
+          const reg = document.createElement("button");
+          reg.className = "mini-reg";
+          reg.type = "button";
+          reg.textContent = "录入";
+          reg.addEventListener("click", () => startFaceReg(slot));
+          item.appendChild(reg);
+
+          list.appendChild(item);
+        });
+    }
+
+    let pendingRegSlot = null;
+
+    function startFaceReg(slot) {
+      pendingRegSlot = slot;
+      const form = document.getElementById("regForm");
+      form.classList.remove("hidden");
+      document.getElementById("regFaceState").textContent = "正在识别人脸...";
+      document.getElementById("regPoliceNo").value = "";
+      document.getElementById("regName").value = "";
+      document.getElementById("regSave").disabled = true;
+      logBridge("faceRegister", { layer: slot.layer, numb: slot.numb, stage: "capturing" });
+      setTimeout(() => {
+        document.getElementById("regFaceState").textContent = "人脸识别成功，请填写信息";
+        document.getElementById("regSave").disabled = false;
+      }, 1500);
+    }
+
+    function logBridge(message, data) {
+      const time = new Date().toLocaleTimeString("zh-CN", { hour12: false });
+      const line = `[${time}] ${message}${data ? " " + JSON.stringify(data) : ""}`;
+      console.log(`${line}\n${hardwareLog.textContent}`.split("\n").slice(0, 4).join("\n"))
+      hardwareLog.textContent = `${line}\n${hardwareLog.textContent}`.split("\n").slice(0, 4).join("\n");
+    }
+
+    function invokeAndroid(payload) {
+      logBridge("invoke", payload);
+      if (window.jsInterface && typeof window.jsInterface.invokeMethods === "function") {
+        window.jsInterface.invokeMethods(JSON.stringify(payload));
+        return;
+      }
+      simulateAndroid(payload);
+    }
+
+    function simulateAndroid(payload) {
+      const callbacks = {
+        openSerial: () => openSerialCallback({ code: 0, msg: "串口已打开", path: payload.path || "/dev/ttyS3" }),
+        getLockSt: () => getLockStCallback({ code: 0, msg: "读取成功", lockSt: "closed" }),
+        openLock: () => openLockCallback({ code: 0, msg: "外门锁已打开" }),
+        getAllTag: () => {
+          const tags = state.slots.map(s => ({
+            layer: s.layer,
+            numb: s.numb,
+            uid: s.uid || ""
+          }));
+          getAllTagCallback({ code: 0, msg: "标签读取成功", tags });
+        },
+        downImage: () => downImageCallback({ code: 0, msg: "屏数据已下发" }),
+        openMotorLock: () => {
+          openMotorLockCallback({ code: 0, msg: `电机锁 ${payload.layer}-${payload.numb} 已打开` });
+          // 模拟控制板主动上报标签状态变化 (0x91)
+          const { layer, numb } = payload;
+          const uid = state.mode === "store" ? "E3341122908904E0" : "";
+          setTimeout(() => reportTagStateCallback({ layer, numb, uid }), 800);
+        },
+        finishMainActivity: () => logBridge("finishMainActivity")
+      };
+      setTimeout(() => callbacks[payload.action]?.(), 180);
+    }
+
+    function openSerial(path = "/dev/ttyS3") {
+      invokeAndroid({ action: "openSerial", path });
+    }
+
+    function getLockSt() {
+      invokeAndroid({ action: "getLockSt" });
+    }
+
+    function openLock() {
+      invokeAndroid({ action: "openLock" });
+    }
+
+    function getAllTag() {
+      invokeAndroid({ action: "getAllTag" });
+    }
+
+    function downImage(layer, numb, text) {
+      invokeAndroid({ action: "downImage", layer, numb, text });
+    }
+
+    function openMotorLock(layer, numb) {
+      invokeAndroid({ action: "openMotorLock", layer, numb });
+    }
+
+    function openSerialCallback(jsonObj) {
+      logBridge("openSerialCallback", jsonObj);
+    }
+
+    function getLockStCallback(jsonObj) {
+      logBridge("getLockStCallback", jsonObj);
+      console.log("getLockStCallback:", JSON.stringify(jsonObj));
+      if (!state.pendingStore) return;
+      const { layer, numb } = state.pendingStore;
+      state.pendingStore = null;
+      if (jsonObj.lockSt === "closed") {
+        downImage(layer, numb, "CERT-2026-066661");
+        document.getElementById("bottomTip").textContent = "正在写入锁孔屏幕数据...";
+        setTimeout(() => openMotorLock(layer, numb), 260);
+      } else {
+        document.getElementById("bottomTip").textContent = "柜门未关闭，请关闭后重试";
+      }
+    }
+
+    function openLockCallback(jsonObj) {
+      logBridge("openLockCallback", jsonObj);
+    }
+
+    function getAllTagCallback(jsonObj) {
+      logBridge("getAllTagCallback", { code: jsonObj.code, msg: jsonObj.msg });
+      // 重置硬件状态（uid/used），保留 policeNo（来自数据库/录入，不由串口协议决定）
+      state.slots.forEach(s => {
+        s.uid = "";
+        s.used = false;
+        s.disconnected = false;
+      });
+      if (jsonObj.tags) {
+        jsonObj.tags.forEach(tag => {
+          const slot = state.slots.find(s => s.layer === tag.layer && s.numb === tag.numb);
+          if (!slot) return;
+          if (isUidEmpty(tag.uid)) {
+            // 无标签 → 空闲
+          } else if (isUidDisconnected(tag.uid)) {
+            slot.disconnected = true;
+          } else {
+            slot.uid = tag.uid;
+            slot.used = true;
+          }
+        });
+      }
+      if (state.currentScreen === "authScreen") {
+        renderCertificate(state.mode);
+        showScreen("certificateScreen");
+      }
+    }
+
+    function downImageCallback(jsonObj) {
+      logBridge("downImageCallback", jsonObj);
+    }
+
+    function openMotorLockCallback(jsonObj) {
+      logBridge("openMotorLockCallback", jsonObj);
+      const success = jsonObj.code === 0;
+      if (state.mode === "store") {
+        document.getElementById("bottomTip").textContent = success ? "存放成功" : "存放失败：电机锁异常";
+        if (success) setTimeout(() => showScreen("homeScreen", false), 2000);
+      } else {
+        document.getElementById("bottomTip").textContent = success ? "开锁成功，请取出证书" : "开锁失败：电机锁异常";
+      }
+    }
+
+    function reportTagStateCallback(jsonObj) {
+      logBridge("reportTagStateCallback", jsonObj);
+      const { layer, numb, uid } = jsonObj;
+      const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
+      if (!slot) return;
+      if (isUidEmpty(uid)) {
+        slot.uid = "";
+        slot.used = false;
+      } else if (isUidDisconnected(uid)) {
+        slot.uid = "";
+        slot.used = false;
+        slot.disconnected = true;
+      } else {
+        slot.uid = uid;
+        slot.used = true;
+      }
+      if (state.currentScreen === "manageScreen") {
+        renderManageList();
+      } else if (state.currentScreen === "certificateScreen") {
+        renderSlotGrid(state.mode);
+      }
+    }
+
+    function reportDoorLockStateCallback(jsonObj) {
+      logBridge("reportDoorLockStateCallback", jsonObj);
+      state.doorLockState = jsonObj.doorLockState;
+    }
+
+    window.openSerialCallback = openSerialCallback;
+    window.getLockStCallback = getLockStCallback;
+    window.openLockCallback = openLockCallback;
+    window.getAllTagCallback = getAllTagCallback;
+    window.downImageCallback = downImageCallback;
+    window.openMotorLockCallback = openMotorLockCallback;
+    window.reportTagStateCallback = reportTagStateCallback;
+    window.reportDoorLockStateCallback = reportDoorLockStateCallback;
+
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => startAuth(button.dataset.mode));
+    });
+
+    document.querySelectorAll("[data-nav]").forEach((button) => {
+      button.addEventListener("click", () => showScreen(button.dataset.nav));
+    });
+
+    document.getElementById("settingsButton").addEventListener("click", () => showScreen("loginScreen"));
+
+    document.getElementById("loginButton").addEventListener("click", () => {
+      renderManageList();
+      showScreen("manageScreen");
+    });
+
+    document.getElementById("regSave").addEventListener("click", () => {
+      if (!pendingRegSlot) return;
+      const policeNo = document.getElementById("regPoliceNo").value.trim();
+      const name = document.getElementById("regName").value.trim();
+      if (!policeNo || !name) return;
+      pendingRegSlot.used = true;
+      pendingRegSlot.policeNo = policeNo;
+      pendingRegSlot.userName = name;
+      logBridge("faceRegister", { layer: pendingRegSlot.layer, numb: pendingRegSlot.numb, policeNo, name, result: "saved" });
+      pendingRegSlot = null;
+      renderManageList();
+    });
+
+    document.getElementById("regCancel").addEventListener("click", () => {
+      pendingRegSlot = null;
+      document.getElementById("regForm").classList.add("hidden");
+    });
+
+    document.getElementById("primaryAction").addEventListener("click", () => {
+      const { layer, numb } = state.selectedSlot;
+      if (state.mode === "store") {
+        state.pendingStore = { layer, numb };
+        document.getElementById("bottomTip").textContent = "正在检测柜门状态...";
+        getLockSt();
+      } else {
+        openMotorLock(layer, numb);
+      }
+    });
+
+    document.querySelectorAll(".segment").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.filter = button.dataset.filter;
+        document.querySelectorAll(".segment").forEach((item) => item.classList.toggle("active", item === button));
+        renderManageList();
+      });
+    });
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.action;
+        if (action === "openSerial") openSerial("/dev/ttyS3");
+        if (action === "getLockSt") getLockSt();
+        if (action === "getAllTag") getAllTag();
+        if (action === "openLock") openLock();
+      });
+    });
+
+    window.addEventListener("popstate", (e) => { e.preventDefault(); goBack(); });
+    window.addEventListener("keydown", (e) => { if (e.key === "Escape" || e.key === "Backspace") goBack(); });
+
+    bridgeState.textContent = window.jsInterface ? "Android Bridge" : "模拟模式";
+    scaleKiosk();
+    renderManageList();
+    window.addEventListener("resize", scaleKiosk);
+    setInterval(() => invokeAndroid({ action: "heartBeatPongToAndroidClient" }), 10000);
+    openSerial("/dev/ttyS3");
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
+  <script>new VConsole();</script>
+</body>
+</html>
