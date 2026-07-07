@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <!--从assert中加载的中文网页会出现乱码，解决办法就是给html指定编码-->
+    <meta http-equiv="content-type" content="text/html;charset=gb2312">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>测试页面</title>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <style>
+        ul {
+            text-align: left;
+            list-style-type: none;
+        }
+
+        ul li {
+            display: inline-block;
+            margin: auto auto;
+        }
+
+        button {
+            border: 1px solid;
+            display: block;
+            font: bold 18px Arial, sans-serif;
+            background-color: white;
+            text-decoration: none;
+            text-align: center;
+            padding-right: 10px;
+            padding-left: 10px;
+            margin: 5px;
+            -webkit-border-radius: 15px;
+            -moz-border-radius: 15px;
+            /* Old Firefox */
+            border-radius: 15px;
+            -webkit-transition: all 0.15s ease;
+            -moz-transition: all 0.15s ease;
+            -o-transition: all 0.15s ease;
+            -ms-transition: all 0.15s ease;
+            transition: all 0.15s ease;
+            line-height: 60px;
+            height: 80px;
+            font-size: 37px;
+        }
+
+        .dwBtn {
+            line-height: 60px;
+            height: 80px;
+            font-size: 37px;
+        }
+
+        .module {
+            border: cadetblue dashed 2px;
+        }
+
+        body {
+            margin: auto;
+            font-size: 45px;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        /**
+         * 初始化容器交互终端的宽、高.
+         * @param $containerClass 容器对象
+         * @author CaiLin.
+         * @date 2020-08-04.
+         */
+        var initWidthAndHeight = function ($containerClass) {
+            var devicePixelRatio = window.devicePixelRatio;
+            $containerClass.css("width", devicePixelRatio * screen.width);
+            $containerClass.css("height", devicePixelRatio * screen.height);
+        };
+
+        $(function () {
+            bindExitToLogo();
+            //离线模式 保持与客户端心跳 避免，离线模式不断重启，并来网时候连接 2023.09.12
+            initWidthAndHeight($(".container"));
+            if (window.jsInterface) {
+                //离线模式 保持与客户端心跳 避免，离线模式不断重启，并来网时候连接 2023.09.12
+                setInterval(function () {
+                    var json = { "action": "heartBeatPongToAndroidClient" };
+                    invokeAndroid(json);
+                }, 10000);
+                setTimeout(function () {
+                    $("#iseContainer").css("display", "block");
+                    $("#tipContainer").css("display", "none");
+                }, 4000);
+                var locationProtocol = location.protocol;
+                //只有访问服务端才显示设置服务器窗口，本地不用 2024.03.27
+                if (locationProtocol === "http:" || locationProtocol === "https:") {
+                    $("#setDwApiDiv").css("display", "block");
+                    $("#dwApiCtx").val(location.protocol + "//" + location.host);
+                }
+                setTimeout(function () {
+                    //东屋初始化
+                    AndroidGetLockList();
+                    setDwApiCtx();
+                }, 1000);
+            } else {
+                $("#iseContainer").css("display", "block");
+                $("#tipContainer").css("display", "none");
+            }
+        });
+
+        /**
+         * 退出 系统操作
+         */
+        function exitAndroidApp() {
+            var json = {
+                "action": "finishMainActivity"
+            };
+            invokeAndroid(json);
+        }
+
+        /**
+         * 退出Android系统 功能
+         */
+        function bindExitToLogo() {
+            $("div .divHot").click(function (e) {
+                exitAndroidApp();
+            });
+        }
+
+        var lockStressFlag = false;
+
+        //统一管理js调用android方法
+        var invokeAndroid = function (json) {
+            //调用android方法
+            if (window.jsInterface) {
+                // window.映射字符串.方法名
+                window.jsInterface.invokeMethods(JSON.stringify(json));
+            }
+        };
+
+        var openSerial = function (path) {
+            var path = $("#path1").val();
+            if (!path) {
+                path = "/dev/ttyS3";
+                alert("path:" + path);
+            }
+            var action = "openSerial";
+            var json = {
+                "action": action,
+                "path": path
+            };
+            invokeAndroid(json);
+        };
+
+        var openSerialCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            $("#spanLockId").text("code:" + code + " msg:" + msg);
+            alert("code:" + code + " msg:" + msg);
+        };
+
+        var getLockSt = function () {
+            var action = "getLockSt";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        var getLockStCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var lockSt = jsonObj.lockSt;
+            alert("code:" + code + " msg:" + msg + "lockSt:" + lockSt);
+            $("#spanLockId").text("code:" + code + " msg:" + msg + "lockSt:" + lockSt);
+        };
+
+
+
+        var openLock = function () {
+            var action = "openLock";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        var openLockCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            alert("code:" + code + " msg:" + msg);
+            $("#spanLockId").text("code:" + code + " msg:" + msg);
+        };
+
+        var getAllTag = function () {
+            var action = "getAllTag";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        var getAllTagCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            alert("code:" + code + " msg:" + msg);
+            $("#spanLockId").text("code:" + code + " msg:" + msg);
+        };
+
+        var downImage = function (layer, numb, text) {
+            var action = "downImage";
+
+            var layer = $("#layer1").val();
+            if (!layer) {
+                layer = "1";
+                alert("layer:" + layer);
+            }
+
+            var numb = $("#numb1").val();
+            if (!numb) {
+                numb = "1";
+                alert("numb:" + numb);
+            }
+            var text = $("#text1").val();
+            if (!text) {
+                text = "鲁B56272";
+                alert("text:" + text);
+            }
+            var json = {
+                "action": action,
+                "layer": layer,
+                "numb": numb,
+                "text": text
+            };
+            invokeAndroid(json);
+        };
+
+
+        var downImageCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            alert("code:" + code + " msg:" + msg);
+            $("#spanLockId").text("code:" + code + " msg:" + msg);
+        };
+
+        var openMotorLock = function (layer, numb) {
+            var action = "openMotorLock";
+            var layer = $("#layer2").val();
+            if (!layer) {
+                layer = "1";
+                alert("layer:" + layer);
+            }
+
+            var numb = $("#numb2").val();
+            if (!numb) {
+                numb = "1";
+                alert("numb:" + numb);
+            }
+
+            var json = {
+                "action": action,
+                "layer": layer,
+                "numb": numb
+            };
+            invokeAndroid(json);
+        };
+
+        var openMotorLockCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            alert("code:" + code + " msg:" + msg);
+            $("#spanLockId").text("code:" + code + " msg:" + msg);
+        };
+
+
+        /**
+         *
+         * 1 上报标签状态（0x91）
+控制板一旦监测到电机锁标签状态变化，会主动上报变动的标签数据。
+         * */
+        var reportTagStateCallback = function (jsonObj) {
+            var layer = jsonObj.layer;
+            var numb = jsonObj.numb;
+            var uid = jsonObj.uid;
+            alert("layer:" + layer + " numb:" + numb + "uid:" + uid);
+            $("#spanLockId").text("控制板一旦监测到电机锁标签状态变化，会主动上报变动的标签数据 layer:" + layer + " numb:" + numb + "uid:" + uid);
+        };
+
+        /**
+         *
+         * 2 上报门锁状态（0xA0）
+         * */
+        var reportDoorLockStateCallback = function (jsonObj) {
+            var doorLockState = jsonObj.doorLockState;
+            alert("doorLockState:" + doorLockState);
+            $("#spanLockId").text("doorLockState:" + doorLockState);
+        };
+    </script>
+
+    <script type="text/javascript">
+        var nowDateTime = null;
+        var currentDateTime = null;
+        function doGetTime() {
+            let now = new Date(); // 获取当前时间
+            let hours = now.getHours(); // 小时
+            let minutes = now.getMinutes(); // 分钟
+            let seconds = now.getSeconds(); // 秒钟
+
+            // 确保时间数字不单个显示
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            return hours + ':' + minutes + ':' + seconds;
+        }
+        function startTime() {
+            // 更新页面上的时间显示
+            document.getElementById('startTime').textContent = doGetTime();
+            nowDateTime = Date.parse(new Date());
+        }
+
+        function currentTimeTime() {
+            // 更新页面上的时间显示
+            currentDateTime = Date.parse(new Date());
+            var show = " 已启动（" + (currentDateTime - nowDateTime) / 1000 + "）秒";
+            document.getElementById('currentTime').textContent = doGetTime() + show;
+
+        }
+
+        // 每秒更新一次时间
+        setInterval(currentTimeTime, 1000);
+
+        // 初始化显示当前时间
+        //currentTimeTime();
+        setTimeout(function () {
+            startTime();
+        }, 100);
+
+
+        function refreshPage() {
+            var locationProtocol = location.protocol;
+            //只有访问服务端才显示设置服务器窗口，本地不用 2024.03.27
+            if (locationProtocol === "http:" || locationProtocol === "https:") {
+                window.location = location.href + "?dateGFL=" + new Date().getTime();
+            } else {
+                location.reload();
+            }
+        }
+
+    </script>
+</head>
+
+<body style="background-color: lightgray;">
+<div id="tipContainer">
+    加载中，请稍候..
+</div>
+<div class="container" id="iseContainer" style="display: none;">
+
+    <div id="baseModule" style="display:none;">
+        <h3>基础模块</h3><span id="spanModule"></span> 启动时间:<span id="startTime"></span>
+        当前时间:<span id="currentTime"></span>
+        <div class="module">
+            <ul>
+                <li>
+                    <button onclick="refreshPage();">刷新页面</button>
+                </li>
+                <li>
+                    <button class="divHot">退出系统</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="lock">
+        <h3>控制板 </h3><span id="spanLockId"></span>
+        <div class="module">
+            <ul>
+                <li>
+                    <button onclick="openSerial('/dev/ttyS3')">打开串口</button>
+                    串口地址:<input id="path1" value="/dev/ttyS3" size="20" style="line-height:40px;font-size:19px;">
+                </li>
+                <li>
+                    <button onclick="getLockSt();">5 获取门锁（0xA2）</button>
+                </li>
+                <li>
+                    <button onclick="openLock();">4 打开门锁（0xA1）--外边门锁</button>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <button onclick="getAllTag();">3 获取全部电机锁状态（0x90）</button>
+                </li>
+                <li>
+                    <button onclick="downImage('1','1','测试');">2 下发屏数据（0x14）</button>
+                    控制层：<input id="layer1" value="1" size="5" style="line-height:40px;font-size:19px;">
+                    电机锁：<input id="numb1" value="1" size="5" style="line-height:40px;font-size:19px;">
+                    屏数据：<input id="text1" value="鲁B56272" size="5" style="line-height:40px;font-size:19px;">
+
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <button onclick="openMotorLock('1','1');">1 开锁（0x11）--钥匙模块的锁</button>
+                    控制层：<input id="layer2" value="1" size="5" style="line-height:40px;font-size:19px;">
+                    电机锁：<input id="numb2" value="1" size="5" style="line-height:40px;font-size:19px;">
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+
+<div id="player" style="width:0;height:0;">
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
+<script>new VConsole();</script>
+</body>
+
+</html>
