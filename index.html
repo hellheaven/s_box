@@ -355,8 +355,7 @@
 
     .slot-panel {
       margin-top: 34px;
-      height: 400px;
-      padding: 54px 38px 40px;
+      padding: 34px 38px 40px;
       border-radius: 12px;
     }
 
@@ -388,6 +387,14 @@
       appearance: none;
     }
 
+    .lock-slot.free {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
+        linear-gradient(145deg, #b8d8ff, #3d7eb8);
+      border-color: #6bb5ff;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, .5), 0 0 18px rgba(69, 150, 255, .6);
+    }
+
     .lock-slot.active {
       background:
         linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
@@ -397,11 +404,7 @@
     }
 
     .lock-slot.target {
-      background:
-        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
-        linear-gradient(145deg, #86fbff, #15bed1);
-      border-color: var(--cyan);
-      box-shadow: inset 0 0 16px rgba(255, 255, 255, .58), 0 0 24px rgba(69, 244, 255, .9);
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, .6), 0 0 30px rgba(69, 244, 255, .9), 0 0 60px rgba(69, 244, 255, .4);
     }
 
     .lock-slot::before {
@@ -415,6 +418,18 @@
       background: #05101e;
       transform: translateX(-50%);
       box-shadow: 0 0 0 8px rgba(221, 234, 242, .72);
+    }
+
+    .lock-slot.free::before {
+      box-shadow: 0 0 0 8px rgba(107, 181, 255, .7);
+    }
+
+    .lock-slot.active::before {
+      box-shadow: 0 0 0 8px rgba(35, 209, 127, .7);
+    }
+
+    .lock-slot.target::before {
+      box-shadow: 0 0 0 8px rgba(69, 244, 255, .8);
     }
 
     .lock-slot::after {
@@ -733,6 +748,23 @@
     .hidden {
       display: none !important;
     }
+
+    .float-btn {
+      position: fixed;
+      right: 20px;
+      top: 20px;
+      z-index: 999;
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: #23d17f;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,.4);
+    }
   </style>
 </head>
 <body>
@@ -789,10 +821,7 @@
           <div class="side-status" id="sideStatus">在用</div>
         </section>
 
-        <section class="slot-panel panel" aria-label="锁孔阵列">
-          <div class="slot-row" id="slotRowA"></div>
-          <div class="slot-row" id="slotRowB"></div>
-        </section>
+        <section class="slot-panel panel" aria-label="锁孔阵列" id="slotPanel"></section>
 
         <button class="primary-action" id="primaryAction">开锁</button>
         <p class="bottom-tip" id="bottomTip">请取出证书后关闭锁孔</p>
@@ -851,39 +880,54 @@
   </main>
 
   <script>
+    const consoleLogs = [];
+    const _origLog = console.log;
+    console.log = function (...args) {
+      const line = args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ");
+      if (line.includes("heartBeatPongToAndroidClient")) return;
+      consoleLogs.push(line);
+      _origLog.apply(console, args);
+    };
     function isUidEmpty(uid) {
       return !uid || /^(0{16}|0{2}(:?00){7})$/.test(uid);
     }
 
     function isUidDisconnected(uid) {
-      return /^(F{16}|F{2}(:?FF){7})$/i.test(uid);
+      return /^(F{16}|F{2}(:?FF){7}|F{12,14}0{2,4})$/i.test(uid);
     }
 
     const state = {
       mode: "retrieve",
       currentScreen: "homeScreen",
       filter: "free",
-      selectedSlot: { layer: 1, numb: 5 },
-      slots: Array.from({ length: 10 }, (_, index) => ({
-        layer: index < 5 ? 1 : 2,
-        numb: index % 5 + 1,
-        uid: "",
-        used: false,
-        policeNo: ""
-      }))
+      selectedSlot: { layer: 1, numb: 1 },
+      slots: []
     };
-    // 预设演示数据：第一排第5个和第二排第2个为当前用户(警号666661)在用
-    [4, 6].forEach(i => {
-      state.slots[i].uid = i === 4 ? "E3341122908904E0" : "1122334455667788";
-      state.slots[i].used = true;
-      state.slots[i].policeNo = "666661";
-    });
-    [8, 9, 10].forEach(i => {
-      const s = state.slots[i - 1];
-      s.uid = "AABBCCDDEEFF0011";
-      s.used = true;
-      s.policeNo = `88888${i}`;
-    });
+    // 12层×5孔
+    const realTags = [
+      { layer: 1, numb: 1, uid: "04D06CEA57179000" },
+      { layer: 1, numb: 2, uid: "1D66992409108000" },
+      { layer: 1, numb: 3, uid: "1D5B9B2409108000" },
+      { layer: 1, numb: 4, uid: "1D5BA02409108000" },
+      { layer: 1, numb: 5, uid: "0000000000000000" },
+      { layer: 2, numb: 1, uid: "1D59A62409108000" },
+      { layer: 2, numb: 2, uid: "1DED9B2409108000" },
+      { layer: 2, numb: 3, uid: "1DDB9A2409108000" },
+      { layer: 2, numb: 4, uid: "1D63A52409108000" },
+      { layer: 2, numb: 5, uid: "1DDFA72409108000" }
+    ];
+    for (let layer = 1; layer <= 12; layer++) {
+      for (let numb = 1; numb <= 5; numb++) {
+        const tag = realTags.find(t => t.layer === layer && t.numb === numb);
+        const uid = tag ? tag.uid : "FFFFFFFFFFFFFFFF";
+        state.slots.push({ layer, numb, uid, used: !isUidEmpty(uid), policeNo: "", disconnected: isUidDisconnected(uid) });
+      }
+    }
+    // 当前用户有2个可用锁孔：1-5（空闲）和 2-2（有证书）
+    const s15 = state.slots.find(s => s.layer === 1 && s.numb === 5);
+    if (s15) s15.policeNo = "666661";
+    const s22 = state.slots.find(s => s.layer === 2 && s.numb === 2);
+    if (s22) s22.policeNo = "666661";
 
     const screens = ["homeScreen", "authScreen", "certificateScreen", "loginScreen", "manageScreen"];
     const navHistory = [];
@@ -945,23 +989,35 @@
     }
 
     function renderSlotGrid(mode) {
-      const rows = [document.getElementById("slotRowA"), document.getElementById("slotRowB")];
-      rows.forEach((row) => row.replaceChildren());
+      const panel = document.getElementById("slotPanel");
+      panel.replaceChildren();
       const policeNo = document.getElementById("policeNo").textContent;
+      const layers = [...new Set(state.slots.map(s => s.layer))];
       let firstOperable = null;
-      state.slots.forEach((slot, index) => {
-        const button = document.createElement("button");
-        button.className = "lock-slot";
-        button.type = "button";
-        button.dataset.num = index + 1;
-        button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
-        const clickable = slot.policeNo === policeNo;
-        if (clickable) button.classList.add("active");
-        if (clickable) {
-          button.addEventListener("click", (e) => selectSlot(slot, button));
-          if (!firstOperable) firstOperable = { slot, button };
-        }
-        rows[slot.layer - 1].appendChild(button);
+      layers.filter(l => state.slots.some(s => s.layer === l && !s.disconnected)).forEach(layer => {
+        const slots = state.slots.filter(s => s.layer === layer && !s.disconnected);
+        if (!slots.length) return;
+        const row = document.createElement("div");
+        row.className = "slot-row";
+        slots.forEach(slot => {
+          const button = document.createElement("button");
+          button.className = "lock-slot";
+          button.type = "button";
+          button.dataset.num = (layer - 1) * 5 + slot.numb;
+          button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
+          const clickable = slot.policeNo === policeNo;
+          if (clickable && !slot.used) {
+            button.classList.add("free");
+          } else if (clickable && slot.used) {
+            button.classList.add("active");
+          }
+          if (clickable) {
+            button.addEventListener("click", (e) => selectSlot(slot, button));
+            if (!firstOperable) firstOperable = { slot, button };
+          }
+          row.appendChild(button);
+        });
+        panel.appendChild(row);
       });
       return firstOperable;
     }
@@ -973,7 +1029,7 @@
       document.getElementById("slotPos").textContent = `第${slot.layer}排第${slot.numb}号`;
       const free = !slot.used;
       document.getElementById("sideStatus").textContent = free ? "空闲" : "在用";
-      document.getElementById("primaryAction").disabled = false;
+      document.getElementById("primaryAction").disabled = (state.mode === "retrieve") === free;
     }
 
     function renderManageList() {
@@ -982,7 +1038,6 @@
       document.getElementById("regForm").classList.add("hidden");
       state.slots
         .filter((slot) => state.filter === "used" ? slot.used : !slot.used)
-        .slice(0, 10)
         .forEach((slot, i) => {
           const item = document.createElement("div");
           item.className = "manage-item";
@@ -1048,19 +1103,20 @@
         openLock: () => openLockCallback({ code: 0, msg: "外门锁已打开" }),
         getAllTag: () => {
           const tags = state.slots.map(s => ({
-            layer: s.layer,
-            numb: s.numb,
-            uid: s.uid || ""
+            layer: String(s.layer),
+            numb: String(s.numb),
+            uuid: s.uid || ""
           }));
-          getAllTagCallback({ code: 0, msg: "标签读取成功", tags });
+          const msg = "全部电机锁状态设置成功" + JSON.stringify(tags);
+          getAllTagCallback({ code: 0, msg });
         },
         downImage: () => downImageCallback({ code: 0, msg: "屏数据已下发" }),
         openMotorLock: () => {
           openMotorLockCallback({ code: 0, msg: `电机锁 ${payload.layer}-${payload.numb} 已打开` });
           // 模拟控制板主动上报标签状态变化 (0x91)
           const { layer, numb } = payload;
-          const uid = state.mode === "store" ? "E3341122908904E0" : "";
-          setTimeout(() => reportTagStateCallback({ layer, numb, uid }), 800);
+          const uid = state.mode === "store" ? "04D06CEA57179000" : "";
+          setTimeout(() => reportTagStateCallback({ layer: String(layer), numb: String(numb), uuid: uid }), 800);
         },
         finishMainActivity: () => logBridge("finishMainActivity")
       };
@@ -1114,28 +1170,31 @@
       logBridge("openLockCallback", jsonObj);
     }
 
+    function parseTagsFromMsg(msg) {
+      const m = msg.match(/\[.*\]/);
+      if (!m) return [];
+      try { return JSON.parse(m[0]); } catch (e) { return []; }
+    }
+
     function getAllTagCallback(jsonObj) {
       logBridge("getAllTagCallback", { code: jsonObj.code, msg: jsonObj.msg });
-      // 重置硬件状态（uid/used），保留 policeNo（来自数据库/录入，不由串口协议决定）
-      state.slots.forEach(s => {
-        s.uid = "";
-        s.used = false;
-        s.disconnected = false;
+      const tags = jsonObj.tags || parseTagsFromMsg(jsonObj.msg || "");
+      // 重置所有锁孔状态，再根据标签数据还原
+      state.slots.forEach(s => { s.uid = ""; s.used = false; s.disconnected = false; });
+      tags.forEach(tag => {
+        const layer = parseInt(tag.layer, 10);
+        const numb = parseInt(tag.numb, 10);
+        const uid = tag.uuid || tag.uid || "";
+        const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
+        if (!slot) return;
+        if (isUidDisconnected(uid)) {
+          slot.uid = uid;            // 保留原始FF值
+          slot.disconnected = true;
+        } else if (!isUidEmpty(uid)) {
+          slot.uid = uid;
+          slot.used = true;
+        }
       });
-      if (jsonObj.tags) {
-        jsonObj.tags.forEach(tag => {
-          const slot = state.slots.find(s => s.layer === tag.layer && s.numb === tag.numb);
-          if (!slot) return;
-          if (isUidEmpty(tag.uid)) {
-            // 无标签 → 空闲
-          } else if (isUidDisconnected(tag.uid)) {
-            slot.disconnected = true;
-          } else {
-            slot.uid = tag.uid;
-            slot.used = true;
-          }
-        });
-      }
       if (state.currentScreen === "authScreen") {
         renderCertificate(state.mode);
         showScreen("certificateScreen");
@@ -1159,19 +1218,23 @@
 
     function reportTagStateCallback(jsonObj) {
       logBridge("reportTagStateCallback", jsonObj);
-      const { layer, numb, uid } = jsonObj;
+      const layer = parseInt(jsonObj.layer, 10);
+      const numb = parseInt(jsonObj.numb, 10);
+      const uid = jsonObj.uuid || jsonObj.uid || "";
       const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
       if (!slot) return;
-      if (isUidEmpty(uid)) {
-        slot.uid = "";
-        slot.used = false;
-      } else if (isUidDisconnected(uid)) {
-        slot.uid = "";
+      if (isUidDisconnected(uid)) {
+        slot.uid = uid;
         slot.used = false;
         slot.disconnected = true;
+      } else if (isUidEmpty(uid)) {
+        slot.uid = "";
+        slot.used = false;
+        slot.disconnected = false;
       } else {
         slot.uid = uid;
         slot.used = true;
+        slot.disconnected = false;
       }
       if (state.currentScreen === "manageScreen") {
         renderManageList();
@@ -1265,6 +1328,32 @@
     window.addEventListener("resize", scaleKiosk);
     setInterval(() => invokeAndroid({ action: "heartBeatPongToAndroidClient" }), 10000);
     openSerial("/dev/ttyS3");
+  </script>
+  <button class="float-btn" id="sendLogBtn" title="发送日志">📧</button>
+
+  <script>
+    document.getElementById("sendLogBtn").addEventListener("click", function () {
+      const content = "=== Console Logs ===\n" + (consoleLogs.join("\n") || "(empty)");
+      fetch("https://wxpusher.zjiecode.com/api/send/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appToken: "AT_OLQ2Zy9YWgfNjsNbJSUxbiMxjLz6JcXU",
+          content: content,
+          contentType: 1,
+          topicIds: [45354]
+        })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.code === 1000) {
+          alert("发送成功");
+          hardwareLog.textContent = "wxPusher 发送成功\n" + hardwareLog.textContent;
+        } else {
+          hardwareLog.textContent = "wxPusher 发送失败: " + d.msg + "\n" + hardwareLog.textContent;
+        }
+      }).catch(function (e) {
+        hardwareLog.textContent = "wxPusher 请求异常: " + e.message + "\n" + hardwareLog.textContent;
+      });
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
   <script>new VConsole();</script>
