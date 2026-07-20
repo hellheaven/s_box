@@ -355,8 +355,7 @@
 
     .slot-panel {
       margin-top: 34px;
-      height: 400px;
-      padding: 54px 38px 40px;
+      padding: 34px 38px 40px;
       border-radius: 12px;
     }
 
@@ -388,6 +387,14 @@
       appearance: none;
     }
 
+    .lock-slot.free {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
+        linear-gradient(145deg, #b8d8ff, #3d7eb8);
+      border-color: #6bb5ff;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, .5), 0 0 18px rgba(69, 150, 255, .6);
+    }
+
     .lock-slot.active {
       background:
         linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
@@ -397,11 +404,7 @@
     }
 
     .lock-slot.target {
-      background:
-        linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px no-repeat,
-        linear-gradient(145deg, #86fbff, #15bed1);
-      border-color: var(--cyan);
-      box-shadow: inset 0 0 16px rgba(255, 255, 255, .58), 0 0 24px rgba(69, 244, 255, .9);
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, .6), 0 0 30px rgba(69, 244, 255, .9), 0 0 60px rgba(69, 244, 255, .4);
     }
 
     .lock-slot::before {
@@ -415,6 +418,18 @@
       background: #05101e;
       transform: translateX(-50%);
       box-shadow: 0 0 0 8px rgba(221, 234, 242, .72);
+    }
+
+    .lock-slot.free::before {
+      box-shadow: 0 0 0 8px rgba(107, 181, 255, .7);
+    }
+
+    .lock-slot.active::before {
+      box-shadow: 0 0 0 8px rgba(35, 209, 127, .7);
+    }
+
+    .lock-slot.target::before {
+      box-shadow: 0 0 0 8px rgba(69, 244, 255, .8);
     }
 
     .lock-slot::after {
@@ -654,6 +669,510 @@
       margin-bottom: 18px;
     }
 
+    .manage-title {
+      margin: 0;
+      text-align: center;
+      font-size: 40px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 4px 0 rgba(2, 12, 31, .9), 0 0 18px rgba(69, 244, 255, .34);
+    }
+
+    .card-title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--cyan);
+      margin-bottom: 16px;
+      text-shadow: 0 0 12px rgba(69, 244, 255, .4);
+    }
+
+    .emp-table-card {
+      margin-top: 20px;
+      padding: 18px 20px;
+      border-radius: 12px;
+      height: 465px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .emp-table-wrap {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(69, 244, 255, .3) transparent;
+    }
+
+    .emp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .emp-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .emp-table th {
+      background: rgba(3, 47, 99, .95);
+      color: #fff;
+      padding: 12px 8px;
+      text-align: left;
+      font-size: 20px;
+      font-weight: 900;
+      border-bottom: 2px solid rgba(69, 244, 255, .4);
+      white-space: nowrap;
+    }
+
+    .emp-table th:first-child { padding-left: 14px; }
+    .emp-table th:last-child { padding-right: 14px; }
+
+    .emp-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(69, 244, 255, .12);
+      color: #dff9ff;
+      white-space: nowrap;
+    }
+
+    .emp-table td:first-child { padding-left: 14px; }
+    .emp-table td:last-child { padding-right: 14px; }
+
+    .emp-table tr {
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .emp-table tr:hover {
+      background: rgba(69, 244, 255, .1);
+    }
+
+    .emp-table tr.selected {
+      background: rgba(69, 244, 255, .18);
+      outline: 1px solid var(--cyan);
+    }
+
+    .detail-card {
+      margin-top: 20px;
+      padding: 20px 24px;
+      border-radius: 12px;
+    }
+
+    .detail-body {
+      display: flex;
+      gap: 32px;
+      height: calc(100% - 32px);
+    }
+
+    .bio-area {
+      width: 200px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .bio-area span {
+      font-size: 18px;
+      font-weight: 900;
+      color: rgba(223, 249, 255, .9);
+    }
+
+    .face-ring-large {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid rgba(69, 244, 255, .7);
+      background: radial-gradient(circle, rgba(69, 244, 255, .1), rgba(3, 33, 78, .6));
+      box-shadow: inset 0 0 20px rgba(69, 244, 255, .2), 0 0 20px rgba(69, 244, 255, .3);
+    }
+
+    .fingerprint-area {
+      width: 110px;
+      height: 90px;
+      border: 2px solid rgba(69, 244, 255, .6);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(69, 244, 255, .15) 0%, transparent 50%),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 4px,
+          rgba(69, 244, 255, .08) 4px,
+          rgba(69, 244, 255, .08) 6px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 4px,
+          rgba(69, 244, 255, .08) 4px,
+          rgba(69, 244, 255, .08) 6px
+        );
+      box-shadow: inset 0 0 14px rgba(69, 244, 255, .15), 0 0 14px rgba(69, 244, 255, .2);
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .fingerprint-area::before {
+      content: "";
+      width: 50px;
+      height: 60px;
+      border: 3px solid rgba(69, 244, 255, .5);
+      border-radius: 50% 50% 40% 40%;
+      box-shadow:
+        inset 0 0 0 6px rgba(69, 244, 255, .1),
+        0 0 8px rgba(69, 244, 255, .15);
+    }
+
+    .info-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: center;
+      font-size: 24px;
+      font-weight: 900;
+      border-bottom: 1px solid rgba(69, 244, 255, .2);
+      padding: 8px 0;
+    }
+
+    .detail-row span:first-child {
+      width: 140px;
+      color: rgba(223, 249, 255, .8);
+      flex-shrink: 0;
+    }
+
+    .detail-row .detail-val {
+      color: #fff;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--cyan);
+      text-decoration-thickness: 2px;
+    }
+
+    .action-bar {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      width: 110px;
+      height: 110px;
+      border: 2px solid var(--cyan);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: linear-gradient(135deg, rgba(202, 244, 255, .3), rgba(13, 61, 105, .7) 47%, rgba(40, 157, 213, .18) 48%, rgba(5, 31, 76, .85));
+      box-shadow: 0 0 0 2px rgba(69, 244, 255, .12), inset 0 0 10px rgba(69, 244, 255, .3), 0 0 10px rgba(69, 244, 255, .5);
+      font-size: 15px;
+      font-weight: 900;
+      color: #fff;
+      transition: transform .12s;
+    }
+
+    .action-btn:active {
+      transform: scale(.96);
+    }
+
+    .action-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+    }
+
+    .action-icon svg {
+      width: 40px;
+      height: 40px;
+      filter: drop-shadow(0 0 6px rgba(189, 251, 255, .5));
+    }
+
+    .face-capture-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      background: rgba(2, 12, 30, .78);
+    }
+
+    .face-capture-overlay.hidden {
+      display: none;
+    }
+
+    .face-capture-modal {
+      width: 540px;
+      padding: 32px 40px 28px;
+      border: 2px solid rgba(126, 240, 255, .72);
+      border-radius: 20px;
+      background: rgba(3, 33, 75, .95);
+      text-align: center;
+    }
+
+    .fc-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      text-shadow: 0 0 12px rgba(69, 244, 255, .4);
+    }
+
+    .fc-target {
+      font-size: 24px;
+      font-weight: 800;
+      color: rgba(223, 249, 255, .9);
+      margin-bottom: 18px;
+    }
+
+    .fc-target strong {
+      color: #fff;
+    }
+
+    .fc-camera {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      margin: 0 auto 18px;
+      border: 3px solid rgba(69, 244, 255, .6);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(69, 244, 255, .08), rgba(3, 33, 78, .7));
+      box-shadow: inset 0 0 30px rgba(69, 244, 255, .15), 0 0 30px rgba(69, 244, 255, .25);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .fc-camera.captured {
+      border-color: var(--green);
+      box-shadow: inset 0 0 30px rgba(35, 209, 127, .2), 0 0 30px rgba(35, 209, 127, .35);
+    }
+
+    .fc-scan-ring {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      border: 4px solid rgba(189, 251, 255, .5);
+      box-shadow: 0 0 20px rgba(69, 244, 255, .3);
+      transition: all .4s;
+    }
+
+    .fc-camera.scanning .fc-scan-ring {
+      width: 180px;
+      height: 180px;
+      border-color: var(--cyan);
+      box-shadow: 0 0 40px rgba(69, 244, 255, .6);
+      animation: fcPulse .8s ease-in-out infinite alternate;
+    }
+
+    @keyframes fcPulse {
+      from { transform: scale(1); opacity: .7; }
+      to { transform: scale(1.12); opacity: 1; }
+    }
+
+    .fc-hint {
+      position: absolute;
+      bottom: 20px;
+      font-size: 18px;
+      font-weight: 800;
+      color: rgba(223, 249, 255, .7);
+    }
+
+    .fc-camera.scanning .fc-hint {
+      color: var(--cyan);
+    }
+
+    .fc-preview {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .fc-preview:not(.hidden) {
+      display: flex;
+    }
+
+    .fc-preview-ring {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid var(--green);
+      background: radial-gradient(circle, rgba(35, 209, 127, .2), transparent);
+      box-shadow: 0 0 20px rgba(35, 209, 127, .4);
+    }
+
+    .fc-preview-label {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .fc-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 14px;
+    }
+
+    .fc-actions .neon-button {
+      height: 62px;
+      font-size: 26px;
+      padding: 0 28px;
+      min-width: 100px;
+    }
+
+    .sb-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 14px;
+      padding: 18px 14px;
+      margin-bottom: 14px;
+      border: 1px solid rgba(126, 240, 255, .3);
+      border-radius: 10px;
+      background: rgba(0, 24, 58, .2);
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    .sb-grid .sb-slot-layer {
+      grid-column: 1 / -1;
+      font-size: 16px;
+      font-weight: 900;
+      color: rgba(69, 244, 255, .6);
+      text-align: left;
+      padding: 4px 0 2px;
+      border-bottom: 1px solid rgba(69, 244, 255, .15);
+      margin-top: 8px;
+    }
+
+    .sb-grid .sb-slot-layer:first-child {
+      margin-top: 0;
+    }
+
+    .sb-slot {
+      position: relative;
+      height: 100px;
+      border-radius: 7px;
+      border: 2px solid rgba(245, 251, 255, .72);
+      background:
+        linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px no-repeat,
+        linear-gradient(145deg, #e8f3fb, #758696);
+      box-shadow: inset 0 0 12px rgba(255, 255, 255, .45), 0 3px 8px rgba(0, 0, 0, .35);
+      cursor: pointer;
+      transition: all .15s;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .sb-slot::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 28px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #05101e;
+      transform: translateX(-50%);
+      box-shadow: 0 0 0 7px rgba(221, 234, 242, .72);
+    }
+
+    .sb-slot::after {
+      content: attr(data-num);
+      position: absolute;
+      left: 50%;
+      bottom: 6px;
+      transform: translateX(-50%);
+      font-size: 16px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 1px 3px rgba(0,0,0,.85);
+      pointer-events: none;
+    }
+
+    .sb-slot:active {
+      transform: scale(.95);
+    }
+
+    .sb-slot.free {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px no-repeat,
+        linear-gradient(145deg, #b8d8ff, #3d7eb8);
+      border-color: #6bb5ff;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, .5), 0 0 18px rgba(69, 150, 255, .6);
+    }
+
+    .sb-slot.free::before {
+      box-shadow: 0 0 0 7px rgba(107, 181, 255, .7);
+    }
+
+    .sb-slot.selected {
+      box-shadow: inset 0 0 16px rgba(255, 255, 255, .6), 0 0 25px rgba(69, 244, 255, .9), 0 0 50px rgba(69, 244, 255, .4);
+    }
+
+    .sb-slot.selected::before {
+      box-shadow: 0 0 0 7px rgba(69, 244, 255, .8);
+    }
+
+    .sb-slot.occupied {
+      border-color: rgba(245, 251, 255, .35);
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .sb-slot.mine {
+      background:
+        linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px no-repeat,
+        linear-gradient(145deg, #dbfff2, #57d496);
+      border-color: #c7ffe8;
+      box-shadow: inset 0 0 14px rgba(255, 255, 255, .6), 0 0 22px rgba(35, 209, 127, .78);
+      cursor: not-allowed;
+    }
+
+    .sb-slot.mine::before {
+      box-shadow: 0 0 0 7px rgba(35, 209, 127, .7);
+    }
+    .fp-sensor {
+      width: 160px;
+      height: 200px;
+      border: 3px solid rgba(69, 244, 255, .5);
+      border-radius: 12px;
+      background: radial-gradient(circle at 50% 40%, rgba(69, 244, 255, .08), rgba(3, 33, 78, .7));
+      box-shadow: inset 0 0 20px rgba(69, 244, 255, .12), 0 0 20px rgba(69, 244, 255, .2);
+      display: grid;
+      place-items: center;
+      transition: all .3s;
+    }
+
+    .fc-camera.scanning .fp-sensor {
+      border-color: var(--cyan);
+      box-shadow: inset 0 0 30px rgba(69, 244, 255, .25), 0 0 30px rgba(69, 244, 255, .4);
+      animation: fpPulse .8s ease-in-out infinite alternate;
+    }
+
+    @keyframes fpPulse {
+      from { transform: scale(1); opacity: .8; }
+      to { transform: scale(1.06); opacity: 1; }
+    }
+
     .hardware-panel {
       position: absolute;
       left: 46px;
@@ -730,8 +1249,71 @@
       transform: rotate(45deg);
     }
 
+    .sync-button {
+      position: absolute;
+      right: 38px;
+      top: 42px;
+      z-index: 10;
+      width: 58px;
+      height: 58px;
+      border: 2px solid rgba(69, 244, 255, .8);
+      border-radius: 50%;
+      background: rgba(5, 46, 100, .72);
+      box-shadow: 0 0 14px rgba(69, 244, 255, .32);
+      color: var(--cyan);
+      font-size: 18px;
+      font-weight: 900;
+      display: grid;
+      place-items: center;
+    }
+
+    @keyframes syncSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      padding: 18px 36px;
+      border: 2px solid var(--green);
+      border-radius: 14px;
+      background: rgba(3, 33, 75, .95);
+      color: #fff;
+      font-size: 26px;
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(35, 209, 127, .4);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+
     .hidden {
       display: none !important;
+    }
+
+    .float-btn {
+      position: fixed;
+      left: 20px;
+      bottom: 20px;
+      z-index: 999;
+      width: 56px;
+      height: 56px;
+      border: none;
+      border-radius: 50%;
+      background: #23d17f;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 2px 12px rgba(0,0,0,.4);
     }
   </style>
 </head>
@@ -789,10 +1371,7 @@
           <div class="side-status" id="sideStatus">在用</div>
         </section>
 
-        <section class="slot-panel panel" aria-label="锁孔阵列">
-          <div class="slot-row" id="slotRowA"></div>
-          <div class="slot-row" id="slotRowB"></div>
-        </section>
+        <section class="slot-panel panel" aria-label="锁孔阵列" id="slotPanel"></section>
 
         <button class="primary-action" id="primaryAction">开锁</button>
         <p class="bottom-tip" id="bottomTip">请取出证书后关闭锁孔</p>
@@ -813,27 +1392,153 @@
 
       <section class="screen" id="manageScreen">
         <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
-        <div class="topline">锁位管理</div>
-        <section class="status-switch">
-          <h2>锁位状态</h2>
-          <div class="segmented">
-            <button class="segment active" data-filter="free">未使用</button>
-            <button class="segment" data-filter="used">在用</button>
+        <button class="sync-button" id="syncBtn" aria-label="同步数据">同步</button>
+        <div class="manage-title">人员信息建档与录入管理</div>
+
+        <section class="emp-table-card panel">
+          <div class="card-title">人员基本信息列表</div>
+          <div class="emp-table-wrap">
+            <table class="emp-table">
+              <thead>
+                <tr>
+                  <th>警号</th>
+                  <th>姓名</th>
+                  <th>岗位</th>
+                  <th>部门</th>
+                  <th>电话号码</th>
+                </tr>
+              </thead>
+              <tbody id="empTableBody"></tbody>
+            </table>
           </div>
         </section>
-        <section class="manage-list" id="manageList"></section>
-        <section class="reg-form hidden" id="regForm">
-          <div>
-            <div class="reg-face-state" id="regFaceState">正在识别人脸...</div>
-            <input class="form-field reg-field" id="regPoliceNo" placeholder="警号">
-            <input class="form-field reg-field" id="regName" placeholder="姓名">
-            <div class="button-row">
-              <button class="neon-button" id="regSave">保存</button>
-              <button class="neon-button" id="regCancel">取消</button>
+
+        <section class="detail-card panel">
+          <div class="card-title">人员建档信息</div>
+          <div class="detail-body">
+            <div class="bio-area">
+              <div class="face-ring-large"></div>
+              <span>人脸照片</span>
+              <div class="fingerprint-area"></div>
+              <span>指纹照片</span>
+            </div>
+            <div class="info-details" id="infoDetails">
+              <div class="detail-row"><span>警号：</span><span class="detail-val" id="dPoliceNo">666661</span></div>
+              <div class="detail-row"><span>姓名：</span><span class="detail-val" id="dName">张警官</span></div>
+              <div class="detail-row"><span>岗位：</span><span class="detail-val" id="dPost">民警</span></div>
+              <div class="detail-row"><span>部门：</span><span class="detail-val" id="dDept">刑侦支队</span></div>
+              <div class="detail-row"><span>电话号码：</span><span class="detail-val" id="dPhone">13800138001</span></div>
+              <div class="detail-row"><span>锁位信息：</span><span class="detail-val" id="dSlot">第2排第3号</span></div>
             </div>
           </div>
         </section>
-        <section class="hardware-panel panel">
+
+        <div class="action-bar">
+          <button class="action-btn" id="faceCollectBtn">
+            <span class="action-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#bdfbff" stroke-width="2.5" stroke-linecap="round">
+                <circle cx="24" cy="18" r="8"/>
+                <path d="M10 44c0-10 6-18 14-18s14 8 14 18"/>
+                <path d="M4 14V6h8M44 14V6h-8M4 34v8h8M44 34v8h-8" stroke-width="2"/>
+              </svg>
+            </span>
+            <span>人脸采集</span>
+          </button>
+          <button class="action-btn" id="fingerCollectBtn">
+            <span class="action-icon">
+              <svg viewBox="0 0 200 260" fill="none" stroke="#bdfbff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M 60,240 C 45,225 35,200 35,170 C 35,110 70,65 100,65 C 130,65 165,110 165,170 C 165,195 158,215 148,230" />
+                <path d="M 45,215 C 32,195 25,170 25,140 C 25,85 60,40 100,40 C 140,40 175,85 175,140 C 175,175 165,205 150,220" />
+                <path d="M 50,180 C 50,130 75,90 100,90 C 125,90 150,130 150,180 C 150,205 140,225 125,235" />
+                <path d="M 65,190 C 65,150 80,115 100,115 C 120,115 135,150 135,190 C 135,210 125,225 110,235" />
+                <path d="M 80,195 C 80,170 90,140 100,140 C 110,140 120,165 120,195 C 120,210 112,220 100,220 C 90,220 85,210 85,200" />
+                <path d="M 93,195 C 93,180 97,165 100,165 C 103,165 107,180 107,195 C 107,205 103,208 100,208 C 97,208 95,202 95,198" />
+              </svg>
+            </span>
+            <span>指纹采集</span>
+          </button>
+          <button class="action-btn" id="slotBindBtn">
+            <span class="action-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="#bdfbff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 22V14a10 10 0 1 1 20 0v8"/>
+                <rect x="10" y="22" width="28" height="18" rx="3"/>
+                <path d="M24 30v4" stroke-width="3"/>
+                <circle cx="24" cy="37" r="1.5" fill="#23d17f" stroke="none"/>
+                <path d="M30 28l-4 4-2-2" stroke="#23d17f" stroke-width="2.5"/>
+              </svg>
+            </span>
+            <span>锁位绑定</span>
+          </button>
+        </div>
+        <div class="face-capture-overlay hidden" id="faceCaptureOverlay">
+          <div class="face-capture-modal">
+            <div class="fc-title">人脸采集</div>
+            <div class="fc-target" id="fcTarget">目标人员：<strong id="fcTargetName"></strong></div>
+            <div class="fc-camera" id="fcCamera">
+              <div class="fc-scan-ring" id="fcScanRing"></div>
+              <div class="fc-hint" id="fcHint">请将面部对准摄像头</div>
+            </div>
+            <div class="fc-preview hidden" id="fcPreview">
+              <div class="fc-preview-ring"></div>
+              <div class="fc-preview-label">已采集</div>
+            </div>
+            <div class="fc-actions">
+              <button class="neon-button" id="fcRetake" style="display:none">重拍</button>
+              <button class="neon-button" id="fcCapture" style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">开始采集</button>
+              <button class="neon-button" id="fcConfirm" style="display:none">确认</button>
+              <button class="neon-button" id="fcCancel">取消</button>
+            </div>
+          </div>
+        </div>
+        <div class="face-capture-overlay hidden" id="fingerCaptureOverlay">
+          <div class="face-capture-modal">
+            <div class="fc-title">指纹采集</div>
+            <div class="fc-target" id="fpTarget">目标人员：<strong id="fpTargetName"></strong></div>
+            <div class="fc-camera" id="fpCamera">
+              <div class="fp-sensor" id="fpSensor">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 260" width="100%" height="100%">
+                  <g fill="none" stroke="#bdfbff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M 60,240 C 45,225 35,200 35,170 C 35,110 70,65 100,65 C 130,65 165,110 165,170 C 165,195 158,215 148,230" />
+                    <path d="M 45,215 C 32,195 25,170 25,140 C 25,85 60,40 100,40 C 140,40 175,85 175,140 C 175,175 165,205 150,220" />
+                    <path d="M 70,250 C 58,242 55,235 55,230" />
+                    <path d="M 130,250 C 140,242 145,235 145,230" />
+                    <path d="M 50,180 C 50,130 75,90 100,90 C 125,90 150,130 150,180 C 150,205 140,225 125,235" />
+                    <path d="M 65,190 C 65,150 80,115 100,115 C 120,115 135,150 135,190 C 135,210 125,225 110,235" />
+                    <path d="M 80,195 C 80,170 90,140 100,140 C 110,140 120,165 120,195 C 120,210 112,220 100,220 C 90,220 85,210 85,200" />
+                    <path d="M 93,195 C 93,180 97,165 100,165 C 103,165 107,180 107,195 C 107,205 103,208 100,208 C 97,208 95,202 95,198" />
+                    <path d="M 30,120 C 28,100 35,80 50,60" />
+                    <path d="M 170,120 C 172,100 165,80 150,60" />
+                    <path d="M 80,252 C 90,255 100,256 110,255" />
+                    <path d="M 90,243 C 95,245 100,245 105,243" />
+                  </g>
+                </svg>
+              </div>
+              <div class="fc-hint" id="fpHint">请将手指放在传感器上</div>
+            </div>
+            <div class="fc-preview hidden" id="fpPreview">
+              <div class="fc-preview-ring" style="border-color:var(--green);box-shadow:0 0 20px rgba(35,209,127,.4)"></div>
+              <div class="fc-preview-label">已采集</div>
+            </div>
+            <div class="fc-actions">
+              <button class="neon-button" id="fpRetake" style="display:none">重按</button>
+              <button class="neon-button" id="fpCapture" style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">开始采集</button>
+              <button class="neon-button" id="fpConfirm" style="display:none">确认</button>
+              <button class="neon-button" id="fpCancel">取消</button>
+            </div>
+          </div>
+        </div>
+        <div class="face-capture-overlay hidden" id="slotBindOverlay">
+          <div class="face-capture-modal" style="width:680px;padding:36px 44px 32px">
+            <div class="fc-title">锁位绑定</div>
+            <div class="fc-target" id="sbTarget">目标人员：<strong id="sbTargetName"></strong></div>
+            <div class="sb-grid" id="sbGrid"></div>
+            <div class="fc-actions">
+              <button class="neon-button" id="sbConfirm" disabled style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">确认绑定</button>
+              <button class="neon-button" id="sbCancel">取消</button>
+            </div>
+          </div>
+        </div>
+        <section class="hardware-panel panel hidden"
           <div class="hardware-title">
             <span>硬件调试 / Android WebView Bridge</span>
             <span id="bridgeState">模拟模式</span>
@@ -846,44 +1551,60 @@
           </div>
           <div class="log" id="hardwareLog"></div>
         </section>
-      </section>
     </div>
   </main>
+  <div class="toast" id="toast"></div>
 
   <script>
+    const consoleLogs = [];
+    const _origLog = console.log;
+    console.log = function (...args) {
+      const line = args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ");
+      if (line.includes("heartBeatPongToAndroidClient")) return;
+      consoleLogs.push(line);
+      _origLog.apply(console, args);
+    };
     function isUidEmpty(uid) {
       return !uid || /^(0{16}|0{2}(:?00){7})$/.test(uid);
     }
 
     function isUidDisconnected(uid) {
-      return /^(F{16}|F{2}(:?FF){7})$/i.test(uid);
+      return /^(F{16}|F{2}(:?FF){7}|F{12,14}0{2,4})$/i.test(uid);
     }
 
     const state = {
       mode: "retrieve",
       currentScreen: "homeScreen",
       filter: "free",
-      selectedSlot: { layer: 1, numb: 5 },
-      slots: Array.from({ length: 10 }, (_, index) => ({
-        layer: index < 5 ? 1 : 2,
-        numb: index % 5 + 1,
-        uid: "",
-        used: false,
-        policeNo: ""
-      }))
+      selectedSlot: { layer: 1, numb: 1 },
+      selectedPerson: null,
+      slots: []
     };
-    // 预设演示数据：第一排第5个和第二排第2个为当前用户(警号666661)在用
-    [4, 6].forEach(i => {
-      state.slots[i].uid = i === 4 ? "E3341122908904E0" : "1122334455667788";
-      state.slots[i].used = true;
-      state.slots[i].policeNo = "666661";
-    });
-    [8, 9, 10].forEach(i => {
-      const s = state.slots[i - 1];
-      s.uid = "AABBCCDDEEFF0011";
-      s.used = true;
-      s.policeNo = `88888${i}`;
-    });
+    // 12层×5孔
+    const realTags = [
+      { layer: 1, numb: 1, uid: "04D06CEA57179000" },
+      { layer: 1, numb: 2, uid: "1D66992409108000" },
+      { layer: 1, numb: 3, uid: "1D5B9B2409108000" },
+      { layer: 1, numb: 4, uid: "1D5BA02409108000" },
+      { layer: 1, numb: 5, uid: "0000000000000000" },
+      { layer: 2, numb: 1, uid: "1D59A62409108000" },
+      { layer: 2, numb: 2, uid: "1DED9B2409108000" },
+      { layer: 2, numb: 3, uid: "1DDB9A2409108000" },
+      { layer: 2, numb: 4, uid: "1D63A52409108000" },
+      { layer: 2, numb: 5, uid: "1DDFA72409108000" }
+    ];
+    for (let layer = 1; layer <= 12; layer++) {
+      for (let numb = 1; numb <= 5; numb++) {
+        const tag = realTags.find(t => t.layer === layer && t.numb === numb);
+        const uid = tag ? tag.uid : "FFFFFFFFFFFFFFFF";
+        state.slots.push({ layer, numb, uid, used: !isUidEmpty(uid), policeNo: "", disconnected: isUidDisconnected(uid) });
+      }
+    }
+    // 当前用户有2个可用锁孔：1-5（空闲）和 2-2（有证书）
+    const s15 = state.slots.find(s => s.layer === 1 && s.numb === 5);
+    if (s15) s15.policeNo = "666661";
+    const s22 = state.slots.find(s => s.layer === 2 && s.numb === 2);
+    if (s22) s22.policeNo = "666661";
 
     const screens = ["homeScreen", "authScreen", "certificateScreen", "loginScreen", "manageScreen"];
     const navHistory = [];
@@ -945,23 +1666,35 @@
     }
 
     function renderSlotGrid(mode) {
-      const rows = [document.getElementById("slotRowA"), document.getElementById("slotRowB")];
-      rows.forEach((row) => row.replaceChildren());
+      const panel = document.getElementById("slotPanel");
+      panel.replaceChildren();
       const policeNo = document.getElementById("policeNo").textContent;
+      const layers = [...new Set(state.slots.map(s => s.layer))];
       let firstOperable = null;
-      state.slots.forEach((slot, index) => {
-        const button = document.createElement("button");
-        button.className = "lock-slot";
-        button.type = "button";
-        button.dataset.num = index + 1;
-        button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
-        const clickable = slot.policeNo === policeNo;
-        if (clickable) button.classList.add("active");
-        if (clickable) {
-          button.addEventListener("click", (e) => selectSlot(slot, button));
-          if (!firstOperable) firstOperable = { slot, button };
-        }
-        rows[slot.layer - 1].appendChild(button);
+      layers.filter(l => state.slots.some(s => s.layer === l && !s.disconnected)).forEach(layer => {
+        const slots = state.slots.filter(s => s.layer === layer && !s.disconnected);
+        if (!slots.length) return;
+        const row = document.createElement("div");
+        row.className = "slot-row";
+        slots.forEach(slot => {
+          const button = document.createElement("button");
+          button.className = "lock-slot";
+          button.type = "button";
+          button.dataset.num = (layer - 1) * 5 + slot.numb;
+          button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
+          const clickable = slot.policeNo === policeNo;
+          if (clickable && !slot.used) {
+            button.classList.add("free");
+          } else if (clickable && slot.used) {
+            button.classList.add("active");
+          }
+          if (clickable) {
+            button.addEventListener("click", (e) => selectSlot(slot, button));
+            if (!firstOperable) firstOperable = { slot, button };
+          }
+          row.appendChild(button);
+        });
+        panel.appendChild(row);
       });
       return firstOperable;
     }
@@ -973,56 +1706,52 @@
       document.getElementById("slotPos").textContent = `第${slot.layer}排第${slot.numb}号`;
       const free = !slot.used;
       document.getElementById("sideStatus").textContent = free ? "空闲" : "在用";
-      document.getElementById("primaryAction").disabled = false;
+      document.getElementById("primaryAction").disabled = (state.mode === "retrieve") === free;
     }
+
+    const mockPersonnel = [
+      { policeNo: "666661", name: "张警官", post: "民警", dept: "刑侦支队", phone: "13800138001" },
+      { policeNo: "666662", name: "张警官", post: "民警", dept: "刑侦支队", phone: "13800138001" },
+      { policeNo: "666662", name: "李辅警", post: "辅警", dept: "勤务大队", phone: "13800148002" },
+      { policeNo: "666662", name: "李辅警", post: "辅警", dept: "勤务大队", phone: "13800138002" },
+      { policeNo: "666663", name: "王警官", post: "民警", dept: "网安大队", phone: "13800138003" },
+      { policeNo: "666663", name: "王警官", post: "民警", dept: "网安大队", phone: "13800138003" }
+    ];
 
     function renderManageList() {
-      const list = document.getElementById("manageList");
-      list.replaceChildren();
-      document.getElementById("regForm").classList.add("hidden");
-      state.slots
-        .filter((slot) => state.filter === "used" ? slot.used : !slot.used)
-        .slice(0, 10)
-        .forEach((slot, i) => {
-          const item = document.createElement("div");
-          item.className = "manage-item";
-
-          const btn = document.createElement("button");
-          btn.className = `manage-slot ${slot.used ? "" : "free"}`;
-          btn.type = "button";
-          btn.textContent = slot.used ? `警号${slot.policeNo}` : `孔${slot.numb} 未使用`;
-          btn.addEventListener("click", () => {
-            state.selectedSlot = { layer: slot.layer, numb: slot.numb };
-            invokeAndroid({ action: "openMotorLock", layer: slot.layer, numb: slot.numb });
-          });
-          item.appendChild(btn);
-
-          const reg = document.createElement("button");
-          reg.className = "mini-reg";
-          reg.type = "button";
-          reg.textContent = "录入";
-          reg.addEventListener("click", () => startFaceReg(slot));
-          item.appendChild(reg);
-
-          list.appendChild(item);
+      const tbody = document.getElementById("empTableBody");
+      tbody.replaceChildren();
+      mockPersonnel.forEach((p, index) => {
+        const tr = document.createElement("tr");
+        if (index === 0) tr.classList.add("selected");
+        tr.innerHTML =
+          `<td>${p.policeNo}</td>` +
+          `<td>${p.name}</td>` +
+          `<td>${p.post}</td>` +
+          `<td>${p.dept}</td>` +
+          `<td>${p.phone}</td>`;
+        tr.addEventListener("click", () => {
+          document.querySelectorAll("#empTableBody tr.selected").forEach(el => el.classList.remove("selected"));
+          tr.classList.add("selected");
+          state.selectedPerson = p;
+          renderDetail(p);
         });
+        tbody.appendChild(tr);
+      });
+      if (mockPersonnel.length > 0) {
+        state.selectedPerson = mockPersonnel[0];
+        renderDetail(mockPersonnel[0]);
+      }
     }
 
-    let pendingRegSlot = null;
-
-    function startFaceReg(slot) {
-      pendingRegSlot = slot;
-      const form = document.getElementById("regForm");
-      form.classList.remove("hidden");
-      document.getElementById("regFaceState").textContent = "正在识别人脸...";
-      document.getElementById("regPoliceNo").value = "";
-      document.getElementById("regName").value = "";
-      document.getElementById("regSave").disabled = true;
-      logBridge("faceRegister", { layer: slot.layer, numb: slot.numb, stage: "capturing" });
-      setTimeout(() => {
-        document.getElementById("regFaceState").textContent = "人脸识别成功，请填写信息";
-        document.getElementById("regSave").disabled = false;
-      }, 1500);
+    function renderDetail(p) {
+      document.getElementById("dPoliceNo").textContent = p.policeNo;
+      document.getElementById("dName").textContent = p.name;
+      document.getElementById("dPost").textContent = p.post;
+      document.getElementById("dDept").textContent = p.dept;
+      document.getElementById("dPhone").textContent = p.phone;
+      const slot = state.slots.find(s => s.policeNo === p.policeNo);
+      document.getElementById("dSlot").textContent = slot ? `第${slot.layer}排第${slot.numb}号` : "未分配";
     }
 
     function logBridge(message, data) {
@@ -1048,19 +1777,20 @@
         openLock: () => openLockCallback({ code: 0, msg: "外门锁已打开" }),
         getAllTag: () => {
           const tags = state.slots.map(s => ({
-            layer: s.layer,
-            numb: s.numb,
-            uid: s.uid || ""
+            layer: String(s.layer),
+            numb: String(s.numb),
+            uuid: s.uid || ""
           }));
-          getAllTagCallback({ code: 0, msg: "标签读取成功", tags });
+          const msg = "全部电机锁状态设置成功" + JSON.stringify(tags);
+          getAllTagCallback({ code: 0, msg });
         },
         downImage: () => downImageCallback({ code: 0, msg: "屏数据已下发" }),
         openMotorLock: () => {
           openMotorLockCallback({ code: 0, msg: `电机锁 ${payload.layer}-${payload.numb} 已打开` });
           // 模拟控制板主动上报标签状态变化 (0x91)
           const { layer, numb } = payload;
-          const uid = state.mode === "store" ? "E3341122908904E0" : "";
-          setTimeout(() => reportTagStateCallback({ layer, numb, uid }), 800);
+          const uid = state.mode === "store" ? "04D06CEA57179000" : "";
+          setTimeout(() => reportTagStateCallback({ layer: String(layer), numb: String(numb), uuid: uid }), 800);
         },
         finishMainActivity: () => logBridge("finishMainActivity")
       };
@@ -1114,28 +1844,31 @@
       logBridge("openLockCallback", jsonObj);
     }
 
+    function parseTagsFromMsg(msg) {
+      const m = msg.match(/\[.*\]/);
+      if (!m) return [];
+      try { return JSON.parse(m[0]); } catch (e) { return []; }
+    }
+
     function getAllTagCallback(jsonObj) {
       logBridge("getAllTagCallback", { code: jsonObj.code, msg: jsonObj.msg });
-      // 重置硬件状态（uid/used），保留 policeNo（来自数据库/录入，不由串口协议决定）
-      state.slots.forEach(s => {
-        s.uid = "";
-        s.used = false;
-        s.disconnected = false;
+      const tags = jsonObj.tags || parseTagsFromMsg(jsonObj.msg || "");
+      // 重置所有锁孔状态，再根据标签数据还原
+      state.slots.forEach(s => { s.uid = ""; s.used = false; s.disconnected = false; });
+      tags.forEach(tag => {
+        const layer = parseInt(tag.layer, 10);
+        const numb = parseInt(tag.numb, 10);
+        const uid = tag.uuid || tag.uid || "";
+        const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
+        if (!slot) return;
+        if (isUidDisconnected(uid)) {
+          slot.uid = uid;            // 保留原始FF值
+          slot.disconnected = true;
+        } else if (!isUidEmpty(uid)) {
+          slot.uid = uid;
+          slot.used = true;
+        }
       });
-      if (jsonObj.tags) {
-        jsonObj.tags.forEach(tag => {
-          const slot = state.slots.find(s => s.layer === tag.layer && s.numb === tag.numb);
-          if (!slot) return;
-          if (isUidEmpty(tag.uid)) {
-            // 无标签 → 空闲
-          } else if (isUidDisconnected(tag.uid)) {
-            slot.disconnected = true;
-          } else {
-            slot.uid = tag.uid;
-            slot.used = true;
-          }
-        });
-      }
       if (state.currentScreen === "authScreen") {
         renderCertificate(state.mode);
         showScreen("certificateScreen");
@@ -1159,19 +1892,23 @@
 
     function reportTagStateCallback(jsonObj) {
       logBridge("reportTagStateCallback", jsonObj);
-      const { layer, numb, uid } = jsonObj;
+      const layer = parseInt(jsonObj.layer, 10);
+      const numb = parseInt(jsonObj.numb, 10);
+      const uid = jsonObj.uuid || jsonObj.uid || "";
       const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
       if (!slot) return;
-      if (isUidEmpty(uid)) {
-        slot.uid = "";
-        slot.used = false;
-      } else if (isUidDisconnected(uid)) {
-        slot.uid = "";
+      if (isUidDisconnected(uid)) {
+        slot.uid = uid;
         slot.used = false;
         slot.disconnected = true;
+      } else if (isUidEmpty(uid)) {
+        slot.uid = "";
+        slot.used = false;
+        slot.disconnected = false;
       } else {
         slot.uid = uid;
         slot.used = true;
+        slot.disconnected = false;
       }
       if (state.currentScreen === "manageScreen") {
         renderManageList();
@@ -1209,23 +1946,226 @@
       showScreen("manageScreen");
     });
 
-    document.getElementById("regSave").addEventListener("click", () => {
-      if (!pendingRegSlot) return;
-      const policeNo = document.getElementById("regPoliceNo").value.trim();
-      const name = document.getElementById("regName").value.trim();
-      if (!policeNo || !name) return;
-      pendingRegSlot.used = true;
-      pendingRegSlot.policeNo = policeNo;
-      pendingRegSlot.userName = name;
-      logBridge("faceRegister", { layer: pendingRegSlot.layer, numb: pendingRegSlot.numb, policeNo, name, result: "saved" });
-      pendingRegSlot = null;
-      renderManageList();
+    document.getElementById("syncBtn").addEventListener("click", function () {
+      logBridge("syncData", { msg: "正在同步数据..." });
+      const btn = this;
+      btn.disabled = true;
+      btn.style.animation = "syncSpin .8s linear infinite";
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.style.animation = "none";
+        showToast("数据同步成功");
+        renderManageList();
+      }, 1500);
     });
 
-    document.getElementById("regCancel").addEventListener("click", () => {
-      pendingRegSlot = null;
-      document.getElementById("regForm").classList.add("hidden");
+    let fcCaptured = false;
+
+    function openFaceCapture() {
+      const p = state.selectedPerson;
+      if (!p) { alert("请先选择一位人员"); return; }
+      document.getElementById("fcTargetName").textContent = p.policeNo + " " + p.name;
+      document.getElementById("faceCaptureOverlay").classList.remove("hidden");
+      document.getElementById("fcCamera").classList.remove("captured", "scanning");
+      document.getElementById("fcScanRing").classList.remove("hidden");
+      document.getElementById("fcPreview").classList.add("hidden");
+      document.getElementById("fcCapture").style.display = "";
+      document.getElementById("fcRetake").style.display = "none";
+      document.getElementById("fcConfirm").style.display = "none";
+      document.getElementById("fcHint").textContent = "请将面部对准摄像头";
+      fcCaptured = false;
+    }
+
+    function closeFaceCapture() {
+      document.getElementById("faceCaptureOverlay").classList.add("hidden");
+    }
+
+    document.getElementById("faceCollectBtn").addEventListener("click", openFaceCapture);
+
+    document.getElementById("fcCapture").addEventListener("click", () => {
+      const camera = document.getElementById("fcCamera");
+      const ring = document.getElementById("fcScanRing");
+      const hint = document.getElementById("fcHint");
+      camera.classList.add("scanning");
+      hint.textContent = "正在采集人脸...";
+      document.getElementById("fcCapture").disabled = true;
+      document.getElementById("fcCapture").style.opacity = ".5";
+      setTimeout(() => {
+        camera.classList.remove("scanning");
+        camera.classList.add("captured");
+        ring.classList.add("hidden");
+        hint.textContent = "采集完成";
+        document.getElementById("fcPreview").classList.remove("hidden");
+        document.getElementById("fcCapture").style.display = "none";
+        document.getElementById("fcRetake").style.display = "";
+        document.getElementById("fcConfirm").style.display = "";
+        document.getElementById("fcCapture").disabled = false;
+        document.getElementById("fcCapture").style.opacity = "1";
+        fcCaptured = true;
+      }, 2000);
     });
+
+    document.getElementById("fcRetake").addEventListener("click", () => {
+      const camera = document.getElementById("fcCamera");
+      document.getElementById("fcScanRing").classList.remove("hidden");
+      document.getElementById("fcPreview").classList.add("hidden");
+      camera.classList.remove("captured");
+      document.getElementById("fcHint").textContent = "请将面部对准摄像头";
+      document.getElementById("fcCapture").style.display = "";
+      document.getElementById("fcRetake").style.display = "none";
+      document.getElementById("fcConfirm").style.display = "none";
+      fcCaptured = false;
+    });
+
+    document.getElementById("fcConfirm").addEventListener("click", () => {
+      if (!fcCaptured) return;
+      const p = state.selectedPerson;
+      p.faceCaptured = true;
+      logBridge("faceCollect", { policeNo: p.policeNo, name: p.name, result: "success" });
+      document.getElementById("faceCaptureOverlay").classList.add("hidden");
+    });
+
+    document.getElementById("fcCancel").addEventListener("click", closeFaceCapture);
+
+    let fpCaptured = false;
+
+    function openFingerCapture() {
+      const p = state.selectedPerson;
+      if (!p) { alert("请先选择一位人员"); return; }
+      document.getElementById("fpTargetName").textContent = p.policeNo + " " + p.name;
+      document.getElementById("fingerCaptureOverlay").classList.remove("hidden");
+      document.getElementById("fpCamera").classList.remove("captured", "scanning");
+      document.getElementById("fpSensor").classList.remove("hidden");
+      document.getElementById("fpPreview").classList.add("hidden");
+      document.getElementById("fpCapture").style.display = "";
+      document.getElementById("fpRetake").style.display = "none";
+      document.getElementById("fpConfirm").style.display = "none";
+      document.getElementById("fpHint").textContent = "请将手指放在传感器上";
+      fpCaptured = false;
+    }
+
+    function closeFingerCapture() {
+      document.getElementById("fingerCaptureOverlay").classList.add("hidden");
+    }
+
+    document.getElementById("fingerCollectBtn").addEventListener("click", openFingerCapture);
+
+    document.getElementById("fpCapture").addEventListener("click", () => {
+      const camera = document.getElementById("fpCamera");
+      const hint = document.getElementById("fpHint");
+      camera.classList.add("scanning");
+      hint.textContent = "正在采集指纹...";
+      document.getElementById("fpCapture").disabled = true;
+      document.getElementById("fpCapture").style.opacity = ".5";
+      setTimeout(() => {
+        camera.classList.remove("scanning");
+        camera.classList.add("captured");
+        hint.textContent = "采集完成";
+        document.getElementById("fpPreview").classList.remove("hidden");
+        document.getElementById("fpCapture").style.display = "none";
+        document.getElementById("fpRetake").style.display = "";
+        document.getElementById("fpConfirm").style.display = "";
+        document.getElementById("fpCapture").disabled = false;
+        document.getElementById("fpCapture").style.opacity = "1";
+        fpCaptured = true;
+      }, 2000);
+    });
+
+    document.getElementById("fpRetake").addEventListener("click", () => {
+      document.getElementById("fpPreview").classList.add("hidden");
+      document.getElementById("fpCamera").classList.remove("captured");
+      document.getElementById("fpHint").textContent = "请将手指放在传感器上";
+      document.getElementById("fpCapture").style.display = "";
+      document.getElementById("fpRetake").style.display = "none";
+      document.getElementById("fpConfirm").style.display = "none";
+      fpCaptured = false;
+    });
+
+    document.getElementById("fpConfirm").addEventListener("click", () => {
+      if (!fpCaptured) return;
+      const p = state.selectedPerson;
+      p.fingerCaptured = true;
+      logBridge("fingerCollect", { policeNo: p.policeNo, name: p.name, result: "success" });
+      closeFingerCapture();
+    });
+
+    document.getElementById("fpCancel").addEventListener("click", closeFingerCapture);
+
+    let sbSelectedSlot = null;
+
+    function openSlotBind() {
+      const p = state.selectedPerson;
+      if (!p) { alert("请先选择一位人员"); return; }
+      sbSelectedSlot = null;
+      document.getElementById("sbTargetName").textContent = p.policeNo + " " + p.name;
+      document.getElementById("sbConfirm").disabled = true;
+      document.getElementById("sbConfirm").textContent = "确认绑定";
+
+      const grid = document.getElementById("sbGrid");
+      grid.replaceChildren();
+      const layers = [...new Set(state.slots.map(s => s.layer))].sort((a, b) => a - b);
+      layers.forEach(layer => {
+        const slots = state.slots.filter(s => s.layer === layer && s && !s.disconnected);
+        if (!slots.length) return;
+        const label = document.createElement("div");
+        label.className = "sb-slot-layer";
+        label.textContent = `第${layer}层`;
+        grid.appendChild(label);
+        for (let numb = 1; numb <= 5; numb++) {
+          const slot = slots.find(s => s.numb === numb);
+          if (!slot) continue;
+          const btn = document.createElement("button");
+          btn.className = "sb-slot";
+          btn.dataset.num = (layer - 1) * 5 + numb;
+          if (slot.policeNo === p.policeNo) {
+            btn.classList.add("mine");
+            btn.addEventListener("click", () => {
+              document.querySelectorAll("#sbGrid .sb-slot.selected").forEach(el => el.classList.remove("selected"));
+              btn.classList.add("selected");
+              sbSelectedSlot = { slot, unbind: true };
+              document.getElementById("sbConfirm").disabled = false;
+              document.getElementById("sbConfirm").textContent = "解绑";
+            });
+          } else {
+            btn.classList.add("free");
+            btn.addEventListener("click", () => {
+              document.querySelectorAll("#sbGrid .sb-slot.selected").forEach(el => el.classList.remove("selected"));
+              btn.classList.add("selected");
+              sbSelectedSlot = { slot, unbind: false };
+              document.getElementById("sbConfirm").disabled = false;
+              document.getElementById("sbConfirm").textContent = "确认绑定";
+            });
+          }
+          grid.appendChild(btn);
+        }
+      });
+
+      document.getElementById("slotBindOverlay").classList.remove("hidden");
+    }
+
+    function closeSlotBind() {
+      document.getElementById("slotBindOverlay").classList.add("hidden");
+    }
+
+    document.getElementById("slotBindBtn").addEventListener("click", openSlotBind);
+
+    document.getElementById("sbConfirm").addEventListener("click", () => {
+      const p = state.selectedPerson;
+      if (!p || !sbSelectedSlot) return;
+      if (sbSelectedSlot.unbind) {
+        sbSelectedSlot.slot.policeNo = "";
+        sbSelectedSlot.slot.used = false;
+        logBridge("slotBind", { policeNo: p.policeNo, layer: sbSelectedSlot.slot.layer, numb: sbSelectedSlot.slot.numb, result: "unbound" });
+      } else {
+        sbSelectedSlot.slot.policeNo = p.policeNo;
+        sbSelectedSlot.slot.used = true;
+        logBridge("slotBind", { policeNo: p.policeNo, layer: sbSelectedSlot.slot.layer, numb: sbSelectedSlot.slot.numb, result: "bound" });
+      }
+      renderDetail(p);
+      closeSlotBind();
+    });
+
+    document.getElementById("sbCancel").addEventListener("click", closeSlotBind);
 
     document.getElementById("primaryAction").addEventListener("click", () => {
       const { layer, numb } = state.selectedSlot;
@@ -1236,14 +2176,6 @@
       } else {
         openMotorLock(layer, numb);
       }
-    });
-
-    document.querySelectorAll(".segment").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.filter = button.dataset.filter;
-        document.querySelectorAll(".segment").forEach((item) => item.classList.toggle("active", item === button));
-        renderManageList();
-      });
     });
 
     document.querySelectorAll("[data-action]").forEach((button) => {
@@ -1265,6 +2197,39 @@
     window.addEventListener("resize", scaleKiosk);
     setInterval(() => invokeAndroid({ action: "heartBeatPongToAndroidClient" }), 10000);
     openSerial("/dev/ttyS3");
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2000);
+    }
+  </script>
+  <button class="float-btn" id="sendLogBtn" title="发送日志">📧</button>
+
+  <script>
+    document.getElementById("sendLogBtn").addEventListener("click", function () {
+      const content = "=== Console Logs ===\n" + (consoleLogs.join("\n") || "(empty)");
+      fetch("https://wxpusher.zjiecode.com/api/send/message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          appToken: "AT_OLQ2Zy9YWgfNjsNbJSUxbiMxjLz6JcXU",
+          content: content,
+          contentType: 1,
+          topicIds: [45354]
+        })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d.code === 1000) {
+          alert("发送成功");
+          hardwareLog.textContent = "wxPusher 发送成功\n" + hardwareLog.textContent;
+        } else {
+          hardwareLog.textContent = "wxPusher 发送失败: " + d.msg + "\n" + hardwareLog.textContent;
+        }
+      }).catch(function (e) {
+        hardwareLog.textContent = "wxPusher 请求异常: " + e.message + "\n" + hardwareLog.textContent;
+      });
+    });
   </script>
   <script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
   <script>new VConsole();</script>

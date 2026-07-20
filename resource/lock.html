@@ -199,8 +199,9 @@
         var getAllTagCallback = function (jsonObj) {
             var code = jsonObj.code;
             var msg = jsonObj.msg;
-            alert("code:" + code + " msg:" + msg);
-            $("#spanLockId").text("code:" + code + " msg:" + msg);
+            var jsonStr = jsonObj.jsonStr;
+            alert("code:" + code + " msg:" + msg + " jsonStr:" + jsonStr);
+            $("#spanLockId").text("code:" + code + " msg:" + msg + " jsonStr:" + jsonStr);
         };
 
         var downImage = function (layer, numb, text) {
@@ -291,6 +292,451 @@
             alert("doorLockState:" + doorLockState);
             $("#spanLockId").text("doorLockState:" + doorLockState);
         };
+
+        var startCameraPreview = function () {
+            var action = "startCameraPreview";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        var stopCameraPreview = function () {
+            var action = "stopCameraPreview";
+            var json = {
+                "action": action
+            };
+            //$("#faceSrcLi").css("display", "none");
+            invokeAndroid(json);
+        };
+
+        var hidePhoto = function () {
+            $("#faceSrcLi").css("display", "none");
+        };
+        var doSetBaiduLicenceCode = function () {
+            var action = "doSetBaiduLicenceCode";
+            var baiduLicenceCode = $("#baiduLicenceCode").val();
+            if (!baiduLicenceCode) {
+                alert("请先输入激活码!");
+                return;
+            }
+            var json = {
+                "baiduLicenceCode": baiduLicenceCode,
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doSetBaiduLicenceCodeCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            //$("#spanFaceId").text("code:" + code + " msg:" + msg);
+            $("#baiduLicenceCode").val(jsonObj.data);
+
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanFaceId").text(jsonString);
+        };
+
+        var doSetBaiduLicenceCodeCallbackAction = function () {
+            var action = "doSetBaiduLicenceCodeCallback";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doSetFrontOrBackCamera = function () {
+            var action = "doSetFrontOrBackCamera";
+            var frontOrBackCamera = $("#frontOrBackCamera").val();
+            if (!frontOrBackCamera) {
+                alert("正反摄像头!");
+                return;
+            }
+            var json = {
+                "frontOrBackCamera": frontOrBackCamera,
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doSetFrontOrBackCameraCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            //$("#spanFaceId").text("code:" + code + " msg:" + msg);
+            $("#frontOrBackCamera").val(jsonObj.data);
+
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanFaceId").text(jsonString);
+        };
+
+        var doSetFrontOrBackCameraCallbackAction = function () {
+            var action = "doSetFrontOrBackCameraCallback";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        }
+
+        //人脸采集 传递身份证号码 2026.07.19
+        var doFaceCollect = function () {
+            var action = "doFaceCollect";
+            let idNoUnique = "456";
+            var json = {
+                "action": action,
+                "idNoUnique": idNoUnique
+            };
+            invokeAndroid(json);
+        };
+
+        //人脸检测 传递身份证号码 2026.07.19
+        var doFaceDetect = function () {
+            var action = "doFaceDetect";
+            let idNoUnique = "123";
+            var json = {
+                "action": action,
+                "idNoUnique": idNoUnique
+            };
+            invokeAndroid(json);
+        };
+
+        /**
+        * 人脸信息采集/检测回调回调 2026.07.19
+        * @param {Object} retJson 回调内容  （通过action进行区分是采集还是识别回调.
+        */
+        function termFaceCallback(jsonObj) {
+            var nRetCode = parseInt(jsonObj.code);
+            var msg = jsonObj.msg;
+            var action = jsonObj.action;
+
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanFaceId").text(jsonString);
+            switch (nRetCode) {
+                case 0:
+                    //alert(action + "成功：" + msg);
+                    var faceImage = jsonObj.termFaceImageBase64Str;
+                    //alert(faceImage);
+                    $("#faceSrcLi").css("display", "block");
+                    $("#faceSrc").attr("src", "data:image/png;base64," + faceImage);
+                    //stopCameraPreview();
+                    break;
+                case -1:
+                    //失败
+                    // alert(action + "失败：" + msg);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        var doInitDevicePo = function () {
+            var action = "doInitDevicePo";
+
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        var doInitDevicePoCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var devicePoListJsonStr = jsonObj.devicePoListJsonStr;
+            //$("#spanUserId").text("code:" + code + " msg:" + msg + " devicePoListJsonStr:" + devicePoListJsonStr);
+
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        var doUpdateDevicePoBindNoBySlotNoUnique = function () {
+            var action = "doUpdateDevicePoBindNoBySlotNoUnique";
+
+            var deviceJsonArrayStr = [{
+                bindNo: "123",
+                slotNoUnique: "1_1"
+            }, {
+                bindNo: "123",
+                slotNoUnique: "2_1"
+            }, {
+                bindNo: "456",
+                slotNoUnique: "1_2"
+            }, {
+                bindNo: "",
+                slotNoUnique: "1_3"
+            }];
+
+            var json = {
+                "action": action,
+                "deviceJsonArrayStr": deviceJsonArrayStr
+            };
+            invokeAndroid(json);
+        };
+
+        var doUpdateDevicePoBindNoBySlotNoUniqueCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var devicePoListJsonStr = jsonObj.devicePoListJsonStr;
+            //$("#spanUserId").text("code:" + code + " msg:" + msg + " devicePoListJsonStr:" + devicePoListJsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        var doQueryDevicePoList = function () {
+            var action = "doQueryDevicePoList";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doQueryDevicePoListCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var devicePoListJsonStr = jsonObj.devicePoListJsonStr;
+            // $("#spanUserId").text("code:" + code + " msg:" + msg + " devicePoListJsonStr:" + devicePoListJsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        var doInsertUserPo = function () {
+            var action = "doInsertUserPo";
+            var userJsonArrayStr = [{
+                userName: "zhangsan",
+                idNoUnique: "123",
+                plsNoUnique: "A123",
+                deptId: "9001",
+                deptName: "行政"
+            }, {
+                userName: "lisi",
+                idNoUnique: "456",
+                plsNoUnique: "A456",
+                deptId: "9001",
+                deptName: "行政"
+            }, {
+                userName: "wangwu",
+                idNoUnique: "789",
+                plsNoUnique: "A789",
+                deptId: "9001",
+                deptName: "行政"
+            }];
+
+            var json = {
+                "action": action,
+                "userJsonArrayStr": userJsonArrayStr
+            };
+            invokeAndroid(json);
+        };
+
+        var doInsertUserPoCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var userPoListJsonStr = jsonObj.userPoListJsonStr;
+            // $("#spanUserId").text("code:" + code + " msg:" + msg + " userPoListJsonStr:" + userPoListJsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        var doQueryUserPoList = function () {
+            var action = "doQueryUserPoList";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doQueryUserPoListCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var userPoListJsonStr = jsonObj.userPoListJsonStr;
+            // $("#spanUserId").text("code:" + code + " msg:" + msg + " userPoListJsonStr:" + userPoListJsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        //初始化系统配置，如果传递的字段内容为空，则不做修改
+        //原则只修改一次，管理员密码根据业务决定是否调用几次.
+        var doInitConfig = function () {
+            var action = "doInitConfig";
+            var cabinetCode = "cabinetCode";//证书柜编号
+            var cabinetName = "cabinetName";//证书柜名称
+            var mgrLoginName = "admin";//管理员登录名
+            var mgrPwd = "123456";//管理员密码
+            var baiduLicenceCode = $("#baiduLicenceCode").val();//百度离线人识别授权码
+            var frontOrBackCamera = "front";//启用前置摄像头
+            var lockCabinetPath = "/dev/ttyS3";//
+            var rows = "2";//证书柜几行
+            var columns = "5";//证书柜几列
+
+            var configJsonStr = {
+                cabinetCode: cabinetCode,
+                cabinetName: cabinetName,
+                mgrLoginName: mgrLoginName,
+                mgrPwd: mgrPwd,
+                baiduLicenceCode: baiduLicenceCode,
+                frontOrBackCamera: frontOrBackCamera,
+                lockCabinetPath: lockCabinetPath,
+                rows: rows,
+                columns: columns
+            };
+
+            var json = {
+                "action": action,
+                "configJsonStr": configJsonStr
+            };
+
+            invokeAndroid(json);
+        };
+
+        var doModifyMgrPwdInitConfig = function () {
+            var action = "doInitConfig";
+            var mgrLoginName = "admin";//管理员登录名
+            var mgrPwd = "123456";//管理员密码
+            var configJsonStr = {
+                mgrLoginName: mgrLoginName,
+                mgrPwd: mgrPwd
+            };
+            var json = {
+                "action": action,
+                "configJsonStr": configJsonStr
+            };
+            invokeAndroid(json);
+        };
+
+        //查询系统配置信息
+        var doShowConfig = function () {
+            let action = "doShowConfig";
+            let json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        //查询证书柜状态 2026.07.18
+        var doShowCabinetDoorStatus = function () {
+            let action = "doShowCabinetDoorStatus";
+            let json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+
+        //设置及查询系统配置的回调
+        var doConfigCallback = function (jsonObj) {
+            let code = jsonObj.code;
+            let msg = jsonObj.msg;
+            let jsonStr = jsonObj.jsonStr;
+            let action = jsonObj.action;
+            //$("#spanZeroBizId").text("code:" + code + " msg:" + msg + " jsonStr:" + jsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanZeroBizId").text(jsonString);
+        };
+
+        //管理员登录接口
+        var doMgrLogin = function () {
+            var action = "doMgrLogin";
+            let mgrLoginName = "admin";
+            let mgrPwd = "123456";
+            var json = {
+                "action": action,
+                "mgrLoginName": mgrLoginName,
+                "mgrPwd": mgrPwd
+            };
+            invokeAndroid(json);
+        };
+        //管理员登录成功回调
+        function doMgrLoginCallback(jsonObj) {
+            let code = jsonObj.code;//0-登录成功；-1管理员用户名不正确；-2密码不正确
+            let msg = jsonObj.msg;
+            //$("#spanZeroBizId").text("code:" + code + " msg:" + msg);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanZeroBizId").text(jsonString);
+        }
+
+        //2026.07.19 根据用户身份证号，更新用户信息
+        var doUpdateUserPoByIdNo = function () {
+            var action = "doUpdateUserPoByIdNo";
+            let idNoUnique = "123";
+            let deptId = "90003";
+            let deptName = "财务部";
+            let faceFeature = "";
+            let faceBase64_image = "";
+            let firstFingerFeature = "";
+            let userName = "wutian";
+            let userPoJsonStr = {
+                idNoUnique: idNoUnique,
+                deptId: deptId,
+                deptName: deptName,
+                faceFeature: faceFeature,
+                faceBase64_image: faceBase64_image,
+                firstFingerFeature: firstFingerFeature,
+                userName: userName
+            };
+            var json = {
+                "action": action,
+                "userPoJsonStr": userPoJsonStr
+            };
+            invokeAndroid(json);
+        };
+        //更新用户信息回调
+        function doUpdateUserPoByIdNoCallback(jsonObj) {
+            let code = jsonObj.code;//0-更新成功；-1 更新失败
+            let msg = jsonObj.msg;
+            //$("#spanZeroBizId").text("code:" + code + " msg:" + msg);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanZeroBizId").text(jsonString);
+        }
+
+        //批量新增日志（也可以单独新增日志）
+        var doInsertOperateLogPo = function () {
+            var action = "doInsertOperateLogPo";
+            var operateLogJsonArrayStr = [{
+                userName: "zhangsan",
+                idNo: "123",
+                plsNo: "A123",
+                layer: "1",
+                numb: "1",
+                operateType: "0",
+                remark: "备注01"
+            }, {
+                userName: "lisi",
+                idNo: "456",
+                plsNo: "A456",
+                layer: "1",
+                numb: "2",
+                operateType: "1",
+                remark: "备注02"
+            }, {
+                userName: "wangwu",
+                idNo: "789",
+                plsNo: "A789",
+                layer: "2",
+                numb: "1",
+                operateType: "0",
+                remark: "备注03"
+            }];
+
+            var json = {
+                "action": action,
+                "operateLogJsonArrayStr": operateLogJsonArrayStr
+            };
+            invokeAndroid(json);
+        };
+
+        var doInsertOperateLogPoCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
+
+        var doQueryOperateLogPoList = function () {
+            var action = "doQueryOperateLogPoList";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        };
+        var doQueryOperateLogPoListCallback = function (jsonObj) {
+            var code = jsonObj.code;
+            var msg = jsonObj.msg;
+            var operateLogPoListJsonStr = jsonObj.operateLogPoListJsonStr;
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanUserId").text(jsonString);
+        };
     </script>
 
     <script type="text/javascript">
@@ -330,6 +776,8 @@
         //currentTimeTime();
         setTimeout(function () {
             startTime();
+            doSetBaiduLicenceCodeCallbackAction();
+            doSetFrontOrBackCameraCallbackAction();
         }, 100);
 
 
@@ -347,71 +795,164 @@
 </head>
 
 <body style="background-color: lightgray;">
-<div id="tipContainer">
-    加载中，请稍候..
-</div>
-<div class="container" id="iseContainer" style="display: none;">
-
-    <div id="baseModule" style="display:none;">
-        <h3>基础模块</h3><span id="spanModule"></span> 启动时间:<span id="startTime"></span>
-        当前时间:<span id="currentTime"></span>
-        <div class="module">
-            <ul>
-                <li>
-                    <button onclick="refreshPage();">刷新页面</button>
-                </li>
-                <li>
-                    <button class="divHot">退出系统</button>
-                </li>
-            </ul>
-        </div>
+    <div id="tipContainer" style="display:none">
+        加载中，请稍候..
     </div>
+    <div class="container" id="iseContainer" style="display: none;">
 
-    <div id="lock">
-        <h3>控制板 </h3><span id="spanLockId"></span>
-        <div class="module">
-            <ul>
-                <li>
-                    <button onclick="openSerial('/dev/ttyS3')">打开串口</button>
-                    串口地址:<input id="path1" value="/dev/ttyS3" size="20" style="line-height:40px;font-size:19px;">
-                </li>
-                <li>
-                    <button onclick="getLockSt();">5 获取门锁（0xA2）</button>
-                </li>
-                <li>
-                    <button onclick="openLock();">4 打开门锁（0xA1）--外边门锁</button>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <button onclick="getAllTag();">3 获取全部电机锁状态（0x90）</button>
-                </li>
-                <li>
-                    <button onclick="downImage('1','1','测试');">2 下发屏数据（0x14）</button>
-                    控制层：<input id="layer1" value="1" size="5" style="line-height:40px;font-size:19px;">
-                    电机锁：<input id="numb1" value="1" size="5" style="line-height:40px;font-size:19px;">
-                    屏数据：<input id="text1" value="鲁B56272" size="5" style="line-height:40px;font-size:19px;">
+        <div id="faceModule">
 
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <button onclick="openMotorLock('1','1');">1 开锁（0x11）--钥匙模块的锁</button>
-                    控制层：<input id="layer2" value="1" size="5" style="line-height:40px;font-size:19px;">
-                    电机锁：<input id="numb2" value="1" size="5" style="line-height:40px;font-size:19px;">
-                </li>
-            </ul>
+            <div class="module">
+                <ul>
+                    <li>
+                        <button onclick="startCameraPreview();">开启预览</button>
+                    </li>
+                    <li>
+                        <button onclick="stopCameraPreview();">关闭预览</button>
+                    </li>
+                    <li>
+                        <button onclick="hidePhoto();">隐藏回显照片</button>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="doFaceCollect();">人脸采集</button>
+                    </li>
+                    <li>
+                        <button onclick="doFaceDetect();">人脸识别</button>
+                    </li>
+                    <li id="faceSrcLi">
+                        <img src="" id="faceSrc">
+                    </li>
+                </ul>
+            </div>
+            <h3>人脸 </h3><span id="spanFaceId"></span>
         </div>
 
+        <div id="userModule">
+            <h3>用户/证书柜 </h3><span id="spanUserId"></span>
+            <div class="module">
+                <ul>
+                    <li>
+                        <button onclick="doInsertUserPo();">批量下发用户</button>
+                    </li>
+                    <li>
+                        <button onclick="doQueryUserPoList();">查询用户</button>
+                    </li>
+                    <li>
+                        <button onclick="doUpdateDevicePoBindNoBySlotNoUnique();">绑定/解绑用户</button>
+                    </li>
+
+                    <li>
+                        <button onclick="doUpdateUserPoByIdNo();">更新用户信息</button>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="doInitDevicePo();">初始化证书柜</button>
+                    </li>
+                    <li>
+                        <button onclick="doQueryDevicePoList();">查询证书柜信息</button>
+                    </li>
+                    <li>
+                        <button onclick="doShowCabinetDoorStatus();">查询证书柜状态</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="zeroBizModule">
+            <h3>业务相关 </h3><span id="spanZeroBizId"></span>
+            <div class="module">
+                <ul>
+                    <li>
+                        <button onclick="doInitConfig();">初始化系统配置</button>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="doShowConfig();">显示系统配置</button>
+                    </li>
+                    <li>
+                        <button onclick="doModifyMgrPwdInitConfig();">修改证书柜密码</button>
+                    </li>
+                    <li>
+                        <button onclick="doMgrLogin();">管理员登陆</button>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="doInsertOperateLogPo();">批量插入操作日志（可单条）</button>
+                    </li>
+                    <li>
+                        <button onclick="doQueryOperateLogPoList();">查询操作日志</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="baseModule" style="display:none;">
+            <h3>基础模块</h3><span id="spanModule"></span> 启动时间:<span id="startTime"></span>
+            当前时间:<span id="currentTime"></span>
+            <div class="module">
+                <ul>
+                    <li>
+                        <button onclick="refreshPage();">刷新页面</button>
+                    </li>
+                    <li>
+                        <button class="divHot">退出系统</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+
+        <div id="lock">
+            <h3>控制板 </h3><span id="spanLockId"></span>
+            <div class="module">
+                <ul style="display: none;">
+                    <li>
+                        <button onclick="openSerial('/dev/ttyS3')">打开串口</button>
+                        串口地址:<input id="path1" value="/dev/ttyS3" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="getLockSt();">5 获取门锁（0xA2）</button>
+                    </li>
+                    <li>
+                        <button onclick="openLock();">4 打开门锁（0xA1）--外边门锁</button>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="getAllTag();">3 获取全部电机锁状态（0x90）</button>
+                    </li>
+                    <li>
+                        <button onclick="downImage('1','1','测试');">2 下发屏数据（0x14）</button>
+                        控制层：<input id="layer1" value="1" size="5" style="line-height:40px;font-size:19px;">
+                        电机锁：<input id="numb1" value="1" size="5" style="line-height:40px;font-size:19px;">
+                        屏数据：<input id="text1" value="鲁B56272" size="5" style="line-height:40px;font-size:19px;">
+
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="openMotorLock('1','1');">1 开锁（0x11）--钥匙模块的锁</button>
+                        控制层：<input id="layer2" value="1" size="5" style="line-height:40px;font-size:19px;">
+                        电机锁：<input id="numb2" value="1" size="5" style="line-height:40px;font-size:19px;">
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
     </div>
 
-</div>
-
-<div id="player" style="width:0;height:0;">
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
-<script>new VConsole();</script>
+    <div id="player" style="width:0;height:0;">
+    </div>
+    </div>
 </body>
 
 </html>
