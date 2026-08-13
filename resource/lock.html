@@ -50,7 +50,7 @@
         }
 
         .module {
-            border: cadetblue dashed 2px;
+            border: rgb(15, 15, 15) solid 2px;
         }
 
         body {
@@ -64,7 +64,7 @@
         /**
          * 初始化容器交互终端的宽、高.
          * @param $containerClass 容器对象
-         * @author CaiLin.
+         * @author Zero.
          * @date 2020-08-04.
          */
         var initWidthAndHeight = function ($containerClass) {
@@ -98,6 +98,9 @@
                     AndroidGetLockList();
                     setDwApiCtx();
                 }, 1000);
+                setTimeout(function () {
+                    doShowConfig();
+                }, 5000);
             } else {
                 $("#iseContainer").css("display", "block");
                 $("#tipContainer").css("display", "none");
@@ -184,8 +187,9 @@
         var openLockCallback = function (jsonObj) {
             var code = jsonObj.code;
             var msg = jsonObj.msg;
-            alert("code:" + code + " msg:" + msg);
-            $("#spanLockId").text("code:" + code + " msg:" + msg);
+            var lockSt = jsonObj.lockSt;
+            alert("code:" + code + " msg:" + msg + " lockSt:" + lockSt);
+            $("#spanLockId").text("code:" + code + " msg:" + msg + " lockSt:" + lockSt);
         };
 
         var getAllTag = function () {
@@ -377,7 +381,7 @@
         //人脸采集 传递身份证号码 2026.07.19
         var doFaceCollect = function () {
             var action = "doFaceCollect";
-            let idNoUnique = "456";
+            let idNoUnique = "511001";
             var json = {
                 "action": action,
                 "idNoUnique": idNoUnique
@@ -385,13 +389,13 @@
             invokeAndroid(json);
         };
 
-        //人脸检测 传递身份证号码 2026.07.19
-        var doFaceDetect = function () {
+        //人脸检测  2026.07.19
+        var doFaceDetect = function (operateTypeTemp) {
             var action = "doFaceDetect";
-            let idNoUnique = "123";
+            var operateType = operateTypeTemp || "0";//（0-存 1-取）
             var json = {
                 "action": action,
-                "idNoUnique": idNoUnique
+                "operateType": operateType
             };
             invokeAndroid(json);
         };
@@ -404,6 +408,7 @@
             var nRetCode = parseInt(jsonObj.code);
             var msg = jsonObj.msg;
             var action = jsonObj.action;
+            var idNoUnique = jsonObj.idNoUnique;
 
             const jsonString = JSON.stringify(jsonObj, null, 2);
             $("#spanFaceId").text(jsonString);
@@ -448,16 +453,16 @@
             var action = "doUpdateDevicePoBindNoBySlotNoUnique";
 
             var deviceJsonArrayStr = [{
-                bindNo: "123",
+                bindNo: "511001",
                 slotNoUnique: "1_1"
             }, {
-                bindNo: "123",
+                bindNo: "511001",
                 slotNoUnique: "2_1"
             }, {
-                bindNo: "456",
+                bindNo: "511002",
                 slotNoUnique: "1_2"
             }, {
-                bindNo: "",
+                bindNo: "511003",
                 slotNoUnique: "1_3"
             }];
 
@@ -495,25 +500,41 @@
 
         var doInsertUserPo = function () {
             var action = "doInsertUserPo";
-            var userJsonArrayStr = [{
-                userName: "zhangsan",
-                idNoUnique: "123",
-                plsNoUnique: "A123",
-                deptId: "9001",
-                deptName: "行政"
-            }, {
-                userName: "lisi",
-                idNoUnique: "456",
-                plsNoUnique: "A456",
-                deptId: "9001",
-                deptName: "行政"
-            }, {
-                userName: "wangwu",
-                idNoUnique: "789",
-                plsNoUnique: "A789",
-                deptId: "9001",
-                deptName: "行政"
-            }];
+            var userJsonArrayStr = [
+                {
+                    "userName": "张警官",
+                    "idNoUnique": "511001",
+                    "plsNoUnique": "511001",
+                    "deptId": "9001",
+                    "deptName": "信息部",
+                    "postName": "民警",
+                    "mobileNo": "136********",
+                    "status": "0",
+                    "mgrFlag": "1"
+                },
+                {
+                    "userName": "刘警官",
+                    "idNoUnique": "511002",
+                    "plsNoUnique": "511002",
+                    "deptId": "9001",
+                    "deptName": "信息部",
+                    "postName": "民警",
+                    "mobileNo": "137********",
+                    "status": "0",
+                    "mgrFlag": "1"
+                },
+                {
+                    "userName": "李警官",
+                    "idNoUnique": "511003",
+                    "plsNoUnique": "511003",
+                    "deptId": "9001",
+                    "deptName": "信息部",
+                    "postName": "民警",
+                    "mobileNo": "138********",
+                    "status": "0",
+                    "mgrFlag": "1"
+                }
+            ];
 
             var json = {
                 "action": action,
@@ -551,15 +572,16 @@
         //原则只修改一次，管理员密码根据业务决定是否调用几次.
         var doInitConfig = function () {
             var action = "doInitConfig";
-            var cabinetCode = "cabinetCode";//证书柜编号
-            var cabinetName = "cabinetName";//证书柜名称
+            var cabinetCode = $("#cabinetCode").val();//证书柜编号
+            var cabinetName = $("#cabinetName").val();//证书柜名称
             var mgrLoginName = "admin";//管理员登录名
             var mgrPwd = "123456";//管理员密码
             var baiduLicenceCode = $("#baiduLicenceCode").val();//百度离线人识别授权码
-            var frontOrBackCamera = "front";//启用前置摄像头
+            var remoteRootUrl = $("#remoteRootUrl").val();//三方服务地址
+            var frontOrBackCamera = "back";//启用前置摄像头
             var lockCabinetPath = "/dev/ttyS3";//
-            var rows = "2";//证书柜几行
-            var columns = "5";//证书柜几列
+            var rows = $("#cabinetRows").val();//证书柜几行
+            var columns = $("#cabinetColumns").val();//证书柜几列
 
             var configJsonStr = {
                 cabinetCode: cabinetCode,
@@ -567,6 +589,7 @@
                 mgrLoginName: mgrLoginName,
                 mgrPwd: mgrPwd,
                 baiduLicenceCode: baiduLicenceCode,
+                remoteRootUrl: remoteRootUrl,
                 frontOrBackCamera: frontOrBackCamera,
                 lockCabinetPath: lockCabinetPath,
                 rows: rows,
@@ -605,6 +628,25 @@
             invokeAndroid(json);
         };
 
+        //设置及查询系统配置的回调
+        var doConfigCallback = function (jsonObj) {
+            let code = jsonObj.code;
+            let msg = jsonObj.msg;
+            let jsonStr = jsonObj.jsonStr;
+            let action = jsonObj.action;
+            if (action === "doShowConfig" || action === "doInitConfig") {
+                let jsonStrObj = JSON.parse(jsonStr);
+                $("#remoteRootUrl").val(jsonStrObj.remoteRootUrl);
+                $("#cabinetCode").val(jsonStrObj.cabinetCode);
+                $("#cabinetName").val(jsonStrObj.cabinetName);
+                $("#cabinetRows").val(jsonStrObj.rows);
+                $("#cabinetColumns").val(jsonStrObj.columns);
+            }
+            //$("#spanZeroBizId").text("code:" + code + " msg:" + msg + " jsonStr:" + jsonStr);
+            const jsonString = JSON.stringify(jsonObj, null, 2);
+            $("#spanZeroBizId").text(jsonString);
+        };
+
         //查询证书柜状态 2026.07.18
         var doShowCabinetDoorStatus = function () {
             let action = "doShowCabinetDoorStatus";
@@ -614,12 +656,11 @@
             invokeAndroid(json);
         };
 
-        //设置及查询系统配置的回调
-        var doConfigCallback = function (jsonObj) {
+        var doShowCabinetDoorStatusCallback = function (jsonObj) {
             let code = jsonObj.code;
             let msg = jsonObj.msg;
-            let jsonStr = jsonObj.jsonStr;
             let action = jsonObj.action;
+            let cabinetDoorStatus = jsonObj.cabinetDoorStatus;// 0-开启；1-关闭
             //$("#spanZeroBizId").text("code:" + code + " msg:" + msg + " jsonStr:" + jsonStr);
             const jsonString = JSON.stringify(jsonObj, null, 2);
             $("#spanZeroBizId").text(jsonString);
@@ -653,17 +694,25 @@
             let deptId = "90003";
             let deptName = "财务部";
             let faceFeature = "";
-            let faceBase64_image = "";
+            let faceBase64Image = "";
             let firstFingerFeature = "";
             let userName = "wutian";
+            let status = "0";
+            let mgrFlag = "1";
+            let postName = "民警-修改";
+            let mobileNo = "189********";
             let userPoJsonStr = {
                 idNoUnique: idNoUnique,
                 deptId: deptId,
                 deptName: deptName,
                 faceFeature: faceFeature,
-                faceBase64_image: faceBase64_image,
+                faceBase64Image: faceBase64Image,
                 firstFingerFeature: firstFingerFeature,
-                userName: userName
+                userName: userName,
+                status: status,
+                mgrFlag: mgrFlag,
+                postName: postName,
+                mobileNo: mobileNo
             };
             var json = {
                 "action": action,
@@ -791,6 +840,14 @@
             }
         }
 
+        function audioPlay() {
+            var action = "audioPlay";
+            var json = {
+                "action": action
+            };
+            invokeAndroid(json);
+        }
+
     </script>
 </head>
 
@@ -824,6 +881,19 @@
                     <li id="faceSrcLi">
                         <img src="" id="faceSrc">
                     </li>
+                </ul>
+                <ul>
+                    <li>
+                        <button onclick="doSetBaiduLicenceCode();">设置激活码</button>
+                        激活码(EAQE-FAL8-WXJS-T9NF):<input id="baiduLicenceCode" value="EAQE-FAL8-WXJS-T9NF" size="20"
+                            style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
+                        <button onclick="doSetFrontOrBackCamera();">设置摄像头 back or front</button>
+                        摄像头类型(front):<input id="frontOrBackCamera" value="back" size="20"
+                            style="line-height:40px;font-size:19px;">
+                    </li>
+
                 </ul>
             </div>
             <h3>人脸 </h3><span id="spanFaceId"></span>
@@ -866,6 +936,21 @@
             <div class="module">
                 <ul>
                     <li>
+                        三方地址:<input id="remoteRootUrl" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
+                        设备编码:<input id="cabinetCode" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
+                        设备名称:<input id="cabinetName" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
+                        柜行:<input id="cabinetRows" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
+                        柜列:<input id="cabinetColumns" size="20" style="line-height:40px;font-size:19px;">
+                    </li>
+                    <li>
                         <button onclick="doInitConfig();">初始化系统配置</button>
                     </li>
                 </ul>
@@ -891,11 +976,14 @@
             </div>
         </div>
 
-        <div id="baseModule" style="display:none;">
-            <h3>基础模块</h3><span id="spanModule"></span> 启动时间:<span id="startTime"></span>
+        <div id="baseModule" style="display:block;">
+            <h3>基础</h3><span id="spanModule"></span> 启动时间:<span id="startTime"></span>
             当前时间:<span id="currentTime"></span>
             <div class="module">
                 <ul>
+                    <li>
+                        <button onclick="audioPlay();">播放语音</button>
+                    </li>
                     <li>
                         <button onclick="refreshPage();">刷新页面</button>
                     </li>

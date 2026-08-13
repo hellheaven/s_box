@@ -359,6 +359,11 @@
       border-radius: 12px;
     }
 
+    #certificateScreen {
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
     .slot-row {
       height: 136px;
       border: 1px solid rgba(126, 240, 255, .62);
@@ -842,7 +847,7 @@
       font-size: 24px;
       font-weight: 900;
       border-bottom: 1px solid rgba(69, 244, 255, .2);
-      padding: 8px 0;
+      padding: 2px 0;
     }
 
     .detail-row span:first-child {
@@ -918,8 +923,8 @@
     }
 
     .face-capture-modal {
-      width: 540px;
-      padding: 32px 40px 28px;
+      width: 640px;
+      padding: 40px 48px 36px;
       border: 2px solid rgba(126, 240, 255, .72);
       border-radius: 20px;
       background: rgba(3, 33, 75, .95);
@@ -930,7 +935,7 @@
       font-size: 32px;
       font-weight: 900;
       color: var(--cyan);
-      margin-bottom: 12px;
+      margin-bottom: 20px;
       text-shadow: 0 0 12px rgba(69, 244, 255, .4);
     }
 
@@ -938,7 +943,7 @@
       font-size: 24px;
       font-weight: 800;
       color: rgba(223, 249, 255, .9);
-      margin-bottom: 18px;
+      margin-bottom: 28px;
     }
 
     .fc-target strong {
@@ -947,96 +952,35 @@
 
     .fc-camera {
       position: relative;
-      width: 300px;
-      height: 300px;
-      margin: 0 auto 18px;
-      border: 3px solid rgba(69, 244, 255, .6);
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(69, 244, 255, .08), rgba(3, 33, 78, .7));
-      box-shadow: inset 0 0 30px rgba(69, 244, 255, .15), 0 0 30px rgba(69, 244, 255, .25);
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-    }
-
-    .fc-camera.captured {
-      border-color: var(--green);
-      box-shadow: inset 0 0 30px rgba(35, 209, 127, .2), 0 0 30px rgba(35, 209, 127, .35);
-    }
-
-    .fc-scan-ring {
-      width: 140px;
-      height: 140px;
+      width: 400px;
+      height: 400px;
+      margin: 0 auto 28px;
       border-radius: 50%;
       border: 4px solid rgba(189, 251, 255, .5);
-      box-shadow: 0 0 20px rgba(69, 244, 255, .3);
-      transition: all .4s;
-    }
-
-    .fc-camera.scanning .fc-scan-ring {
-      width: 180px;
-      height: 180px;
-      border-color: var(--cyan);
-      box-shadow: 0 0 40px rgba(69, 244, 255, .6);
+      box-shadow: 0 0 40px rgba(69, 244, 255, .3);
+      background: radial-gradient(circle, rgba(69, 244, 255, .06), rgba(3, 33, 78, .5));
+      display: grid;
+      place-items: center;
       animation: fcPulse .8s ease-in-out infinite alternate;
     }
 
-    @keyframes fcPulse {
-      from { transform: scale(1); opacity: .7; }
-      to { transform: scale(1.12); opacity: 1; }
-    }
-
-    .fc-hint {
-      position: absolute;
-      bottom: 20px;
-      font-size: 18px;
-      font-weight: 800;
-      color: rgba(223, 249, 255, .7);
-    }
-
-    .fc-camera.scanning .fc-hint {
-      color: var(--cyan);
-    }
-
-    .fc-preview {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 18px;
-    }
-
-    .fc-preview:not(.hidden) {
-      display: flex;
-    }
-
-    .fc-preview-ring {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 3px solid var(--green);
-      background: radial-gradient(circle, rgba(35, 209, 127, .2), transparent);
-      box-shadow: 0 0 20px rgba(35, 209, 127, .4);
-    }
-
-    .fc-preview-label {
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--green);
+    .fc-icon {
+      width: 200px;
+      height: 200px;
     }
 
     .fc-actions {
       display: flex;
-      gap: 16px;
+      gap: 20px;
       justify-content: center;
-      margin-top: 14px;
+      margin-top: 24px;
     }
 
     .fc-actions .neon-button {
-      height: 62px;
-      font-size: 26px;
-      padding: 0 28px;
-      min-width: 100px;
+      height: 68px;
+      font-size: 28px;
+      padding: 0 36px;
+      min-width: 120px;
     }
 
     .sb-grid {
@@ -1173,57 +1117,6 @@
       to { transform: scale(1.06); opacity: 1; }
     }
 
-    .hardware-panel {
-      position: absolute;
-      left: 46px;
-      right: 46px;
-      bottom: 36px;
-      height: 188px;
-      padding: 18px 20px;
-      border-radius: 12px;
-    }
-
-    .hardware-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-size: 20px;
-      font-weight: 900;
-      color: rgba(231, 251, 255, .9);
-    }
-
-    .hardware-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .mini-button {
-      height: 36px;
-      border: 1px solid rgba(69, 244, 255, .9);
-      border-radius: 6px;
-      background: rgba(6, 75, 130, .72);
-      color: #eaffff;
-      font-size: 15px;
-      font-weight: 800;
-    }
-
-    .log {
-      height: 74px;
-      padding: 8px 10px;
-      overflow: hidden;
-      border: 1px solid rgba(69, 244, 255, .28);
-      border-radius: 6px;
-      background: rgba(0, 10, 24, .34);
-      color: rgba(221, 249, 255, .88);
-      font-family: Consolas, "Courier New", monospace;
-      font-size: 14px;
-      line-height: 1.45;
-      white-space: pre-line;
-    }
-
     .back-button {
       position: absolute;
       left: 38px;
@@ -1299,22 +1192,6 @@
       display: none !important;
     }
 
-    .float-btn {
-      position: fixed;
-      left: 20px;
-      bottom: 20px;
-      z-index: 999;
-      width: 56px;
-      height: 56px;
-      border: none;
-      border-radius: 50%;
-      background: #23d17f;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 900;
-      cursor: pointer;
-      box-shadow: 0 2px 12px rgba(0,0,0,.4);
-    }
   </style>
 </head>
 <body>
@@ -1349,7 +1226,6 @@
         </section>
 
       <section class="screen" id="authScreen">
-        <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
         <div class="topline">人脸识别</div>
         <section class="auth-card panel">
           <div class="face-ring"></div>
@@ -1360,7 +1236,7 @@
       <section class="screen" id="certificateScreen">
         <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
         <div class="topline">证书存取管理</div>
-        <p class="subtitle small" id="certSubtitle">人脸识别核验成功</p>
+        <p class="subtitle small" id="certSubtitle"></p>
 
         <section class="info-panel panel">
           <div class="info-grid">
@@ -1381,8 +1257,8 @@
         <button class="back-button" onclick="goBack()" aria-label="返回首页"></button>
         <div class="topline">管理员登录</div>
         <section class="login-card panel">
-          <input class="form-field" id="username" autocomplete="off" placeholder="用户名" value="admin">
-          <input class="form-field" id="password" type="password" placeholder="密码" value="123456">
+          <input class="form-field" id="username" autocomplete="off" placeholder="用户名">
+          <input class="form-field" id="password" type="password" placeholder="密码">
           <div class="button-row">
             <button class="neon-button" id="loginButton">登录</button>
             <button class="neon-button" onclick="goBack()">取消</button>
@@ -1417,7 +1293,9 @@
           <div class="card-title">人员建档信息</div>
           <div class="detail-body">
             <div class="bio-area">
-              <div class="face-ring-large"></div>
+              <div class="face-ring-large">
+                <img id="dFaceImage" style="display:none;width:100%;height:100%;border-radius:50%;object-fit:cover;">
+              </div>
               <span>人脸照片</span>
               <div class="fingerprint-area"></div>
               <span>指纹照片</span>
@@ -1475,17 +1353,10 @@
             <div class="fc-title">人脸采集</div>
             <div class="fc-target" id="fcTarget">目标人员：<strong id="fcTargetName"></strong></div>
             <div class="fc-camera" id="fcCamera">
-              <div class="fc-scan-ring" id="fcScanRing"></div>
-              <div class="fc-hint" id="fcHint">请将面部对准摄像头</div>
-            </div>
-            <div class="fc-preview hidden" id="fcPreview">
-              <div class="fc-preview-ring"></div>
-              <div class="fc-preview-label">已采集</div>
+              <img class="fc-icon" src="imgs/face-id-svgrepo-com.svg" alt="face scan">
             </div>
             <div class="fc-actions">
-              <button class="neon-button" id="fcRetake" style="display:none">重拍</button>
-              <button class="neon-button" id="fcCapture" style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">开始采集</button>
-              <button class="neon-button" id="fcConfirm" style="display:none">确认</button>
+              <button class="neon-button" id="fcCapture" style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">采集</button>
               <button class="neon-button" id="fcCancel">取消</button>
             </div>
           </div>
@@ -1534,84 +1405,38 @@
             <div class="sb-grid" id="sbGrid"></div>
             <div class="fc-actions">
               <button class="neon-button" id="sbConfirm" disabled style="background:linear-gradient(180deg,#24d7f1,#0b6eb1);color:#fff;border-color:rgba(197,255,255,.88)">确认绑定</button>
-              <button class="neon-button" id="sbCancel">取消</button>
+               <button class="neon-button" id="sbCancel">退出</button>
             </div>
           </div>
         </div>
-        <section class="hardware-panel panel hidden"
-          <div class="hardware-title">
-            <span>硬件调试 / Android WebView Bridge</span>
-            <span id="bridgeState">模拟模式</span>
-          </div>
-          <div class="hardware-actions">
-            <button class="mini-button" data-action="openSerial">打开串口</button>
-            <button class="mini-button" data-action="getLockSt">门锁状态</button>
-            <button class="mini-button" data-action="getAllTag">全部标签</button>
-            <button class="mini-button" data-action="openLock">外门开锁</button>
-          </div>
-          <div class="log" id="hardwareLog"></div>
-        </section>
+
     </div>
   </main>
   <div class="toast" id="toast"></div>
 
   <script>
-    const consoleLogs = [];
-    const _origLog = console.log;
-    console.log = function (...args) {
-      const line = args.map(a => typeof a === "string" ? a : JSON.stringify(a)).join(" ");
-      if (line.includes("heartBeatPongToAndroidClient")) return;
-      consoleLogs.push(line);
-      _origLog.apply(console, args);
-    };
-    function isUidEmpty(uid) {
-      return !uid || /^(0{16}|0{2}(:?00){7})$/.test(uid);
-    }
-
-    function isUidDisconnected(uid) {
-      return /^(F{16}|F{2}(:?FF){7}|F{12,14}0{2,4})$/i.test(uid);
-    }
 
     const state = {
       mode: "retrieve",
       currentScreen: "homeScreen",
-      filter: "free",
       selectedSlot: { layer: 1, numb: 1 },
       selectedPerson: null,
-      slots: []
+      currentPerson: null,
+      slots: [],
+      personnel: [],
+      deviceList: []
     };
-    // 12层×5孔
-    const realTags = [
-      { layer: 1, numb: 1, uid: "04D06CEA57179000" },
-      { layer: 1, numb: 2, uid: "1D66992409108000" },
-      { layer: 1, numb: 3, uid: "1D5B9B2409108000" },
-      { layer: 1, numb: 4, uid: "1D5BA02409108000" },
-      { layer: 1, numb: 5, uid: "0000000000000000" },
-      { layer: 2, numb: 1, uid: "1D59A62409108000" },
-      { layer: 2, numb: 2, uid: "1DED9B2409108000" },
-      { layer: 2, numb: 3, uid: "1DDB9A2409108000" },
-      { layer: 2, numb: 4, uid: "1D63A52409108000" },
-      { layer: 2, numb: 5, uid: "1DDFA72409108000" }
-    ];
     for (let layer = 1; layer <= 12; layer++) {
       for (let numb = 1; numb <= 5; numb++) {
-        const tag = realTags.find(t => t.layer === layer && t.numb === numb);
-        const uid = tag ? tag.uid : "FFFFFFFFFFFFFFFF";
-        state.slots.push({ layer, numb, uid, used: !isUidEmpty(uid), policeNo: "", disconnected: isUidDisconnected(uid) });
+        state.slots.push({ layer, numb, uid: "", policeNos: [], disconnected: true, occupied: false });
       }
     }
-    // 当前用户有2个可用锁孔：1-5（空闲）和 2-2（有证书）
-    const s15 = state.slots.find(s => s.layer === 1 && s.numb === 5);
-    if (s15) s15.policeNo = "666661";
-    const s22 = state.slots.find(s => s.layer === 2 && s.numb === 2);
-    if (s22) s22.policeNo = "666661";
 
     const screens = ["homeScreen", "authScreen", "certificateScreen", "loginScreen", "manageScreen"];
     const navHistory = [];
     const kioskFrame = document.getElementById("kioskFrame");
     const kiosk = document.getElementById("kiosk");
-    const hardwareLog = document.getElementById("hardwareLog");
-    const bridgeState = document.getElementById("bridgeState");
+
 
     function scaleKiosk() {
       const scale = Math.min(window.innerWidth / 800, window.innerHeight / 1280, 1);
@@ -1621,9 +1446,11 @@
     }
 
     function showScreen(screenId, recordNav = true) {
+      logBridge("showScreen", { from: state.currentScreen, to: screenId, recordNav: recordNav });
       if (recordNav && state.currentScreen !== screenId) {
         navHistory.push(state.currentScreen);
       }
+      if (screenId !== "certificateScreen") _stopRetrievePoll();
       state.currentScreen = screenId;
       screens.forEach((id) => document.getElementById(id).classList.toggle("active", id === screenId));
     }
@@ -1640,27 +1467,23 @@
       state.mode = mode;
       showScreen("authScreen");
       document.getElementById("authState").textContent = "正在核验身份...";
-      invokeAndroid({ action: "heartBeatPongToAndroidClient" });
-      setTimeout(() => {
-        document.getElementById("authState").textContent = "人脸识别通过，已开柜门";
-        openLock();
-      }, 700);
-      setTimeout(() => {
-        getAllTag();
-      }, 1700);
+      doFaceDetect("");
     }
 
     function renderCertificate(mode) {
       const isStore = mode === "store";
       state.selectedSlot = null;
-      document.getElementById("certSubtitle").textContent = "人脸识别核验成功";
-      document.getElementById("policeNo").textContent = "666661";
-      document.getElementById("certNo").textContent = "CERT-2026-066661";
+      var p = state.currentPerson;
+      var pno = p ? (p.plsNoUnique || p.policeNo || p.idNoUnique || "") : "";
+      var pname = p ? (p.name || p.userName || "") : "";
+      document.getElementById("policeNo").textContent = pno;
+      document.getElementById("certNo").textContent = "CERT-2026-" + (pno || "066661");
       document.getElementById("slotPos").textContent = "";
       document.getElementById("sideStatus").textContent = "";
+      document.getElementById("primaryAction").style.display = "";
       document.getElementById("primaryAction").textContent = isStore ? "确认存放" : "开锁";
-      document.getElementById("primaryAction").disabled = true;
-      document.getElementById("bottomTip").textContent = "请选择锁孔";
+      document.querySelector("#certificateScreen .back-button").style.display = "none";
+      document.getElementById("bottomTip").textContent = isStore ? "请选择锁孔存放证书" : "请选择锁孔";
       const firstOp = renderSlotGrid(mode);
       if (firstOp) selectSlot(firstOp.slot, firstOp.button);
     }
@@ -1682,13 +1505,8 @@
           button.type = "button";
           button.dataset.num = (layer - 1) * 5 + slot.numb;
           button.setAttribute("aria-label", `第${slot.layer}层第${slot.numb}号锁孔`);
-          const clickable = slot.policeNo === policeNo;
-          if (clickable && !slot.used) {
-            button.classList.add("free");
-          } else if (clickable && slot.used) {
-            button.classList.add("active");
-          }
-          if (clickable) {
+          if (slot.policeNos && slot.policeNos.includes(policeNo)) {
+            button.classList.add(slot.occupied ? "active" : "free");
             button.addEventListener("click", (e) => selectSlot(slot, button));
             if (!firstOperable) firstOperable = { slot, button };
           }
@@ -1699,37 +1517,42 @@
       return firstOperable;
     }
 
+    function refreshSlotGrid() {
+      var prevSlot = state.selectedSlot;
+      var firstOp = renderSlotGrid(state.mode);
+      if (prevSlot) {
+        var btn = document.querySelector('.lock-slot[data-num="' + ((prevSlot.layer - 1) * 5 + prevSlot.numb) + '"]');
+        if (btn) { selectSlot(prevSlot, btn); return; }
+      }
+      if (firstOp) selectSlot(firstOp.slot, firstOp.button);
+    }
+
     function selectSlot(slot, btn) {
-      state.selectedSlot = { layer: slot.layer, numb: slot.numb };
+      state.selectedSlot = slot;
       document.querySelectorAll(".lock-slot.target").forEach(el => el.classList.remove("target"));
       if (btn) btn.classList.add("target");
       document.getElementById("slotPos").textContent = `第${slot.layer}排第${slot.numb}号`;
-      const free = !slot.used;
-      document.getElementById("sideStatus").textContent = free ? "空闲" : "在用";
-      document.getElementById("primaryAction").disabled = (state.mode === "retrieve") === free;
+      const occupied = slot.occupied;
+      document.getElementById("sideStatus").textContent = occupied ? "在用" : "空闲";
+      document.getElementById("primaryAction").disabled = state.mode === "retrieve" ? !occupied : occupied;
     }
 
-    const mockPersonnel = [
-      { policeNo: "666661", name: "张警官", post: "民警", dept: "刑侦支队", phone: "13800138001" },
-      { policeNo: "666662", name: "张警官", post: "民警", dept: "刑侦支队", phone: "13800138001" },
-      { policeNo: "666662", name: "李辅警", post: "辅警", dept: "勤务大队", phone: "13800148002" },
-      { policeNo: "666662", name: "李辅警", post: "辅警", dept: "勤务大队", phone: "13800138002" },
-      { policeNo: "666663", name: "王警官", post: "民警", dept: "网安大队", phone: "13800138003" },
-      { policeNo: "666663", name: "王警官", post: "民警", dept: "网安大队", phone: "13800138003" }
-    ];
 
-    function renderManageList() {
+
+    function renderManageList(personnel) {
+      const list = personnel || state.personnel;
+      state.personnel = list;
       const tbody = document.getElementById("empTableBody");
       tbody.replaceChildren();
-      mockPersonnel.forEach((p, index) => {
+      list.forEach((p, index) => {
         const tr = document.createElement("tr");
         if (index === 0) tr.classList.add("selected");
         tr.innerHTML =
-          `<td>${p.policeNo}</td>` +
-          `<td>${p.name}</td>` +
-          `<td>${p.post}</td>` +
-          `<td>${p.dept}</td>` +
-          `<td>${p.phone}</td>`;
+          `<td>${p.plsNoUnique || p.policeNo || p.idNoUnique || ""}</td>` +
+          `<td>${p.userName || p.name || ""}</td>` +
+          `<td>${p.postName || p.post || ""}</td>` +
+          `<td>${p.deptName || p.dept || ""}</td>` +
+          `<td>${p.mobileNo || p.phone || ""}</td>`;
         tr.addEventListener("click", () => {
           document.querySelectorAll("#empTableBody tr.selected").forEach(el => el.classList.remove("selected"));
           tr.classList.add("selected");
@@ -1738,27 +1561,35 @@
         });
         tbody.appendChild(tr);
       });
-      if (mockPersonnel.length > 0) {
-        state.selectedPerson = mockPersonnel[0];
-        renderDetail(mockPersonnel[0]);
+      if (list.length > 0) {
+        state.selectedPerson = list[0];
+        renderDetail(list[0]);
       }
     }
 
     function renderDetail(p) {
-      document.getElementById("dPoliceNo").textContent = p.policeNo;
-      document.getElementById("dName").textContent = p.name;
-      document.getElementById("dPost").textContent = p.post;
-      document.getElementById("dDept").textContent = p.dept;
-      document.getElementById("dPhone").textContent = p.phone;
-      const slot = state.slots.find(s => s.policeNo === p.policeNo);
-      document.getElementById("dSlot").textContent = slot ? `第${slot.layer}排第${slot.numb}号` : "未分配";
+      document.getElementById("dPoliceNo").textContent = p.plsNoUnique || p.policeNo || p.idNoUnique || "";
+      document.getElementById("dName").textContent = p.userName || p.name || "";
+      document.getElementById("dPost").textContent = p.postName || p.post || "";
+      document.getElementById("dDept").textContent = p.deptName || p.dept || "";
+      document.getElementById("dPhone").textContent = p.mobileNo || p.phone || "";
+      const idNo = p.plsNoUnique || p.policeNo || p.idNoUnique || "";
+      var slots = state.slots.filter(s => s.policeNos && s.policeNos.includes(idNo));
+      document.getElementById("dSlot").textContent = slots.length
+        ? slots.map(s => `第${s.layer}排${s.numb}号`).join("、")
+        : "未分配";
+      var faceImg = document.getElementById("dFaceImage");
+      if (p.faceBase64_image) {
+        faceImg.src = "data:image/png;base64," + p.faceBase64_image;
+        faceImg.style.display = "block";
+      } else {
+        faceImg.style.display = "none";
+        faceImg.removeAttribute("src");
+      }
     }
 
     function logBridge(message, data) {
-      const time = new Date().toLocaleTimeString("zh-CN", { hour12: false });
-      const line = `[${time}] ${message}${data ? " " + JSON.stringify(data) : ""}`;
-      console.log(`${line}\n${hardwareLog.textContent}`.split("\n").slice(0, 4).join("\n"))
-      hardwareLog.textContent = `${line}\n${hardwareLog.textContent}`.split("\n").slice(0, 4).join("\n");
+      console.log("[" + new Date().toLocaleTimeString("zh-CN", { hour12: false }) + "] " + message, data || "");
     }
 
     function invokeAndroid(payload) {
@@ -1772,33 +1603,65 @@
 
     function simulateAndroid(payload) {
       const callbacks = {
-        openSerial: () => openSerialCallback({ code: 0, msg: "串口已打开", path: payload.path || "/dev/ttyS3" }),
-        getLockSt: () => getLockStCallback({ code: 0, msg: "读取成功", lockSt: "closed" }),
-        openLock: () => openLockCallback({ code: 0, msg: "外门锁已打开" }),
-        getAllTag: () => {
-          const tags = state.slots.map(s => ({
-            layer: String(s.layer),
-            numb: String(s.numb),
-            uuid: s.uid || ""
-          }));
-          const msg = "全部电机锁状态设置成功" + JSON.stringify(tags);
-          getAllTagCallback({ code: 0, msg });
-        },
-        downImage: () => downImageCallback({ code: 0, msg: "屏数据已下发" }),
-        openMotorLock: () => {
-          openMotorLockCallback({ code: 0, msg: `电机锁 ${payload.layer}-${payload.numb} 已打开` });
-          // 模拟控制板主动上报标签状态变化 (0x91)
-          const { layer, numb } = payload;
-          const uid = state.mode === "store" ? "04D06CEA57179000" : "";
-          setTimeout(() => reportTagStateCallback({ layer: String(layer), numb: String(numb), uuid: uid }), 800);
-        },
-        finishMainActivity: () => logBridge("finishMainActivity")
+        getLockSt: () => getLockStCallback({ code: 0, msg: "读取成功", lockSt: 0 }),
+        openLock: () => openLockCallback({ code: 0, msg: "外门锁已打开", lockSt: 0 }),
+        openMotorLock: () => openMotorLockCallback({ code: 0, msg: "电机锁 " + payload.layer + "-" + payload.numb + " 已打开" }),
+        doQueryUserPoList: () => doQueryUserPoListCallback({
+          code: 0, msg: "查询成功",
+          userPoListJsonStr: JSON.stringify([
+            { idNoUnique: "666661", plsNoUnique: "666661", userName: "张警官", postName: "民警", post: "民警", plsType: "0", deptName: "刑侦支队", mobileNo: "13800138001", faceBase64_image: "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" },
+            { idNoUnique: "666662", plsNoUnique: "666662", userName: "李辅警", postName: "辅警", post: "辅警", plsType: "1", deptName: "勤务大队", mobileNo: "13800148002" },
+            { idNoUnique: "666663", plsNoUnique: "666663", userName: "王警官", postName: "民警", post: "民警", plsType: "0", deptName: "网安大队", mobileNo: "13800138003" }
+          ])
+        }),
+        doQueryDevicePoList: () => doQueryDevicePoListCallback({
+          code: 0, msg: "查询成功",
+          devicePoListJsonStr: JSON.stringify([
+            { slotNoUnique: "1_1", bindNo: "999999", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_2", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_3", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_4", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_5", bindNo: "666661", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_1", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_2", bindNo: "666661", useStatus: "1", status: "0", uid: "" },
+            { slotNoUnique: "2_3", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_4", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_5", bindNo: "", useStatus: "0", status: "0", uid: "" }
+          ])
+        }),
+        doFaceDetect: () => termFaceCallback({
+          code: 0, msg: "666661 人脸识别成功", action: "doFaceDetect", idNoUnique: "666661"
+        }),
+        doFaceCollect: () => termFaceCallback({
+          code: 0, msg: "采集成功", action: "doFaceCollect", termFaceImageBase64Str: ""
+        }),
+        doMgrLogin: () => doMgrLoginCallback({ code: 0, msg: "登录成功" }),
+        doUpdateDevicePoBindNoBySlotNoUnique: () => {
+          var list = state.deviceList.length ? JSON.parse(JSON.stringify(state.deviceList)) : [
+            { slotNoUnique: "1_1", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_2", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_3", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_4", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "1_5", bindNo: "666661", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_1", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_2", bindNo: "666661", useStatus: "1", status: "0", uid: "" },
+            { slotNoUnique: "2_3", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_4", bindNo: "", useStatus: "0", status: "0", uid: "" },
+            { slotNoUnique: "2_5", bindNo: "", useStatus: "0", status: "0", uid: "" }
+          ];
+          if (payload.deviceJsonArrayStr) {
+            payload.deviceJsonArrayStr.forEach(function (req) {
+              var item = list.find(function (d) { return d.slotNoUnique === req.slotNoUnique; });
+              if (item) item.bindNo = req.bindNo;
+            });
+          }
+          doUpdateDevicePoBindNoBySlotNoUniqueCallback({
+            code: 0, msg: "绑定/解绑用户成功",
+            devicePoListJsonStr: JSON.stringify(list)
+          });
+        }
       };
-      setTimeout(() => callbacks[payload.action]?.(), 180);
-    }
-
-    function openSerial(path = "/dev/ttyS3") {
-      invokeAndroid({ action: "openSerial", path });
+      setTimeout(function () { var cb = callbacks[payload.action]; if (cb) cb(); }, 180);
     }
 
     function getLockSt() {
@@ -1809,127 +1672,285 @@
       invokeAndroid({ action: "openLock" });
     }
 
-    function getAllTag() {
-      invokeAndroid({ action: "getAllTag" });
-    }
-
-    function downImage(layer, numb, text) {
-      invokeAndroid({ action: "downImage", layer, numb, text });
-    }
-
     function openMotorLock(layer, numb) {
-      invokeAndroid({ action: "openMotorLock", layer, numb });
+      invokeAndroid({ action: "openMotorLock", layer: String(layer), numb: String(numb) });
     }
 
-    function openSerialCallback(jsonObj) {
-      logBridge("openSerialCallback", jsonObj);
+    function doQueryUserPoList() {
+      invokeAndroid({ action: "doQueryUserPoList" });
+    }
+
+    function doQueryDevicePoList() {
+      invokeAndroid({ action: "doQueryDevicePoList" });
+    }
+
+    function doFaceCollect(idNoUnique) {
+      invokeAndroid({ action: "doFaceCollect", idNoUnique: idNoUnique || "" });
+    }
+
+    function doFaceDetect(idNoUnique) {
+      invokeAndroid({ action: "doFaceDetect", idNoUnique: idNoUnique || "" });
+    }
+
+    function doMgrLogin(mgrLoginName, mgrPwd) {
+      invokeAndroid({ action: "doMgrLogin", mgrLoginName: mgrLoginName, mgrPwd: mgrPwd });
+    }
+
+    function doUpdateDevicePoBindNoBySlotNoUnique(deviceJsonArrayStr) {
+      invokeAndroid({ action: "doUpdateDevicePoBindNoBySlotNoUnique", deviceJsonArrayStr: deviceJsonArrayStr });
+    }
+
+    function doMgrLoginCallback(jsonObj) {
+      logBridge("doMgrLoginCallback", jsonObj);
+      if (jsonObj.code == 0) {
+        _loginPending = 2;
+        doQueryUserPoList();
+        doQueryDevicePoList();
+      } else {
+        showToast("登录失败：" + (jsonObj.msg || "用户名或密码错误"));
+      }
+    }
+
+    function doUpdateDevicePoBindNoBySlotNoUniqueCallback(jsonObj) {
+      logBridge("doUpdateDevicePoBindNoBySlotNoUniqueCallback", jsonObj);
+      if (jsonObj.code == 0) {
+        if (jsonObj.devicePoListJsonStr) {
+          var list = typeof jsonObj.devicePoListJsonStr === "string"
+            ? JSON.parse(jsonObj.devicePoListJsonStr)
+            : jsonObj.devicePoListJsonStr;
+          list.forEach(function (d) {
+            var parts = d.slotNoUnique ? d.slotNoUnique.split("_") : [];
+            if (parts.length !== 2) return;
+            var layer = parseInt(parts[0], 10);
+            var numb = parseInt(parts[1], 10);
+            var slot = state.slots.find(function (s) { return s.layer === layer && s.numb === numb; });
+            if (!slot) return;
+            slot.disconnected = d.status === "1" || d.status === "2" || d.useStatus === "2";
+            slot.occupied = d.useStatus === "1";
+            if (d.bindNo && d.bindNo !== "") {
+              if (!slot.policeNos.includes(d.bindNo)) slot.policeNos.push(d.bindNo);
+            } else {
+              slot.policeNos = [];
+            }
+            slot.uid = d.uid || "";
+            var dev = state.deviceList.find(function (x) { return x.slotNoUnique === d.slotNoUnique; });
+            if (dev) {
+              dev.bindNo = d.bindNo || "";
+              dev.useStatus = d.useStatus || "0";
+              dev.status = d.status || "0";
+              dev.uid = d.uid || "";
+            }
+          });
+        }
+        if (state.currentScreen === "manageScreen" && state.selectedPerson) {
+          renderDetail(state.selectedPerson);
+        }
+        var overlay = document.getElementById("slotBindOverlay");
+        if (!overlay.classList.contains("hidden")) {
+          openSlotBind();
+        }
+        showToast((_lastBindAction || "操作") + "成功");
+      } else {
+        showToast("绑定/解绑失败：" + (jsonObj.msg || ""));
+      }
     }
 
     function getLockStCallback(jsonObj) {
-      logBridge("getLockStCallback", jsonObj);
-      console.log("getLockStCallback:", JSON.stringify(jsonObj));
-      if (!state.pendingStore) return;
-      const { layer, numb } = state.pendingStore;
-      state.pendingStore = null;
-      if (jsonObj.lockSt === "closed") {
-        downImage(layer, numb, "CERT-2026-066661");
-        document.getElementById("bottomTip").textContent = "正在写入锁孔屏幕数据...";
-        setTimeout(() => openMotorLock(layer, numb), 260);
-      } else {
-        document.getElementById("bottomTip").textContent = "柜门未关闭，请关闭后重试";
+      logBridge("getLockStCallback", { lockSt: jsonObj.lockSt, mode: state.mode, screen: state.currentScreen });
+      if (state.mode === "retrieve" && state.currentScreen === "certificateScreen" && jsonObj.lockSt == 1) {
+        logBridge("getLockStCallback matched, going home");
+        _stopRetrievePoll();
+        showScreen("homeScreen", false);
       }
     }
 
     function openLockCallback(jsonObj) {
       logBridge("openLockCallback", jsonObj);
-    }
-
-    function parseTagsFromMsg(msg) {
-      const m = msg.match(/\[.*\]/);
-      if (!m) return [];
-      try { return JSON.parse(m[0]); } catch (e) { return []; }
-    }
-
-    function getAllTagCallback(jsonObj) {
-      logBridge("getAllTagCallback", { code: jsonObj.code, msg: jsonObj.msg });
-      const tags = jsonObj.tags || parseTagsFromMsg(jsonObj.msg || "");
-      // 重置所有锁孔状态，再根据标签数据还原
-      state.slots.forEach(s => { s.uid = ""; s.used = false; s.disconnected = false; });
-      tags.forEach(tag => {
-        const layer = parseInt(tag.layer, 10);
-        const numb = parseInt(tag.numb, 10);
-        const uid = tag.uuid || tag.uid || "";
-        const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
-        if (!slot) return;
-        if (isUidDisconnected(uid)) {
-          slot.uid = uid;            // 保留原始FF值
-          slot.disconnected = true;
-        } else if (!isUidEmpty(uid)) {
-          slot.uid = uid;
-          slot.used = true;
-        }
-      });
-      if (state.currentScreen === "authScreen") {
+      if (jsonObj.code == 0) {
         renderCertificate(state.mode);
         showScreen("certificateScreen");
+      } else {
+        document.getElementById("authState").textContent = "开锁失败：" + (jsonObj.msg || "柜门异常");
       }
     }
 
-    function downImageCallback(jsonObj) {
-      logBridge("downImageCallback", jsonObj);
-    }
+
+
+    var _retrievePollTimer = null;
 
     function openMotorLockCallback(jsonObj) {
-      logBridge("openMotorLockCallback", jsonObj);
-      const success = jsonObj.code === 0;
-      if (state.mode === "store") {
-        document.getElementById("bottomTip").textContent = success ? "存放成功" : "存放失败：电机锁异常";
-        if (success) setTimeout(() => showScreen("homeScreen", false), 2000);
+      const success = jsonObj.code == 0;
+      if (success && state.selectedSlot) {
+        if (state.mode === "retrieve") {
+          state.selectedSlot.occupied = false;
+          document.getElementById("sideStatus").textContent = "空闲";
+          var btn = document.querySelector('.lock-slot[data-num="' + ((state.selectedSlot.layer - 1) * 5 + state.selectedSlot.numb) + '"]');
+          if (btn) { btn.classList.remove("active"); btn.classList.add("free"); }
+          _startRetrievePoll();
+          document.getElementById("bottomTip").textContent = "开锁成功，请取出证书";
+        } else {
+          state.selectedSlot.occupied = true;
+          document.getElementById("sideStatus").textContent = "在用";
+          var btn = document.querySelector('.lock-slot[data-num="' + ((state.selectedSlot.layer - 1) * 5 + state.selectedSlot.numb) + '"]');
+          if (btn) { btn.classList.remove("free"); btn.classList.add("active"); }
+          document.getElementById("bottomTip").textContent = "存放成功，请关闭柜门";
+        }
       } else {
-        document.getElementById("bottomTip").textContent = success ? "开锁成功，请取出证书" : "开锁失败：电机锁异常";
+        document.getElementById("bottomTip").textContent = "开锁失败：" + (jsonObj.msg || "电机锁异常");
+      }
+    }
+
+    function _startRetrievePoll() {
+      _stopRetrievePoll();
+      _retrievePollTimer = setInterval(function () {
+        invokeAndroid({ action: "getLockSt" });
+      }, 2000);
+    }
+
+    function _stopRetrievePoll() {
+      if (_retrievePollTimer) { clearInterval(_retrievePollTimer); _retrievePollTimer = null; }
+    }
+
+    function doQueryUserPoListCallback(jsonObj) {
+      logBridge("doQueryUserPoListCallback", jsonObj);
+      if (jsonObj.code == 0 && jsonObj.userPoListJsonStr) {
+        try {
+          const list = typeof jsonObj.userPoListJsonStr === "string"
+            ? JSON.parse(jsonObj.userPoListJsonStr)
+            : jsonObj.userPoListJsonStr;
+          state.personnel = list;
+          if (state.currentScreen === "manageScreen") {
+            renderManageList(list);
+          }
+        } catch (e) {
+          logBridge("doQueryUserPoListCallback parse error", e);
+        }
+      }
+      _syncDone();
+    }
+
+    function doQueryDevicePoListCallback(jsonObj) {
+      logBridge("doQueryDevicePoListCallback", jsonObj);
+      if (jsonObj.code == 0 && jsonObj.devicePoListJsonStr) {
+        updateDeviceList(jsonObj.devicePoListJsonStr);
+        if (state.currentScreen === "certificateScreen") {
+          refreshSlotGrid();
+        }
+      }
+      _syncDone();
+      if (_authDevicePending) {
+        _authDevicePending = false;
+        if (jsonObj.code == 0) {
+          openLock();
+        } else {
+          document.getElementById("authState").textContent = "获取设备信息失败，请重试";
+        }
+      }
+    }
+
+    function termFaceCallback(jsonObj) {
+      logBridge("termFaceCallback", jsonObj);
+      if (jsonObj.code == 0) {
+        if (jsonObj.action === "doFaceDetect") {
+          var idNo = jsonObj.idNoUnique || "";
+          document.getElementById("authState").textContent = "人脸识别通过，已开柜门";
+          if (idNo) {
+            var person = state.personnel.find(function (p) {
+              return (p.plsNoUnique || p.policeNo || p.idNoUnique) === idNo;
+            });
+            state.currentPerson = person || { plsNoUnique: idNo, idNoUnique: idNo };
+            document.getElementById("policeNo").textContent = idNo;
+          }
+          _authDevicePending = true;
+          doQueryDevicePoList();
+        } else if (jsonObj.action === "doFaceCollect") {
+          showToast("采集成功");
+          closeFaceCapture();
+          doQueryUserPoList();
+        }
+      } else {
+        if (jsonObj.action === "doFaceDetect") {
+          document.getElementById("authState").textContent = "人脸识别失败：" + (jsonObj.msg || "");
+          setTimeout(function () { showScreen("homeScreen"); }, 1500);
+        } else if (jsonObj.action === "doFaceCollect") {
+          showToast("采集失败：" + (jsonObj.msg || ""));
+        }
+      }
+    }
+
+    function updateDeviceList(devicePoListJsonStr) {
+      try {
+        const list = typeof devicePoListJsonStr === "string"
+          ? JSON.parse(devicePoListJsonStr)
+          : devicePoListJsonStr;
+        state.deviceList = list;
+        state.slots.forEach(s => { s.policeNos = []; s.disconnected = true; s.occupied = false; });
+        list.forEach(d => {
+          var parts = d.slotNoUnique ? d.slotNoUnique.split("_") : [];
+          if (parts.length !== 2) return;
+          var layer = parseInt(parts[0], 10);
+          var numb = parseInt(parts[1], 10);
+          var slot = state.slots.find(s => s.layer === layer && s.numb === numb);
+          if (!slot) return;
+          slot.disconnected = d.status === "1" || d.status === "2" || d.useStatus === "2";
+          slot.occupied = d.useStatus === "1";
+          if (d.bindNo && d.bindNo !== "") {
+            if (!slot.policeNos.includes(d.bindNo)) slot.policeNos.push(d.bindNo);
+          }
+        });
+      } catch (e) {
+        logBridge("updateDeviceList parse error", e);
       }
     }
 
     function reportTagStateCallback(jsonObj) {
-      logBridge("reportTagStateCallback", jsonObj);
-      const layer = parseInt(jsonObj.layer, 10);
-      const numb = parseInt(jsonObj.numb, 10);
-      const uid = jsonObj.uuid || jsonObj.uid || "";
-      const slot = state.slots.find(s => s.layer === layer && s.numb === numb);
-      if (!slot) return;
-      if (isUidDisconnected(uid)) {
-        slot.uid = uid;
-        slot.used = false;
-        slot.disconnected = true;
-      } else if (isUidEmpty(uid)) {
-        slot.uid = "";
-        slot.used = false;
-        slot.disconnected = false;
-      } else {
-        slot.uid = uid;
-        slot.used = true;
-        slot.disconnected = false;
-      }
-      if (state.currentScreen === "manageScreen") {
-        renderManageList();
-      } else if (state.currentScreen === "certificateScreen") {
-        renderSlotGrid(state.mode);
-      }
+      var layer = jsonObj.layer;
+      var numb = jsonObj.numb;
+      var uid = jsonObj.uid;
+      logBridge("标签状态上报 layer:" + layer + " numb:" + numb + " uid:" + uid);
+      doQueryDevicePoList();
     }
 
     function reportDoorLockStateCallback(jsonObj) {
-      logBridge("reportDoorLockStateCallback", jsonObj);
-      state.doorLockState = jsonObj.doorLockState;
+      var doorLockState = jsonObj.doorLockState;
+      logBridge("门锁状态上报 doorLockState:" + doorLockState);
+      var closed = doorLockState === 0 || doorLockState === "0" || doorLockState === "0x00";
+      if (closed && state.currentScreen === "certificateScreen") {
+        _stopRetrievePoll();
+        showScreen("homeScreen", false);
+      }
     }
 
-    window.openSerialCallback = openSerialCallback;
+    function doConfigCallback(jsonObj) {
+      logBridge("doConfigCallback", jsonObj);
+    }
+
+    function doShowCabinetDoorStatusCallback(jsonObj) {
+      var cabinetDoorStatus = jsonObj.cabinetDoorStatus;
+      logBridge("doShowCabinetDoorStatusCallback", { cabinetDoorStatus: cabinetDoorStatus });
+      var closed = cabinetDoorStatus === "1" || cabinetDoorStatus === 1;
+      if (closed && state.currentScreen === "certificateScreen") {
+        _stopRetrievePoll();
+        showScreen("homeScreen", false);
+      }
+    }
+
+    function downImageCallback(jsonObj) {
+    }
+
     window.getLockStCallback = getLockStCallback;
     window.openLockCallback = openLockCallback;
-    window.getAllTagCallback = getAllTagCallback;
-    window.downImageCallback = downImageCallback;
     window.openMotorLockCallback = openMotorLockCallback;
+    window.doQueryUserPoListCallback = doQueryUserPoListCallback;
+    window.doQueryDevicePoListCallback = doQueryDevicePoListCallback;
+    window.termFaceCallback = termFaceCallback;
+    window.doMgrLoginCallback = doMgrLoginCallback;
     window.reportTagStateCallback = reportTagStateCallback;
     window.reportDoorLockStateCallback = reportDoorLockStateCallback;
+    window.doUpdateDevicePoBindNoBySlotNoUniqueCallback = doUpdateDevicePoBindNoBySlotNoUniqueCallback;
+    window.doConfigCallback = doConfigCallback;
+    window.doShowCabinetDoorStatusCallback = doShowCabinetDoorStatusCallback;
+    window.downImageCallback = downImageCallback;
 
     document.querySelectorAll("[data-mode]").forEach((button) => {
       button.addEventListener("click", () => startAuth(button.dataset.mode));
@@ -1942,38 +1963,50 @@
     document.getElementById("settingsButton").addEventListener("click", () => showScreen("loginScreen"));
 
     document.getElementById("loginButton").addEventListener("click", () => {
-      renderManageList();
-      showScreen("manageScreen");
+      var username = document.getElementById("username").value || "admin";
+      var password = document.getElementById("password").value || "123456";
+      doMgrLogin(username, password);
     });
+
+    var _syncPending = 0;
+    var _loginPending = 0;
+    var _authDevicePending = false;
+    function _syncDone() {
+      if (_syncPending > 0) {
+        _syncPending--;
+        if (_syncPending <= 0) {
+          _syncPending = 0;
+          var btn = document.getElementById("syncBtn");
+          btn.disabled = false;
+          btn.style.animation = "none";
+          showToast("数据同步完成");
+        }
+      }
+      if (_loginPending > 0) {
+        _loginPending--;
+        if (_loginPending <= 0) {
+          _loginPending = 0;
+          renderManageList(state.personnel);
+          showScreen("manageScreen");
+        }
+      }
+    }
 
     document.getElementById("syncBtn").addEventListener("click", function () {
       logBridge("syncData", { msg: "正在同步数据..." });
-      const btn = this;
+      var btn = this;
       btn.disabled = true;
       btn.style.animation = "syncSpin .8s linear infinite";
-      setTimeout(() => {
-        btn.disabled = false;
-        btn.style.animation = "none";
-        showToast("数据同步成功");
-        renderManageList();
-      }, 1500);
+      _syncPending = 2;
+      doQueryUserPoList();
+      doQueryDevicePoList();
     });
-
-    let fcCaptured = false;
 
     function openFaceCapture() {
       const p = state.selectedPerson;
       if (!p) { alert("请先选择一位人员"); return; }
-      document.getElementById("fcTargetName").textContent = p.policeNo + " " + p.name;
+      document.getElementById("fcTargetName").textContent = (p.plsNoUnique || p.policeNo || p.idNoUnique || "") + " " + (p.userName || p.name || "");
       document.getElementById("faceCaptureOverlay").classList.remove("hidden");
-      document.getElementById("fcCamera").classList.remove("captured", "scanning");
-      document.getElementById("fcScanRing").classList.remove("hidden");
-      document.getElementById("fcPreview").classList.add("hidden");
-      document.getElementById("fcCapture").style.display = "";
-      document.getElementById("fcRetake").style.display = "none";
-      document.getElementById("fcConfirm").style.display = "none";
-      document.getElementById("fcHint").textContent = "请将面部对准摄像头";
-      fcCaptured = false;
     }
 
     function closeFaceCapture() {
@@ -1983,46 +2016,10 @@
     document.getElementById("faceCollectBtn").addEventListener("click", openFaceCapture);
 
     document.getElementById("fcCapture").addEventListener("click", () => {
-      const camera = document.getElementById("fcCamera");
-      const ring = document.getElementById("fcScanRing");
-      const hint = document.getElementById("fcHint");
-      camera.classList.add("scanning");
-      hint.textContent = "正在采集人脸...";
-      document.getElementById("fcCapture").disabled = true;
-      document.getElementById("fcCapture").style.opacity = ".5";
-      setTimeout(() => {
-        camera.classList.remove("scanning");
-        camera.classList.add("captured");
-        ring.classList.add("hidden");
-        hint.textContent = "采集完成";
-        document.getElementById("fcPreview").classList.remove("hidden");
-        document.getElementById("fcCapture").style.display = "none";
-        document.getElementById("fcRetake").style.display = "";
-        document.getElementById("fcConfirm").style.display = "";
-        document.getElementById("fcCapture").disabled = false;
-        document.getElementById("fcCapture").style.opacity = "1";
-        fcCaptured = true;
-      }, 2000);
-    });
-
-    document.getElementById("fcRetake").addEventListener("click", () => {
-      const camera = document.getElementById("fcCamera");
-      document.getElementById("fcScanRing").classList.remove("hidden");
-      document.getElementById("fcPreview").classList.add("hidden");
-      camera.classList.remove("captured");
-      document.getElementById("fcHint").textContent = "请将面部对准摄像头";
-      document.getElementById("fcCapture").style.display = "";
-      document.getElementById("fcRetake").style.display = "none";
-      document.getElementById("fcConfirm").style.display = "none";
-      fcCaptured = false;
-    });
-
-    document.getElementById("fcConfirm").addEventListener("click", () => {
-      if (!fcCaptured) return;
       const p = state.selectedPerson;
-      p.faceCaptured = true;
-      logBridge("faceCollect", { policeNo: p.policeNo, name: p.name, result: "success" });
-      document.getElementById("faceCaptureOverlay").classList.add("hidden");
+      if (!p) return;
+      const idNoUnique = p.idNoUnique || p.plsNoUnique || p.policeNo || "";
+      doFaceCollect(idNoUnique);
     });
 
     document.getElementById("fcCancel").addEventListener("click", closeFaceCapture);
@@ -2032,7 +2029,7 @@
     function openFingerCapture() {
       const p = state.selectedPerson;
       if (!p) { alert("请先选择一位人员"); return; }
-      document.getElementById("fpTargetName").textContent = p.policeNo + " " + p.name;
+      document.getElementById("fpTargetName").textContent = (p.plsNoUnique || p.policeNo || p.idNoUnique || "") + " " + (p.userName || p.name || "");
       document.getElementById("fingerCaptureOverlay").classList.remove("hidden");
       document.getElementById("fpCamera").classList.remove("captured", "scanning");
       document.getElementById("fpSensor").classList.remove("hidden");
@@ -2051,24 +2048,7 @@
     document.getElementById("fingerCollectBtn").addEventListener("click", openFingerCapture);
 
     document.getElementById("fpCapture").addEventListener("click", () => {
-      const camera = document.getElementById("fpCamera");
-      const hint = document.getElementById("fpHint");
-      camera.classList.add("scanning");
-      hint.textContent = "正在采集指纹...";
-      document.getElementById("fpCapture").disabled = true;
-      document.getElementById("fpCapture").style.opacity = ".5";
-      setTimeout(() => {
-        camera.classList.remove("scanning");
-        camera.classList.add("captured");
-        hint.textContent = "采集完成";
-        document.getElementById("fpPreview").classList.remove("hidden");
-        document.getElementById("fpCapture").style.display = "none";
-        document.getElementById("fpRetake").style.display = "";
-        document.getElementById("fpConfirm").style.display = "";
-        document.getElementById("fpCapture").disabled = false;
-        document.getElementById("fpCapture").style.opacity = "1";
-        fpCaptured = true;
-      }, 2000);
+      showToast("指纹采集接口暂未对接");
     });
 
     document.getElementById("fpRetake").addEventListener("click", () => {
@@ -2092,12 +2072,14 @@
     document.getElementById("fpCancel").addEventListener("click", closeFingerCapture);
 
     let sbSelectedSlot = null;
+    let _lastBindAction = "";
 
     function openSlotBind() {
       const p = state.selectedPerson;
       if (!p) { alert("请先选择一位人员"); return; }
       sbSelectedSlot = null;
-      document.getElementById("sbTargetName").textContent = p.policeNo + " " + p.name;
+      const idNo = p.plsNoUnique || p.policeNo || p.idNoUnique || "";
+      document.getElementById("sbTargetName").textContent = idNo + " " + (p.userName || p.name || "");
       document.getElementById("sbConfirm").disabled = true;
       document.getElementById("sbConfirm").textContent = "确认绑定";
 
@@ -2117,7 +2099,7 @@
           const btn = document.createElement("button");
           btn.className = "sb-slot";
           btn.dataset.num = (layer - 1) * 5 + numb;
-          if (slot.policeNo === p.policeNo) {
+          if (slot.policeNos && slot.policeNos.includes(idNo)) {
             btn.classList.add("mine");
             btn.addEventListener("click", () => {
               document.querySelectorAll("#sbGrid .sb-slot.selected").forEach(el => el.classList.remove("selected"));
@@ -2126,6 +2108,8 @@
               document.getElementById("sbConfirm").disabled = false;
               document.getElementById("sbConfirm").textContent = "解绑";
             });
+          } else if (slot.policeNos && slot.policeNos.length > 0) {
+            btn.classList.add("occupied");
           } else {
             btn.classList.add("free");
             btn.addEventListener("click", () => {
@@ -2152,51 +2136,34 @@
     document.getElementById("sbConfirm").addEventListener("click", () => {
       const p = state.selectedPerson;
       if (!p || !sbSelectedSlot) return;
-      if (sbSelectedSlot.unbind) {
-        sbSelectedSlot.slot.policeNo = "";
-        sbSelectedSlot.slot.used = false;
-        logBridge("slotBind", { policeNo: p.policeNo, layer: sbSelectedSlot.slot.layer, numb: sbSelectedSlot.slot.numb, result: "unbound" });
-      } else {
-        sbSelectedSlot.slot.policeNo = p.policeNo;
-        sbSelectedSlot.slot.used = true;
-        logBridge("slotBind", { policeNo: p.policeNo, layer: sbSelectedSlot.slot.layer, numb: sbSelectedSlot.slot.numb, result: "bound" });
-      }
-      renderDetail(p);
-      closeSlotBind();
+      const idNoUnique = p.plsNoUnique || p.policeNo || p.idNoUnique || "";
+      const slot = sbSelectedSlot.slot;
+      const slotNoUnique = slot.layer + "_" + slot.numb;
+      const deviceJsonArrayStr = [{
+        bindNo: sbSelectedSlot.unbind ? "" : idNoUnique,
+        slotNoUnique: slotNoUnique
+      }];
+      _lastBindAction = sbSelectedSlot.unbind ? "解绑" : "绑定";
+      doUpdateDevicePoBindNoBySlotNoUnique(deviceJsonArrayStr);
     });
 
     document.getElementById("sbCancel").addEventListener("click", closeSlotBind);
 
     document.getElementById("primaryAction").addEventListener("click", () => {
       const { layer, numb } = state.selectedSlot;
-      if (state.mode === "store") {
-        state.pendingStore = { layer, numb };
-        document.getElementById("bottomTip").textContent = "正在检测柜门状态...";
-        getLockSt();
-      } else {
-        openMotorLock(layer, numb);
-      }
-    });
-
-    document.querySelectorAll("[data-action]").forEach((button) => {
-      button.addEventListener("click", () => {
-        const action = button.dataset.action;
-        if (action === "openSerial") openSerial("/dev/ttyS3");
-        if (action === "getLockSt") getLockSt();
-        if (action === "getAllTag") getAllTag();
-        if (action === "openLock") openLock();
-      });
+      openMotorLock(layer, numb);
     });
 
     window.addEventListener("popstate", (e) => { e.preventDefault(); goBack(); });
-    window.addEventListener("keydown", (e) => { if (e.key === "Escape" || e.key === "Backspace") goBack(); });
+    window.addEventListener("keydown", (e) => {
+      if ((e.key === "Escape" || e.key === "Backspace") &&
+          !["INPUT", "TEXTAREA"].includes(e.target.tagName)) goBack();
+    });
 
-    bridgeState.textContent = window.jsInterface ? "Android Bridge" : "模拟模式";
     scaleKiosk();
-    renderManageList();
+    doQueryUserPoList();
+    doQueryDevicePoList();
     window.addEventListener("resize", scaleKiosk);
-    setInterval(() => invokeAndroid({ action: "heartBeatPongToAndroidClient" }), 10000);
-    openSerial("/dev/ttyS3");
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -2205,33 +2172,7 @@
       setTimeout(() => el.classList.remove("show"), 2000);
     }
   </script>
-  <button class="float-btn" id="sendLogBtn" title="发送日志">📧</button>
 
-  <script>
-    document.getElementById("sendLogBtn").addEventListener("click", function () {
-      const content = "=== Console Logs ===\n" + (consoleLogs.join("\n") || "(empty)");
-      fetch("https://wxpusher.zjiecode.com/api/send/message", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          appToken: "AT_OLQ2Zy9YWgfNjsNbJSUxbiMxjLz6JcXU",
-          content: content,
-          contentType: 1,
-          topicIds: [45354]
-        })
-      }).then(function (r) { return r.json(); }).then(function (d) {
-        if (d.code === 1000) {
-          alert("发送成功");
-          hardwareLog.textContent = "wxPusher 发送成功\n" + hardwareLog.textContent;
-        } else {
-          hardwareLog.textContent = "wxPusher 发送失败: " + d.msg + "\n" + hardwareLog.textContent;
-        }
-      }).catch(function (e) {
-        hardwareLog.textContent = "wxPusher 请求异常: " + e.message + "\n" + hardwareLog.textContent;
-      });
-    });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/vconsole@3.15.0/dist/vconsole.min.js"></script>
-  <script>new VConsole();</script>
+
 </body>
 </html>
