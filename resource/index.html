@@ -1467,7 +1467,8 @@
       state.mode = mode;
       showScreen("authScreen");
       document.getElementById("authState").textContent = "正在核验身份...";
-      doFaceDetect("");
+      var operateType = mode === "store" ? "0" : "1";
+      doFaceDetect(operateType);
     }
 
     function renderCertificate(mode) {
@@ -1609,7 +1610,7 @@
         doQueryUserPoList: () => doQueryUserPoListCallback({
           code: 0, msg: "查询成功",
           userPoListJsonStr: JSON.stringify([
-            { idNoUnique: "666661", plsNoUnique: "666661", userName: "张警官", postName: "民警", post: "民警", plsType: "0", deptName: "刑侦支队", mobileNo: "13800138001", faceBase64Image: "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" },D/HAD/Nrq5BwC+SgfnLQD4YwD4bwbrJQD8Ov0IAPttAPgGAPw0APsfAfB9APgdAPsJAvQTpM0nAOAnadDpCQD4XQDs3wGwvw2A/aYc/HnLI68j4lX3foh6/wB4QlU22VU26N5NedXuuSqa7H5hMdj7MPLxS5NkB0i7D8obBQDnUB2XySYb3DCzU+4C8vGWDZq7AyednsNQ38Tq5JogAW/S7C7r7LAi+A7tq3J28wD6Tksgu8H7PTTqUODOFB3/Krh8mRfs3uI6yG3B7aH6g51nA+51sJdIB7gLItrF2/sylJ1ysvlAKFe3u8ju04+9CNP3mHjZ3ds2u0/aehbp4L0A6hNYZnczYXe3RHbE7gZtdn+b2N29CNOJr9tdU8rZnVXGbg+zu61Qyu6aHL/P2V1HJOzuNhC7u0LJ7mYSdverQMnuZpKyuxOq2d2EQna3re3uBCVnpHjZ3YFQLe4mlLK7Q5Cwu73M7kaUsrtDSNjdAoqX3c0oYnfHEru7EFJ2N4OE3e0hdnenkN3NKGF3lyhhdydYdvdrYnc7RtndJhJ2905o292EEna3iVTZ3T3G7oZSdndrStndBFJ298FjdzNK2N0Hkd19QNndLpRydnep5OwHj929K9jdrpRydv8P7O4jsrspZeyHj90dS7G7PUrYXaHY3RuK3d0QsbudJexuYnY3Fv8Bbf12tCAsSGMAAAAASUVORK5CYII=" },
+            { idNoUnique: "666661", plsNoUnique: "666661", userName: "张警官", postName: "民警", post: "民警", plsType: "0", deptName: "刑侦支队", mobileNo: "13800138001", faceBase64Image: "" },
             { idNoUnique: "666662", plsNoUnique: "666662", userName: "李辅警", postName: "辅警", post: "辅警", plsType: "1", deptName: "勤务大队", mobileNo: "13800148002" },
             { idNoUnique: "666663", plsNoUnique: "666663", userName: "王警官", postName: "民警", post: "民警", plsType: "0", deptName: "网安大队", mobileNo: "13800138003" }
           ])
@@ -1688,8 +1689,9 @@
       invokeAndroid({ action: "doFaceCollect", idNoUnique: idNoUnique || "" });
     }
 
-    function doFaceDetect(idNoUnique) {
-      invokeAndroid({ action: "doFaceDetect", idNoUnique: idNoUnique || "" });
+    function doFaceDetect(operateTypeTemp) {
+      var operateType = operateTypeTemp || "0";
+      invokeAndroid({ action: "doFaceDetect", operateType: operateType });
     }
 
     function doMgrLogin(mgrLoginName, mgrPwd) {
@@ -1859,12 +1861,19 @@
               return (p.plsNoUnique || p.policeNo || p.idNoUnique) === idNo;
             });
             state.currentPerson = person || { plsNoUnique: idNo, idNoUnique: idNo };
+            if (jsonObj.termFaceImageBase64Str) {
+              state.currentPerson.faceBase64Image = jsonObj.termFaceImageBase64Str;
+            }
             document.getElementById("policeNo").textContent = idNo;
           }
           _authDevicePending = true;
           doQueryDevicePoList();
         } else if (jsonObj.action === "doFaceCollect") {
           showToast("采集成功");
+          if (jsonObj.termFaceImageBase64Str && state.selectedPerson) {
+            state.selectedPerson.faceBase64Image = jsonObj.termFaceImageBase64Str;
+            renderDetail(state.selectedPerson);
+          }
           closeFaceCapture();
           doQueryUserPoList();
         }
