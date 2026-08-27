@@ -1348,6 +1348,12 @@
           </section>
 
           <section class="screen" id="authScreen">
+            <button
+              class="back-button"
+              id="authBackButton"
+              onclick="goBack()"
+              aria-label="返回首页"
+            ></button>
             <div class="topline">人脸识别</div>
             <section class="auth-card panel">
               <div class="face-ring">
@@ -1784,6 +1790,9 @@
           to: screenId,
           recordNav: recordNav
         })
+        if (state.currentScreen === 'authScreen' && screenId !== 'authScreen') {
+          stopCameraPreview()
+        }
         if (recordNav && state.currentScreen !== screenId) {
           navHistory.push(state.currentScreen)
         }
@@ -1800,7 +1809,18 @@
         while (prev === 'authScreen') prev = navHistory.pop()
         if (prev && screens.includes(prev)) {
           showScreen(prev, false)
+        } else {
+          showScreen('homeScreen', false)
         }
+      }
+
+      function showAuthError(msg, delay = 2000) {
+        document.getElementById('authState').textContent = msg
+        setTimeout(function () {
+          if (state.currentScreen === 'authScreen') {
+            showScreen('homeScreen', false)
+          }
+        }, delay)
       }
 
       function startAuth(mode) {
@@ -2269,6 +2289,8 @@
               action: 'doFaceDetect',
               idNoUnique: '666661'
             }),
+          stopCameraPreview: () =>
+            logBridge('simulateAndroid 收到 stopCameraPreview 指令'),
           doFaceCollect: () =>
             termFaceCallback({
               code: 0,
@@ -2406,6 +2428,11 @@
         invokeAndroid({ action: 'doFaceDetect', operateType: operateType })
       }
 
+      function stopCameraPreview() {
+        logBridge('stopCameraPreview 停止人脸检测/相机预览')
+        invokeAndroid({ action: 'stopCameraPreview' })
+      }
+
       function doMgrLogin(mgrLoginName, mgrPwd) {
         invokeAndroid({
           action: 'doMgrLogin',
@@ -2504,8 +2531,7 @@
           renderCertificate(state.mode)
           showScreen('certificateScreen')
         } else {
-          document.getElementById('authState').textContent =
-            '开锁失败：' + (jsonObj.msg || '柜门异常')
+          showAuthError('开锁失败：' + (jsonObj.msg || '柜门异常'))
         }
       }
 
@@ -2653,8 +2679,7 @@
           if (jsonObj.code == 0 && jsonObj.devicePoListJsonStr) {
             openLock()
           } else {
-            document.getElementById('authState').textContent =
-              '获取设备信息失败，请重试'
+            showAuthError('获取设备信息失败，请重试')
           }
         }
       }
@@ -2672,8 +2697,13 @@
           if (jsonObj.action === 'doFaceDetect') {
             var idNo = jsonObj.idNoUnique || ''
             logBridge('人脸识别返回的身份证号:', idNo)
+            if (!idNo) {
+              logBridge('人脸识别未返回身份证号/未匹配到人员!')
+              showAuthError('验证失败：' + (jsonObj.msg || '未录入人脸信息'))
+              return
+            }
             document.getElementById('authState').textContent =
-              '人脸识别通过，已开柜门'
+              '人脸识别通过，正在开门...'
             if (idNo) {
               // 从人员列表中查找
               var person = state.personnel.find(function (p) {
@@ -2709,8 +2739,6 @@
                 ? ''
                 : 'none'
               logBridge('设置当前用户:', state.currentPerson)
-            } else {
-              logBridge('人脸识别未返回身份证号!')
             }
             _authDevicePending = true
             logBridge('人脸识别成功，先刷新人员列表...')
@@ -2727,11 +2755,7 @@
           }
         } else {
           if (jsonObj.action === 'doFaceDetect') {
-            document.getElementById('authState').textContent =
-              '人脸识别失败：' + (jsonObj.msg || '')
-            setTimeout(function () {
-              showScreen('homeScreen')
-            }, 1500)
+            showAuthError('人脸识别失败：' + (jsonObj.msg || '未录入人脸信息'))
           } else if (jsonObj.action === 'doFaceCollect') {
             showToast('采集失败：' + (jsonObj.msg || ''))
           }
