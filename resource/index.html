@@ -9,7 +9,7 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <title>警务数字证书管理系统</title>
-    
+
     <style>
       :root {
         --cyan: #45f4ff;
@@ -176,7 +176,7 @@
       }
 
       .home-title {
-        margin-top: 112px;
+        margin-top: 65px;
         text-align: center;
       }
 
@@ -190,14 +190,39 @@
       }
 
       .home-title p {
-        margin: 28px 0 0;
-        font-size: 32px;
+        margin: 20px 0 0;
+        font-size: 30px;
         font-weight: 800;
         text-shadow: 0 3px 0 rgba(2, 12, 31, 0.9);
       }
 
+      .home-clock {
+        margin-top: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .clock-time {
+        font-size: 52px;
+        font-weight: 900;
+        color: #bdfbff;
+        letter-spacing: 3px;
+        font-family: 'Courier New', Courier, monospace;
+        text-shadow: 0 0 16px rgba(69, 244, 255, 0.6),
+          0 0 32px rgba(69, 244, 255, 0.3);
+      }
+
+      .clock-date {
+        font-size: 22px;
+        font-weight: 800;
+        color: rgba(223, 249, 255, 0.88);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+      }
+
       .home-actions {
-        margin: 142px auto 0;
+        margin: 45px auto 0;
         width: 300px;
         display: grid;
         gap: 80px;
@@ -431,24 +456,25 @@
       .lock-slot.free {
         background: linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px
             no-repeat,
-          linear-gradient(145deg, #b8d8ff, #3d7eb8);
-        border-color: #6bb5ff;
-        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.5),
-          0 0 18px rgba(69, 150, 255, 0.6);
+          linear-gradient(145deg, #40e0ff, #0072ff);
+        border-color: #80ebff;
+        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.7),
+          0 0 20px rgba(0, 212, 255, 0.85);
       }
 
       .lock-slot.active {
         background: linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px
             no-repeat,
-          linear-gradient(145deg, #dbfff2, #57d496);
-        border-color: #c7ffe8;
-        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.6),
-          0 0 22px rgba(35, 209, 127, 0.78);
+          linear-gradient(145deg, #ffaa00, #ff5500);
+        border-color: #ffe0b3;
+        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.9),
+          0 0 24px rgba(255, 136, 0, 0.95);
       }
 
       .lock-slot.target {
-        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.6),
-          0 0 30px rgba(69, 244, 255, 0.9), 0 0 60px rgba(69, 244, 255, 0.4);
+        border-color: #ffe600 !important;
+        box-shadow: inset 0 0 18px #ffffff, 0 0 30px #ffe600,
+          0 0 55px rgba(255, 230, 0, 0.9) !important;
       }
 
       .lock-slot::before {
@@ -465,15 +491,15 @@
       }
 
       .lock-slot.free::before {
-        box-shadow: 0 0 0 8px rgba(107, 181, 255, 0.7);
+        box-shadow: 0 0 0 8px rgba(64, 224, 255, 0.85);
       }
 
       .lock-slot.active::before {
-        box-shadow: 0 0 0 8px rgba(35, 209, 127, 0.7);
+        box-shadow: 0 0 0 8px rgba(255, 136, 0, 0.9);
       }
 
       .lock-slot.target::before {
-        box-shadow: 0 0 0 8px rgba(69, 244, 255, 0.8);
+        box-shadow: 0 0 0 8px #ffe600 !important;
       }
 
       .lock-slot::after {
@@ -786,33 +812,34 @@
       .emp-table th {
         background: rgba(3, 47, 99, 0.95);
         color: #fff;
-        padding: 12px 8px;
+        padding: 16px 12px;
         text-align: left;
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 900;
         border-bottom: 2px solid rgba(69, 244, 255, 0.4);
         white-space: nowrap;
       }
 
       .emp-table th:first-child {
-        padding-left: 14px;
+        padding-left: 18px;
       }
       .emp-table th:last-child {
-        padding-right: 14px;
+        padding-right: 18px;
       }
 
       .emp-table td {
-        padding: 10px 8px;
+        padding: 20px 12px;
         border-bottom: 1px solid rgba(69, 244, 255, 0.12);
         color: #dff9ff;
+        font-size: 22px;
         white-space: nowrap;
       }
 
       .emp-table td:first-child {
-        padding-left: 14px;
+        padding-left: 18px;
       }
       .emp-table td:last-child {
-        padding-right: 14px;
+        padding-right: 18px;
       }
 
       .emp-table tr {
@@ -1149,23 +1176,25 @@
       .sb-slot.free {
         background: linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px
             no-repeat,
-          linear-gradient(145deg, #b8d8ff, #3d7eb8);
-        border-color: #6bb5ff;
-        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.5),
-          0 0 18px rgba(69, 150, 255, 0.6);
+          linear-gradient(145deg, #40e0ff, #0072ff);
+        border-color: #80ebff;
+        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.7),
+          0 0 20px rgba(0, 212, 255, 0.85);
       }
 
       .sb-slot.free::before {
-        box-shadow: 0 0 0 7px rgba(107, 181, 255, 0.7);
+        box-shadow: 0 0 0 7px rgba(64, 224, 255, 0.85);
       }
 
       .sb-slot.selected {
-        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.6),
-          0 0 25px rgba(69, 244, 255, 0.9), 0 0 50px rgba(69, 244, 255, 0.4);
+        border-color: #ffe600 !important;
+        box-shadow: inset 0 0 18px #ffffff, 0 0 30px #ffe600,
+          0 0 55px rgba(255, 230, 0, 0.9) !important;
+        transform: scale(1.05);
       }
 
       .sb-slot.selected::before {
-        box-shadow: 0 0 0 7px rgba(69, 244, 255, 0.8);
+        box-shadow: 0 0 0 7px #ffe600 !important;
       }
 
       .sb-slot.occupied {
@@ -1177,15 +1206,14 @@
       .sb-slot.mine {
         background: linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px
             no-repeat,
-          linear-gradient(145deg, #dbfff2, #57d496);
-        border-color: #c7ffe8;
-        box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.6),
-          0 0 22px rgba(35, 209, 127, 0.78);
-        cursor: not-allowed;
+          linear-gradient(145deg, #ffaa00, #ff5500);
+        border-color: #ffe0b3;
+        box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.9),
+          0 0 24px rgba(255, 136, 0, 0.95);
       }
 
       .sb-slot.mine::before {
-        box-shadow: 0 0 0 7px rgba(35, 209, 127, 0.7);
+        box-shadow: 0 0 0 7px rgba(255, 136, 0, 0.9);
       }
       .fp-sensor {
         width: 160px;
@@ -1312,6 +1340,10 @@
             <div class="home-title">
               <h1>警务数字证书管理系统</h1>
               <p>安全认证&nbsp;&nbsp;规范管理&nbsp;&nbsp;精准追溯</p>
+              <div class="home-clock">
+                <span class="clock-time" id="clockTime">--:--:--</span>
+                <span class="clock-date" id="clockDate">----年--月--日 ----</span>
+              </div>
             </div>
 
             <div class="home-actions">
@@ -1340,9 +1372,9 @@
             <button
               class="settings-button"
               id="settingsButton"
-              aria-label="系统设置"
+              aria-label="设备管理"
             >
-              <span>系统设置</span>
+              <span>设备管理</span>
               <span class="gear"></span>
             </button>
           </section>
@@ -1378,8 +1410,7 @@
                   <span>姓名:</span><strong id="idNo">张警官</strong>
                 </div>
                 <div class="info-row" id="certNoRow">
-                  <span>警号:</span
-                  ><strong id="certNo">A001</strong>
+                  <span>警号:</span><strong id="certNo">A001</strong>
                 </div>
                 <div class="info-row">
                   <span>锁孔位置:</span><strong id="slotPos">第1排第5号</strong>
@@ -1442,11 +1473,9 @@
                 <table class="emp-table">
                   <thead>
                     <tr>
-                      <th>身份证号</th>
                       <th>姓名</th>
-                      <th>岗位</th>
-                      <th>部门</th>
                       <th>电话号码</th>
+                      <th>部门</th>
                     </tr>
                   </thead>
                   <tbody id="empTableBody"></tbody>
@@ -1476,24 +1505,20 @@
                 </div>
                 <div class="info-details" id="infoDetails">
                   <div class="detail-row">
-                    <span>身份证号：</span
-                    ><span class="detail-val" id="dIdNo">666661</span>
-                  </div>
-                  <div class="detail-row">
                     <span>姓名：</span
                     ><span class="detail-val" id="dName">张警官</span>
                   </div>
                   <div class="detail-row">
-                    <span>岗位：</span
-                    ><span class="detail-val" id="dPost">民警</span>
+                    <span>电话号码：</span
+                    ><span class="detail-val" id="dPhone">13800138001</span>
                   </div>
                   <div class="detail-row">
                     <span>部门：</span
                     ><span class="detail-val" id="dDept">刑侦支队</span>
                   </div>
                   <div class="detail-row">
-                    <span>电话号码：</span
-                    ><span class="detail-val" id="dPhone">13800138001</span>
+                    <span>身份证号：</span
+                    ><span class="detail-val" id="dIdNo">666661</span>
                   </div>
                   <div class="detail-row">
                     <span>锁位信息：</span
@@ -1731,6 +1756,43 @@
                 </div>
               </div>
             </div>
+            <div class="face-capture-overlay hidden" id="confirmBindOverlay">
+              <div
+                class="face-capture-modal"
+                style="width: 540px; padding: 40px 36px 32px; text-align: center"
+              >
+                <div class="fc-title" style="font-size: 36px; margin-bottom: 20px">
+                  人脸录入成功
+                </div>
+                <div
+                  class="fc-target"
+                  style="font-size: 26px; line-height: 1.5; margin-bottom: 36px"
+                >
+                  是否立即绑定锁孔？
+                </div>
+                <div class="fc-actions" style="gap: 32px">
+                  <button
+                    class="neon-button"
+                    id="confirmBindYes"
+                    style="
+                      background: linear-gradient(180deg, #24d7f1, #0b6eb1);
+                      color: #fff;
+                      border-color: rgba(197, 255, 255, 0.88);
+                      flex: 1;
+                    "
+                  >
+                    是
+                  </button>
+                  <button
+                    class="neon-button"
+                    id="confirmBindNo"
+                    style="flex: 1"
+                  >
+                    否
+                  </button>
+                </div>
+              </div>
+            </div>
           </section>
         </section>
       </div>
@@ -1875,9 +1937,7 @@
         document.getElementById('idNo').textContent = pname
         var plsNo = p ? p.plsNoUnique || '' : ''
         document.getElementById('certNo').textContent = plsNo
-        document.getElementById('certNoRow').style.display = plsNo
-          ? ''
-          : 'none'
+        document.getElementById('certNoRow').style.display = plsNo ? '' : 'none'
         document.getElementById('slotPos').textContent = ''
         document.getElementById('sideStatus').textContent = ''
         document.getElementById('primaryAction').style.display = ''
@@ -2067,11 +2127,9 @@
           const tr = document.createElement('tr')
           if (index === selectedIndex) tr.classList.add('selected')
           tr.innerHTML =
-            `<td>${p.idNoUnique || ''}</td>` +
             `<td>${p.userName || p.name || ''}</td>` +
-            `<td>${p.postName || p.post || ''}</td>` +
-            `<td>${p.deptName || p.dept || ''}</td>` +
-            `<td>${p.mobileNo || p.phone || ''}</td>`
+            `<td>${p.mobileNo || p.phone || ''}</td>` +
+            `<td>${p.deptName || p.dept || ''}</td>`
           tr.addEventListener('click', () => {
             document
               .querySelectorAll('#empTableBody tr.selected')
@@ -2093,11 +2151,10 @@
 
       function renderDetail(p) {
         if (!p) {
-          document.getElementById('dIdNo').textContent = ''
           document.getElementById('dName').textContent = ''
-          document.getElementById('dPost').textContent = ''
-          document.getElementById('dDept').textContent = ''
           document.getElementById('dPhone').textContent = ''
+          document.getElementById('dDept').textContent = ''
+          document.getElementById('dIdNo').textContent = ''
           document.getElementById('dSlot').textContent = ''
           var faceImg = document.getElementById('dFaceImage')
           if (faceImg) {
@@ -2106,15 +2163,13 @@
           }
           return
         }
-        document.getElementById('dIdNo').textContent = p.idNoUnique || ''
         document.getElementById('dName').textContent =
           p.userName || p.name || ''
-        document.getElementById('dPost').textContent =
-          p.postName || p.post || ''
-        document.getElementById('dDept').textContent =
-          p.deptName || p.dept || ''
         document.getElementById('dPhone').textContent =
           p.mobileNo || p.phone || ''
+        document.getElementById('dDept').textContent =
+          p.deptName || p.dept || ''
+        document.getElementById('dIdNo').textContent = p.idNoUnique || ''
         var slotKeys = parseSlotPositions(p.slotPositions)
         document.getElementById('dSlot').textContent = slotKeys.size
           ? Array.from(slotKeys)
@@ -2441,9 +2496,13 @@
         })
       }
 
-      function doUpdateDevicePoBindNoBySlotNoUnique(deviceJsonArrayStr) {
+      function doUpdateDevicePoBindNoBySlotNoUnique(
+        deviceJsonArrayStr,
+        idNoUnique
+      ) {
         invokeAndroid({
           action: 'doUpdateDevicePoBindNoBySlotNoUnique',
+          idNoUnique: idNoUnique || '',
           deviceJsonArrayStr: deviceJsonArrayStr
         })
       }
@@ -2503,6 +2562,8 @@
           if (!overlay.classList.contains('hidden')) {
             openSlotBind()
           }
+          doQueryUserPoList()
+          doQueryDevicePoList()
           showToast((_lastBindAction || '操作') + '成功')
         } else {
           showToast('绑定/解绑失败：' + (jsonObj.msg || ''))
@@ -2745,13 +2806,18 @@
             doQueryUserPoList()
           } else if (jsonObj.action === 'doFaceCollect') {
             showToast('采集成功')
-            if (jsonObj.termFaceImageBase64Str && state.selectedPerson) {
-              state.selectedPerson.faceBase64Image =
-                jsonObj.termFaceImageBase64Str
-              renderDetail(state.selectedPerson)
+            const p = state.selectedPerson
+            const isFirstTime = p && !p.faceBase64Image
+            if (p) {
+              p.faceBase64Image =
+                jsonObj.termFaceImageBase64Str || p.faceBase64Image || 'captured_face'
+              renderDetail(p)
             }
             closeFaceCapture()
             doQueryUserPoList()
+            if (isFirstTime) {
+              openConfirmBind()
+            }
           }
         } else {
           if (jsonObj.action === 'doFaceDetect') {
@@ -2958,10 +3024,6 @@
       document.getElementById('loginButton').addEventListener('click', () => {
         var username = document.getElementById('username').value.trim()
         var password = document.getElementById('password').value.trim()
-        if (!username || !password) {
-          showToast('请填写用户名和密码')
-          return
-        }
         doMgrLogin(username, password)
       })
 
@@ -3005,8 +3067,10 @@
           alert('请先选择一位人员')
           return
         }
+        const name = p.userName || p.name || ''
+        const phone = p.mobileNo || p.phone || ''
         document.getElementById('fcTargetName').textContent =
-          (p.idNoUnique || '') + ' ' + (p.userName || p.name || '')
+          (name ? name + ' ' : '') + phone
         document.getElementById('faceCaptureOverlay').classList.remove('hidden')
       }
 
@@ -3037,8 +3101,10 @@
           alert('请先选择一位人员')
           return
         }
+        const name = p.userName || p.name || ''
+        const phone = p.mobileNo || p.phone || ''
         document.getElementById('fpTargetName').textContent =
-          (p.idNoUnique || '') + ' ' + (p.userName || p.name || '')
+          (name ? name + ' ' : '') + phone
         document
           .getElementById('fingerCaptureOverlay')
           .classList.remove('hidden')
@@ -3104,8 +3170,10 @@
         sbSelectedSlot = null
         const idNo = p.idNoUnique || ''
         const allowedKeys = parseSlotPositions(p.slotPositions)
+        const name = p.userName || p.name || ''
+        const phone = p.mobileNo || p.phone || ''
         document.getElementById('sbTargetName').textContent =
-          idNo + ' ' + (p.userName || p.name || '')
+          (name ? name + ' ' : '') + phone
         document.getElementById('sbConfirm').disabled = true
         document.getElementById('sbConfirm').textContent = '确认绑定'
 
@@ -3181,11 +3249,31 @@
         const deviceJsonArrayStr = [
           {
             bindNo: sbSelectedSlot.unbind ? '' : idNoUnique,
+            idNoUnique: idNoUnique,
             slotNoUnique: slotNoUnique
           }
         ]
         _lastBindAction = sbSelectedSlot.unbind ? '解绑' : '绑定'
-        doUpdateDevicePoBindNoBySlotNoUnique(deviceJsonArrayStr)
+        doUpdateDevicePoBindNoBySlotNoUnique(deviceJsonArrayStr, idNoUnique)
+      })
+
+      function openConfirmBind() {
+        document.getElementById('confirmBindOverlay').classList.remove('hidden')
+      }
+
+      function closeConfirmBind() {
+        document.getElementById('confirmBindOverlay').classList.add('hidden')
+      }
+
+      document
+        .getElementById('confirmBindYes')
+        .addEventListener('click', () => {
+          closeConfirmBind()
+          openSlotBind()
+        })
+
+      document.getElementById('confirmBindNo').addEventListener('click', () => {
+        closeConfirmBind()
       })
 
       document
@@ -3227,6 +3315,33 @@
       doQueryUserPoList()
       doQueryDevicePoList()
       window.addEventListener('resize', scaleKiosk)
+
+      function updateClock() {
+        const now = new Date()
+        const year = now.getFullYear()
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const day = String(now.getDate()).padStart(2, '0')
+        const hours = String(now.getHours()).padStart(2, '0')
+        const minutes = String(now.getMinutes()).padStart(2, '0')
+        const seconds = String(now.getSeconds()).padStart(2, '0')
+        const weekDays = [
+          '星期日',
+          '星期一',
+          '星期二',
+          '星期三',
+          '星期四',
+          '星期五',
+          '星期六'
+        ]
+        const weekDay = weekDays[now.getDay()]
+
+        const timeEl = document.getElementById('clockTime')
+        const dateEl = document.getElementById('clockDate')
+        if (timeEl) timeEl.textContent = `${hours}:${minutes}:${seconds}`
+        if (dateEl) dateEl.textContent = `${year}年${month}月${day}日 ${weekDay}`
+      }
+      setInterval(updateClock, 1000)
+      updateClock()
 
       function showToast(msg) {
         const el = document.getElementById('toast')
