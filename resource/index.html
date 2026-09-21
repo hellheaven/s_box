@@ -780,10 +780,10 @@
       }
 
       .emp-table-card {
-        margin-top: 20px;
-        padding: 18px 20px;
+        margin-top: 16px;
+        padding: 18px 22px;
         border-radius: 12px;
-        height: 465px;
+        height: 530px;
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -791,16 +791,15 @@
 
       .emp-table-wrap {
         flex: 1;
-        overflow-y: auto;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(69, 244, 255, 0.3) transparent;
+        overflow: hidden;
       }
 
       .emp-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 20px;
+        font-size: 22px;
         font-weight: 800;
+        table-layout: fixed;
       }
 
       .emp-table thead {
@@ -812,7 +811,7 @@
       .emp-table th {
         background: rgba(3, 47, 99, 0.95);
         color: #fff;
-        padding: 16px 12px;
+        padding: 14px 14px;
         text-align: left;
         font-size: 22px;
         font-weight: 900;
@@ -822,17 +821,24 @@
 
       .emp-table th:first-child {
         padding-left: 18px;
+        width: 30%;
+      }
+      .emp-table th:nth-child(2) {
+        width: 38%;
       }
       .emp-table th:last-child {
         padding-right: 18px;
+        width: 32%;
       }
 
       .emp-table td {
-        padding: 20px 12px;
+        padding: 15px 14px;
         border-bottom: 1px solid rgba(69, 244, 255, 0.12);
         color: #dff9ff;
         font-size: 22px;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .emp-table td:first-child {
@@ -845,6 +851,7 @@
       .emp-table tr {
         cursor: pointer;
         transition: background 0.15s;
+        height: 58px;
       }
 
       .emp-table tr:hover {
@@ -856,9 +863,57 @@
         outline: 1px solid var(--cyan);
       }
 
+      .pagination-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 28px;
+        padding: 12px 0 2px;
+        margin-top: auto;
+      }
+
+      .page-btn {
+        background: rgba(3, 47, 99, 0.9);
+        border: 1px solid var(--cyan);
+        color: #fff;
+        font-size: 20px;
+        font-weight: 800;
+        padding: 8px 26px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(69, 244, 255, 0.25);
+        transition: all 0.2s ease;
+        outline: none;
+      }
+
+      .page-btn:hover:not(:disabled) {
+        background: rgba(69, 244, 255, 0.25);
+        box-shadow: 0 0 16px rgba(69, 244, 255, 0.5);
+      }
+
+      .page-btn:active:not(:disabled) {
+        transform: scale(0.96);
+      }
+
+      .page-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: rgba(69, 244, 255, 0.2);
+        box-shadow: none;
+      }
+
+      .page-info {
+        color: var(--cyan);
+        font-size: 21px;
+        font-weight: 900;
+        min-width: 150px;
+        text-align: center;
+        text-shadow: 0 0 10px rgba(69, 244, 255, 0.4);
+      }
+
       .detail-card {
-        margin-top: 20px;
-        padding: 20px 24px;
+        margin-top: 16px;
+        padding: 16px 24px;
         border-radius: 12px;
       }
 
@@ -1299,28 +1354,40 @@
         }
       }
 
-      .toast {
+      .toast-mask {
         position: fixed;
-        left: 50%;
-        top: 50%;
+        inset: 0;
         z-index: 9999;
-        transform: translate(-50%, -50%);
-        padding: 18px 36px;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.65);
+        backdrop-filter: blur(4px);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+
+      .toast-mask.show {
+        opacity: 1;
+      }
+
+      .toast {
+        padding: 20px 42px;
         border: 2px solid var(--green);
         border-radius: 14px;
-        background: rgba(3, 33, 75, 0.95);
+        background: rgba(0, 0, 0, 0.95);
         color: #fff;
         font-size: 26px;
         font-weight: 900;
         text-align: center;
-        box-shadow: 0 0 40px rgba(35, 209, 127, 0.4);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.25s;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 24px rgba(35, 209, 127, 0.4);
+        max-width: 80%;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
       }
 
-      .toast.show {
-        opacity: 1;
+      .toast.error {
+        border-color: #ff4d4f;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), 0 0 24px rgba(255, 77, 79, 0.45);
       }
 
       .hidden {
@@ -1480,6 +1547,11 @@
                   </thead>
                   <tbody id="empTableBody"></tbody>
                 </table>
+              </div>
+              <div class="pagination-bar">
+                <button class="page-btn" id="btnPrevPage" onclick="prevPage()">上一页</button>
+                <span class="page-info" id="pageInfo">第 1 / 1 页</span>
+                <button class="page-btn" id="btnNextPage" onclick="nextPage()">下一页</button>
               </div>
             </section>
 
@@ -1797,7 +1869,9 @@
         </section>
       </div>
     </main>
-    <div class="toast" id="toast"></div>
+    <div class="toast-mask" id="toastMask">
+      <div class="toast" id="toast"></div>
+    </div>
 
     <script>
       const state = {
@@ -1808,7 +1882,10 @@
         currentPerson: null,
         slots: [],
         personnel: [],
-        deviceList: []
+        deviceList: [],
+        currentPage: 1,
+        pageSize: 5,
+        totalPages: 1
       }
       for (let layer = 1; layer <= 12; layer++) {
         for (let numb = 1; numb <= 5; numb++) {
@@ -1823,6 +1900,207 @@
           })
         }
       }
+
+      const mockUsers = [
+        {
+          idNoUnique: '666661',
+          userName: '张警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '刑侦支队',
+          mobileNo: '13800138001',
+          faceBase64Image: '',
+          slotPositions: '1_5,2_2'
+        },
+        {
+          idNoUnique: '666662',
+          userName: '李辅警',
+          postName: '辅警',
+          post: '辅警',
+          plsType: '1',
+          deptName: '勤务大队',
+          mobileNo: '13800148002',
+          faceBase64Image: '',
+          slotPositions: '1_2'
+        },
+        {
+          idNoUnique: '666663',
+          userName: '王警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '网安大队',
+          mobileNo: '13800138003',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666664',
+          userName: '赵警官',
+          postName: '交警',
+          post: '交警',
+          plsType: '0',
+          deptName: '交警大队',
+          mobileNo: '13800138004',
+          faceBase64Image: '',
+          slotPositions: '2_1'
+        },
+        {
+          idNoUnique: '666665',
+          userName: '孙辅警',
+          postName: '辅警',
+          post: '辅警',
+          plsType: '1',
+          deptName: '治安大队',
+          mobileNo: '13800138005',
+          faceBase64Image: '',
+          slotPositions: '3_1,3_2'
+        },
+        {
+          idNoUnique: '666666',
+          userName: '周队长',
+          postName: '队长',
+          post: '队长',
+          plsType: '0',
+          deptName: '特警支队',
+          mobileNo: '13800138006',
+          faceBase64Image: '',
+          slotPositions: '1_1'
+        },
+        {
+          idNoUnique: '666667',
+          userName: '吴警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '经侦大队',
+          mobileNo: '13800138007',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666668',
+          userName: '郑警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '禁毒大队',
+          mobileNo: '13800138008',
+          faceBase64Image: '',
+          slotPositions: '4_1'
+        },
+        {
+          idNoUnique: '666669',
+          userName: '冯辅警',
+          postName: '辅警',
+          post: '辅警',
+          plsType: '1',
+          deptName: '户政大队',
+          mobileNo: '13800138009',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666670',
+          userName: '陈警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '法制大队',
+          mobileNo: '13800138010',
+          faceBase64Image: '',
+          slotPositions: '5_1'
+        },
+        {
+          idNoUnique: '666671',
+          userName: '褚警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '督察支队',
+          mobileNo: '13800138011',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666672',
+          userName: '卫辅警',
+          postName: '辅警',
+          post: '辅警',
+          plsType: '1',
+          deptName: '警务保障处',
+          mobileNo: '13800138012',
+          faceBase64Image: '',
+          slotPositions: '2_3'
+        },
+        {
+          idNoUnique: '666673',
+          userName: '蒋警官',
+          postName: '工程师',
+          post: '工程师',
+          plsType: '0',
+          deptName: '科信支队',
+          mobileNo: '13800138013',
+          faceBase64Image: '',
+          slotPositions: '3_3'
+        },
+        {
+          idNoUnique: '666674',
+          userName: '沈警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '巡特警大队',
+          mobileNo: '13800138014',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666675',
+          userName: '韩警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '森林公安大队',
+          mobileNo: '13800138015',
+          faceBase64Image: '',
+          slotPositions: '1_3'
+        },
+        {
+          idNoUnique: '666676',
+          userName: '杨辅警',
+          postName: '辅警',
+          post: '辅警',
+          plsType: '1',
+          deptName: '交管支队',
+          mobileNo: '13800138016',
+          faceBase64Image: '',
+          slotPositions: ''
+        },
+        {
+          idNoUnique: '666677',
+          userName: '朱警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '水上公安分局',
+          mobileNo: '13800138017',
+          faceBase64Image: '',
+          slotPositions: '4_2'
+        },
+        {
+          idNoUnique: '666678',
+          userName: '秦警官',
+          postName: '民警',
+          post: '民警',
+          plsType: '0',
+          deptName: '机场公安分局',
+          mobileNo: '13800138018',
+          faceBase64Image: '',
+          slotPositions: ''
+        }
+      ]
 
       const screens = [
         'homeScreen',
@@ -2147,6 +2425,39 @@
           state.selectedPerson = null
           renderDetail(null)
         }
+        updatePaginationUI()
+      }
+
+      function updatePaginationUI() {
+        const cur = state.currentPage || 1
+        const total = state.totalPages || 1
+        const pageInfo = document.getElementById('pageInfo')
+        if (pageInfo) {
+          pageInfo.textContent = `第 ${cur} / ${total} 页`
+        }
+        const btnPrev = document.getElementById('btnPrevPage')
+        if (btnPrev) {
+          btnPrev.disabled = cur <= 1
+        }
+        const btnNext = document.getElementById('btnNextPage')
+        if (btnNext) {
+          btnNext.disabled = cur >= total
+        }
+      }
+
+      function prevPage() {
+        const cur = state.currentPage || 1
+        if (cur > 1) {
+          doQueryUserPoList(cur - 1, state.pageSize || 5)
+        }
+      }
+
+      function nextPage() {
+        const cur = state.currentPage || 1
+        const total = state.totalPages || 1
+        if (cur < total) {
+          doQueryUserPoList(cur + 1, state.pageSize || 5)
+        }
       }
 
       function renderDetail(p) {
@@ -2222,44 +2533,23 @@
               code: 0,
               msg: '电机锁 ' + payload.layer + '-' + payload.numb + ' 已打开'
             }),
-          doQueryUserPoList: () =>
+          doQueryUserPoList: () => {
+            const page = Number(payload.page) || 1
+            const size = Number(payload.size) || 5
+            const total = mockUsers.length
+            const pages = Math.ceil(total / size) || 1
+            const start = (page - 1) * size
+            const pagedList = mockUsers.slice(start, start + size)
             doQueryUserPoListCallback({
               code: 0,
               msg: '查询成功',
-              userPoListJsonStr: JSON.stringify([
-                {
-                  idNoUnique: '666661',
-                  userName: '张警官',
-                  postName: '民警',
-                  post: '民警',
-                  plsType: '0',
-                  deptName: '刑侦支队',
-                  mobileNo: '13800138001',
-                  faceBase64Image: '',
-                  slotPositions: '1_5,2_2'
-                },
-                {
-                  idNoUnique: '666662',
-                  userName: '李辅警',
-                  postName: '辅警',
-                  post: '辅警',
-                  plsType: '1',
-                  deptName: '勤务大队',
-                  mobileNo: '13800148002',
-                  slotPositions: '1_2'
-                },
-                {
-                  idNoUnique: '666663',
-                  userName: '王警官',
-                  postName: '民警',
-                  post: '民警',
-                  plsType: '0',
-                  deptName: '网安大队',
-                  mobileNo: '13800138003',
-                  slotPositions: ''
-                }
-              ])
-            }),
+              page: page,
+              size: size,
+              pages: pages,
+              total: total,
+              userPoListJsonStr: JSON.stringify(pagedList)
+            })
+          },
           doQueryDevicePoList: () =>
             doQueryDevicePoListCallback({
               code: 0,
@@ -2466,8 +2756,16 @@
         })
       }
 
-      function doQueryUserPoList() {
-        invokeAndroid({ action: 'doQueryUserPoList' })
+      function doQueryUserPoList(page, size) {
+        const p = page !== undefined ? page : (state.currentPage || 1)
+        const s = size !== undefined ? size : (state.pageSize || 5)
+        state.currentPage = p
+        state.pageSize = s
+        invokeAndroid({
+          action: 'doQueryUserPoList',
+          page: p,
+          size: s
+        })
       }
 
       function doQueryDevicePoList() {
@@ -2511,7 +2809,7 @@
         logBridge('doMgrLoginCallback', jsonObj)
         if (jsonObj.code == 0) {
           _loginPending = 2
-          doQueryUserPoList()
+          doQueryUserPoList(1, 5)
           doQueryDevicePoList()
         } else {
           showToast('登录失败：' + (jsonObj.msg || '用户名或密码错误'))
@@ -2643,7 +2941,20 @@
                 ? JSON.parse(jsonObj.userPoListJsonStr)
                 : jsonObj.userPoListJsonStr
             state.personnel = list
-            logBridge('人员列表已更新，长度:', list.length)
+            if (jsonObj.pages !== undefined) {
+              state.totalPages = Number(jsonObj.pages) || 1
+            }
+            if (jsonObj.page !== undefined) {
+              state.currentPage = Number(jsonObj.page) || 1
+            }
+            logBridge(
+              '人员列表已更新，长度:',
+              list.length,
+              '总页数:',
+              state.totalPages,
+              '当前页:',
+              state.currentPage
+            )
 
             // 如果是人脸识别后的刷新，直接获取锁孔信息
             if (_authDevicePending) {
@@ -2671,6 +2982,7 @@
         } else {
           // 没有人员数据时清空列表，避免管理界面残留历史信息
           state.personnel = []
+          state.totalPages = 1
           if (state.currentScreen === 'manageScreen') {
             renderManageList([])
           }
@@ -3004,6 +3316,8 @@
       window.doUpdateUserPoByIdNoCallback = doUpdateUserPoByIdNoCallback
       window.doInsertOperateLogPoCallback = doInsertOperateLogPoCallback
       window.doQueryOperateLogPoListCallback = doQueryOperateLogPoListCallback
+      window.prevPage = prevPage
+      window.nextPage = nextPage
 
       document.querySelectorAll('[data-mode]').forEach(button => {
         button.addEventListener('click', () => startAuth(button.dataset.mode))
@@ -3343,11 +3657,33 @@
       setInterval(updateClock, 1000)
       updateClock()
 
-      function showToast(msg) {
+      let _toastTimer = null
+      function showToast(msg, isError) {
+        const mask = document.getElementById('toastMask')
         const el = document.getElementById('toast')
-        el.textContent = msg
-        el.classList.add('show')
-        setTimeout(() => el.classList.remove('show'), 2000)
+        if (el) {
+          el.textContent = msg
+          const isErr =
+            isError === true ||
+            isError === 'error' ||
+            (isError !== false &&
+              /(失败|错误|异常|超时|不存在|无效|暂未|拒绝|非法|请先)/.test(
+                String(msg || '')
+              ))
+          if (isErr) {
+            el.classList.add('error')
+          } else {
+            el.classList.remove('error')
+          }
+        }
+        if (mask) mask.classList.add('show')
+        if (el) el.classList.add('show')
+        if (_toastTimer) clearTimeout(_toastTimer)
+        _toastTimer = setTimeout(() => {
+          if (mask) mask.classList.remove('show')
+          if (el) el.classList.remove('show')
+          _toastTimer = null
+        }, 2000)
       }
     </script>
 
