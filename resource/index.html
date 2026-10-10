@@ -417,11 +417,31 @@
         margin-top: 34px;
         padding: 34px 38px 40px;
         border-radius: 12px;
-      }
-
-      #certificateScreen {
+        height: 404px;
+        box-sizing: border-box;
         overflow-y: auto;
         overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(69, 244, 255, 0.4) rgba(0, 24, 58, 0.28);
+      }
+
+      .slot-panel::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .slot-panel::-webkit-scrollbar-track {
+        background: rgba(0, 24, 58, 0.28);
+        border-radius: 4px;
+      }
+
+      .slot-panel::-webkit-scrollbar-thumb {
+        background: rgba(69, 244, 255, 0.4);
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(69, 244, 255, 0.6);
+      }
+
+      .slot-panel::-webkit-scrollbar-thumb:hover {
+        background: rgba(69, 244, 255, 0.7);
       }
 
       .slot-row {
@@ -550,6 +570,25 @@
         color: #fff;
         text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
         pointer-events: none;
+      }
+
+      .lock-slot.disabled {
+        background: linear-gradient(#05101e, #05101e) 50% 64px / 17px 40px
+            no-repeat,
+          linear-gradient(145deg, #252e3b, #151d28);
+        border-color: rgba(100, 120, 140, 0.25);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+        opacity: 0.32;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .lock-slot.disabled::before {
+        box-shadow: 0 0 0 8px rgba(90, 105, 120, 0.25);
+      }
+
+      .lock-slot.disabled::after {
+        color: rgba(255, 255, 255, 0.3);
       }
 
       .slot-labels {
@@ -1202,6 +1241,28 @@
         background: rgba(0, 24, 58, 0.2);
         max-height: 360px;
         overflow-y: auto;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(69, 244, 255, 0.4) rgba(0, 24, 58, 0.28);
+      }
+
+      .sb-grid::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .sb-grid::-webkit-scrollbar-track {
+        background: rgba(0, 24, 58, 0.28);
+        border-radius: 4px;
+      }
+
+      .sb-grid::-webkit-scrollbar-thumb {
+        background: rgba(69, 244, 255, 0.4);
+        border-radius: 4px;
+        box-shadow: 0 0 8px rgba(69, 244, 255, 0.6);
+      }
+
+      .sb-grid::-webkit-scrollbar-thumb:hover {
+        background: rgba(69, 244, 255, 0.7);
       }
 
       .sb-grid .sb-slot-layer {
@@ -1312,6 +1373,25 @@
 
       .sb-slot.mine::before {
         box-shadow: 0 0 0 7px rgba(255, 136, 0, 0.9);
+      }
+
+      .sb-slot.disabled {
+        background: linear-gradient(#05101e, #05101e) 50% 52px / 15px 32px
+            no-repeat,
+          linear-gradient(145deg, #252e3b, #151d28);
+        border-color: rgba(100, 120, 140, 0.25);
+        box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.6);
+        opacity: 0.32;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+
+      .sb-slot.disabled::before {
+        box-shadow: 0 0 0 7px rgba(90, 105, 120, 0.25);
+      }
+
+      .sb-slot.disabled::after {
+        color: rgba(255, 255, 255, 0.3);
       }
       .fp-sensor {
         width: 160px;
@@ -1928,9 +2008,10 @@
         deviceList: [],
         currentPage: 1,
         pageSize: 5,
-        totalPages: 1
+        totalPages: 1,
+        maxLayer: 6
       }
-      for (let layer = 1; layer <= 12; layer++) {
+      for (let layer = 1; layer <= 6; layer++) {
         for (let numb = 1; numb <= 5; numb++) {
           state.slots.push({
             layer,
@@ -1938,8 +2019,9 @@
             uid: '',
             idNos: [],
             bindNo: '', // 存储原始 bindNo 字符串
-            disconnected: true,
-            occupied: false
+            disconnected: numb > 3,
+            occupied: false,
+            disabled: numb > 3 // 模拟每排前 3 个有效，4 和 5 变灰
           })
         }
       }
@@ -1954,7 +2036,7 @@
           deptName: '刑侦支队',
           mobileNo: '13800138001',
           faceBase64Image: '',
-          slotPositions: '1_5,2_2'
+          slotPositions: '1_3,2_2'
         },
         {
           idNoUnique: '666662',
@@ -2180,11 +2262,19 @@
           navHistory.push(state.currentScreen)
         }
         state.currentScreen = screenId
-        screens.forEach(id =>
-          document
-            .getElementById(id)
-            .classList.toggle('active', id === screenId)
-        )
+        screens.forEach(id => {
+          const el = document.getElementById(id)
+          if (el) {
+            el.classList.toggle('active', id === screenId)
+            if (id === screenId) {
+              el.scrollTop = 0
+            }
+          }
+        })
+        const slotPanel = document.getElementById('slotPanel')
+        if (slotPanel) slotPanel.scrollTop = 0
+        const sbGrid = document.getElementById('sbGrid')
+        if (sbGrid) sbGrid.scrollTop = 0
       }
 
       function goBack() {
@@ -2300,6 +2390,7 @@
       function renderSlotGrid(mode) {
         const panel = document.getElementById('slotPanel')
         panel.replaceChildren()
+        panel.scrollTop = 0
         const idNo = document.getElementById('idNo').textContent
         const currentPersonIdNo = state.currentPerson
           ? state.currentPerson.idNoUnique
@@ -2342,20 +2433,35 @@
           })
         }
 
+        const maxLayer = state.maxLayer || 6
         const layers = [...new Set(state.slots.map(s => s.layer))]
+          .filter(l => l >= 1 && l <= maxLayer)
+          .sort((a, b) => a - b)
         let firstOperable = null
         const slotDebug = []
-        layers
-          .filter(l => state.slots.some(s => s.layer === l && !s.disconnected))
-          .forEach(layer => {
-            const slots = state.slots.filter(
-              s => s.layer === layer && !s.disconnected
+        layers.forEach(layer => {
+          const slots = state.slots.filter(s => s.layer === layer)
+          if (!slots.length) return
+          const row = document.createElement('div')
+          row.className = 'slot-row'
+          for (let numb = 1; numb <= 5; numb++) {
+            const slot = slots.find(s => s.numb === numb)
+            const button = document.createElement('button')
+            button.className = 'lock-slot'
+            button.type = 'button'
+            button.dataset.num = (layer - 1) * 5 + numb
+            button.setAttribute(
+              'aria-label',
+              `第${layer}排第${numb}号锁孔`
             )
-            if (!slots.length) return
-            const row = document.createElement('div')
-            row.className = 'slot-row'
-            slots.forEach(slot => {
-              // 是否可用由当前用户的 slotPositions 决定
+
+            if (!slot || slot.disabled) {
+              // 多出来的锁孔直接变灰，样式与位置保持不变
+              button.classList.add('disabled')
+              button.disabled = true
+              button.setAttribute('aria-disabled', 'true')
+            } else {
+              // 真实存在的锁孔，根据用户权限判断是否可操作
               const mine = allowedKeys.has(slot.layer + '_' + slot.numb)
               slotDebug.push({
                 slot: slot.layer + '_' + slot.numb,
@@ -2367,23 +2473,16 @@
                 bindNos: (slot.idNos || []).join(','),
                 currentIdNo: idNo
               })
-              const button = document.createElement('button')
-              button.className = 'lock-slot'
-              button.type = 'button'
-              button.dataset.num = (layer - 1) * 5 + slot.numb
-              button.setAttribute(
-                'aria-label',
-                `第${slot.layer}层第${slot.numb}号锁孔`
-              )
               if (mine) {
                 button.classList.add(slot.occupied ? 'active' : 'free')
                 button.addEventListener('click', e => selectSlot(slot, button))
                 if (!firstOperable) firstOperable = { slot, button }
               }
-              row.appendChild(button)
-            })
-            panel.appendChild(row)
-          })
+            }
+            row.appendChild(button)
+          }
+          panel.appendChild(row)
+        })
         logBridge('renderSlotGrid 锁孔匹配明细', slotDebug)
         logBridge(
           'renderSlotGrid 找到的可操作孔:',
@@ -2403,7 +2502,7 @@
               ((prevSlot.layer - 1) * 5 + prevSlot.numb) +
               '"]'
           )
-          if (btn) {
+          if (btn && !btn.classList.contains('disabled')) {
             selectSlot(prevSlot, btn)
             return
           }
@@ -2565,17 +2664,61 @@
         simulateAndroid(payload)
       }
 
+      function createMockDeviceList() {
+        const arr = []
+        for (let l = 1; l <= 6; l++) {
+          for (let n = 1; n <= 3; n++) {
+            let bindNo = ''
+            let useStatus = '0'
+            if (l === 1 && n === 1) bindNo = '666666'
+            else if (l === 1 && n === 2) bindNo = '666662'
+            else if (l === 1 && n === 3) bindNo = '666661'
+            else if (l === 2 && n === 1) bindNo = '666664'
+            else if (l === 2 && n === 2) {
+              bindNo = '666661'
+              useStatus = '1'
+            } else if (l === 2 && n === 3) bindNo = '666672'
+            else if (l === 3 && n === 1) bindNo = '666665'
+            else if (l === 3 && n === 2) bindNo = '666665'
+            else if (l === 3 && n === 3) bindNo = '666673'
+            else if (l === 4 && n === 1) bindNo = '666668'
+            else if (l === 4 && n === 2) bindNo = '666677'
+            else if (l === 5 && n === 1) bindNo = '666670'
+            else if (l === 6 && n === 1) bindNo = '666678'
+
+            arr.push({
+              slotNoUnique: `${l}_${n}`,
+              bindNo: bindNo,
+              useStatus: useStatus,
+              status: '0',
+              uid: ''
+            })
+          }
+        }
+        return arr
+      }
+      let _simulatedDeviceList = createMockDeviceList()
+
       function simulateAndroid(payload) {
         const callbacks = {
           getLockSt: () =>
             getLockStCallback({ code: 0, msg: '读取成功', lockSt: 0 }),
           openLock: () =>
             openLockCallback({ code: 0, msg: '外门锁已打开', lockSt: 0 }),
-          openMotorLock: () =>
+          openMotorLock: () => {
+            if (payload.layer && payload.numb) {
+              const item = _simulatedDeviceList.find(
+                d => d.slotNoUnique === `${payload.layer}_${payload.numb}`
+              )
+              if (item) {
+                item.useStatus = state.mode === 'retrieve' ? '0' : '1'
+              }
+            }
             openMotorLockCallback({
               code: 0,
               msg: '电机锁 ' + payload.layer + '-' + payload.numb + ' 已打开'
-            }),
+            })
+          },
           doQueryUserPoList: () => {
             const page = Number(payload.page) || 1
             const size = Number(payload.size) || 5
@@ -2597,78 +2740,7 @@
             doQueryDevicePoListCallback({
               code: 0,
               msg: '查询成功',
-              devicePoListJsonStr: JSON.stringify([
-                {
-                  slotNoUnique: '1_1',
-                  bindNo: '999999',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '1_2',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '1_3',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '1_4',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '1_5',
-                  bindNo: '666661',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '2_1',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '2_2',
-                  bindNo: '666661',
-                  useStatus: '1',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '2_3',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '2_4',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                },
-                {
-                  slotNoUnique: '2_5',
-                  bindNo: '',
-                  useStatus: '0',
-                  status: '0',
-                  uid: ''
-                }
-              ])
+              devicePoListJsonStr: JSON.stringify(_simulatedDeviceList)
             }),
           doFaceDetect: () =>
             termFaceCallback({
@@ -2688,92 +2760,24 @@
             }),
           doMgrLogin: () => doMgrLoginCallback({ code: 0, msg: '登录成功' }),
           doUpdateDevicePoBindNoBySlotNoUnique: () => {
-            var list = state.deviceList.length
-              ? JSON.parse(JSON.stringify(state.deviceList))
-              : [
-                  {
-                    slotNoUnique: '1_1',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '1_2',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '1_3',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '1_4',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '1_5',
-                    bindNo: '666661',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '2_1',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '2_2',
-                    bindNo: '666661',
-                    useStatus: '1',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '2_3',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '2_4',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  },
-                  {
-                    slotNoUnique: '2_5',
-                    bindNo: '',
-                    useStatus: '0',
-                    status: '0',
-                    uid: ''
-                  }
-                ]
             if (payload.deviceJsonArrayStr) {
-              payload.deviceJsonArrayStr.forEach(function (req) {
-                var item = list.find(function (d) {
-                  return d.slotNoUnique === req.slotNoUnique
+              try {
+                const reqList =
+                  typeof payload.deviceJsonArrayStr === 'string'
+                    ? JSON.parse(payload.deviceJsonArrayStr)
+                    : payload.deviceJsonArrayStr
+                reqList.forEach(function (req) {
+                  const item = _simulatedDeviceList.find(function (d) {
+                    return d.slotNoUnique === req.slotNoUnique
+                  })
+                  if (item) item.bindNo = req.bindNo
                 })
-                if (item) item.bindNo = req.bindNo
-              })
+              } catch (e) {}
             }
             doUpdateDevicePoBindNoBySlotNoUniqueCallback({
               code: 0,
               msg: '绑定/解绑用户成功',
-              devicePoListJsonStr: JSON.stringify(list)
+              devicePoListJsonStr: JSON.stringify(_simulatedDeviceList)
             })
           }
         }
@@ -2863,38 +2867,7 @@
         logBridge('doUpdateDevicePoBindNoBySlotNoUniqueCallback', jsonObj)
         if (jsonObj.code == 0) {
           if (jsonObj.devicePoListJsonStr) {
-            var list =
-              typeof jsonObj.devicePoListJsonStr === 'string'
-                ? JSON.parse(jsonObj.devicePoListJsonStr)
-                : jsonObj.devicePoListJsonStr
-            list.forEach(function (d) {
-              var parts = d.slotNoUnique ? d.slotNoUnique.split('_') : []
-              if (parts.length !== 2) return
-              var layer = parseInt(parts[0], 10)
-              var numb = parseInt(parts[1], 10)
-              var slot = state.slots.find(function (s) {
-                return s.layer === layer && s.numb === numb
-              })
-              if (!slot) return
-              slot.disconnected =
-                d.status === '1' || d.status === '2' || d.useStatus === '2'
-              slot.occupied = d.useStatus === '1'
-              if (d.bindNo && d.bindNo !== '') {
-                if (!slot.idNos.includes(d.bindNo)) slot.idNos.push(d.bindNo)
-              } else {
-                slot.idNos = []
-              }
-              slot.uid = d.uid || ''
-              var dev = state.deviceList.find(function (x) {
-                return x.slotNoUnique === d.slotNoUnique
-              })
-              if (dev) {
-                dev.bindNo = d.bindNo || ''
-                dev.useStatus = d.useStatus || '0'
-                dev.status = d.status || '0'
-                dev.uid = d.uid || ''
-              }
-            })
+            updateDeviceList(jsonObj.devicePoListJsonStr)
           }
           if (state.currentScreen === 'manageScreen' && state.selectedPerson) {
             renderDetail(state.selectedPerson)
@@ -3192,68 +3165,82 @@
           logBridge('updateDeviceList 解析后的列表长度:', list.length)
           if (list.length > 0) {
             logBridge('updateDeviceList 第一个设备:', list[0])
-            logBridge(
-              '第一个设备的 bindNo:',
-              list[0].bindNo,
-              '类型:',
-              typeof list[0].bindNo
-            )
-            // 检查 bindNo 是否是 JSON 字符串
-            if (list[0].bindNo && list[0].bindNo.startsWith('[')) {
-              try {
-                const parsed = JSON.parse(list[0].bindNo)
-                logBridge('bindNo 看起来是 JSON 数组:', parsed)
-              } catch (e) {}
-            }
           }
           state.deviceList = list
-          state.slots.forEach(s => {
-            s.idNos = []
-            s.disconnected = true
-            s.occupied = false
-          })
+
+          // 1. 获取真实设备列表中出现的最大层数（最多 6 排）
+          const layersFound = []
           list.forEach(d => {
-            var parts = d.slotNoUnique ? d.slotNoUnique.split('_') : []
-            if (parts.length !== 2) return
-            var layer = parseInt(parts[0], 10)
-            var numb = parseInt(parts[1], 10)
-            var slot = state.slots.find(
-              s => s.layer === layer && s.numb === numb
-            )
-            if (!slot) return
-            slot.disconnected =
-              d.status === '1' || d.status === '2' || d.useStatus === '2'
-            slot.occupied = d.useStatus === '1'
-            if (d.bindNo && d.bindNo !== '') {
-              slot.bindNo = d.bindNo // 保存原始 bindNo 值
-              // 尝试解析 bindNo，可能是 JSON 数组字符串或单个身份证号
-              try {
-                if (d.bindNo.startsWith('[') && d.bindNo.endsWith(']')) {
-                  // 是 JSON 数组格式
-                  const idNos = JSON.parse(d.bindNo)
-                  if (Array.isArray(idNos)) {
-                    idNos.forEach(idNo => {
-                      if (idNo && !slot.idNos.includes(idNo))
-                        slot.idNos.push(idNo)
-                    })
-                  }
-                } else {
-                  // 单个身份证号字符串
-                  if (!slot.idNos.includes(d.bindNo)) slot.idNos.push(d.bindNo)
-                }
-              } catch (e) {
-                logBridge('解析 bindNo 出错:', d.bindNo, e)
-                // 如果解析失败，当作单个身份证号处理
-                if (!slot.idNos.includes(d.bindNo)) slot.idNos.push(d.bindNo)
+            if (d.slotNoUnique) {
+              const parts = d.slotNoUnique.split('_')
+              const l = parseInt(parts[0], 10)
+              if (!isNaN(l) && l >= 1 && l <= 6) {
+                layersFound.push(l)
               }
             }
           })
+          const maxLayer =
+            layersFound.length > 0 ? Math.min(6, Math.max(...layersFound)) : 6
+          state.maxLayer = maxLayer
+
+          // 2. 构造/更新 state.slots：共 maxLayer 排，每排固定 5 个位置（1..5）
+          const newSlots = []
+          for (let layer = 1; layer <= maxLayer; layer++) {
+            for (let numb = 1; numb <= 5; numb++) {
+              const slotNo = layer + '_' + numb
+              const d = list.find(item => item.slotNoUnique === slotNo)
+
+              if (d) {
+                let bindNo = d.bindNo || ''
+                let idNos = []
+                if (bindNo) {
+                  try {
+                    if (bindNo.startsWith('[') && bindNo.endsWith(']')) {
+                      const arr = JSON.parse(bindNo)
+                      if (Array.isArray(arr)) idNos = arr
+                    } else {
+                      idNos = [bindNo]
+                    }
+                  } catch (e) {
+                    idNos = [bindNo]
+                  }
+                }
+                newSlots.push({
+                  layer,
+                  numb,
+                  uid: d.uid || '',
+                  idNos: idNos,
+                  bindNo: bindNo,
+                  disconnected:
+                    d.status === '1' || d.status === '2' || d.useStatus === '2',
+                  occupied: d.useStatus === '1',
+                  disabled: false
+                })
+              } else {
+                // 不存在的多余孔位：直接变灰
+                newSlots.push({
+                  layer,
+                  numb,
+                  uid: '',
+                  idNos: [],
+                  bindNo: '',
+                  disconnected: true,
+                  occupied: false,
+                  disabled: true
+                })
+              }
+            }
+          }
+          state.slots = newSlots
+
           // 更新后输出几个锁孔的状态
           state.slots.slice(0, 10).forEach((slot, i) => {
             logBridge(
               `更新后锁孔${i + 1}: layer=${slot.layer}, numb=${
                 slot.numb
-              }, occupied=${slot.occupied}, idNos=${JSON.stringify(slot.idNos)}`
+              }, disabled=${slot.disabled}, occupied=${
+                slot.occupied
+              }, idNos=${JSON.stringify(slot.idNos)}`
             )
           })
         } catch (e) {
@@ -3536,51 +3523,58 @@
 
         const grid = document.getElementById('sbGrid')
         grid.replaceChildren()
-        const layers = [...new Set(state.slots.map(s => s.layer))].sort(
-          (a, b) => a - b
-        )
+        grid.scrollTop = 0
+        const maxLayer = state.maxLayer || 6
+        const layers = [...new Set(state.slots.map(s => s.layer))]
+          .filter(l => l >= 1 && l <= maxLayer)
+          .sort((a, b) => a - b)
         layers.forEach(layer => {
-          const slots = state.slots.filter(
-            s => s.layer === layer && s && !s.disconnected
-          )
+          const slots = state.slots.filter(s => s.layer === layer)
           if (!slots.length) return
           const label = document.createElement('div')
           label.className = 'sb-slot-layer'
-          label.textContent = `第${layer}层`
+          label.textContent = `第${layer}排`
           grid.appendChild(label)
           for (let numb = 1; numb <= 5; numb++) {
             const slot = slots.find(s => s.numb === numb)
-            if (!slot) continue
             const btn = document.createElement('button')
             btn.className = 'sb-slot'
             btn.dataset.num = (layer - 1) * 5 + numb
-            const isMine =
-              (slot.idNos && slot.idNos.includes(idNo)) ||
-              allowedKeys.has(slot.layer + '_' + slot.numb)
-            if (isMine) {
-              btn.classList.add('mine')
-              btn.addEventListener('click', () => {
-                document
-                  .querySelectorAll('#sbGrid .sb-slot.selected')
-                  .forEach(el => el.classList.remove('selected'))
-                btn.classList.add('selected')
-                sbSelectedSlot = { slot, unbind: true }
-                document.getElementById('sbConfirm').disabled = false
-                document.getElementById('sbConfirm').textContent = '解绑'
-              })
-            } else if (slot.idNos && slot.idNos.length > 0) {
-              btn.classList.add('occupied')
+
+            if (!slot || slot.disabled) {
+              // 多出来的锁孔直接变灰，位置与样式不变
+              btn.classList.add('disabled')
+              btn.disabled = true
+              btn.setAttribute('aria-disabled', 'true')
             } else {
-              btn.classList.add('free')
-              btn.addEventListener('click', () => {
-                document
-                  .querySelectorAll('#sbGrid .sb-slot.selected')
-                  .forEach(el => el.classList.remove('selected'))
-                btn.classList.add('selected')
-                sbSelectedSlot = { slot, unbind: false }
-                document.getElementById('sbConfirm').disabled = false
-                document.getElementById('sbConfirm').textContent = '确认绑定'
-              })
+              const isMine =
+                (slot.idNos && slot.idNos.includes(idNo)) ||
+                allowedKeys.has(slot.layer + '_' + slot.numb)
+              if (isMine) {
+                btn.classList.add('mine')
+                btn.addEventListener('click', () => {
+                  document
+                    .querySelectorAll('#sbGrid .sb-slot.selected')
+                    .forEach(el => el.classList.remove('selected'))
+                  btn.classList.add('selected')
+                  sbSelectedSlot = { slot, unbind: true }
+                  document.getElementById('sbConfirm').disabled = false
+                  document.getElementById('sbConfirm').textContent = '解绑'
+                })
+              } else if (slot.idNos && slot.idNos.length > 0) {
+                btn.classList.add('occupied')
+              } else {
+                btn.classList.add('free')
+                btn.addEventListener('click', () => {
+                  document
+                    .querySelectorAll('#sbGrid .sb-slot.selected')
+                    .forEach(el => el.classList.remove('selected'))
+                  btn.classList.add('selected')
+                  sbSelectedSlot = { slot, unbind: false }
+                  document.getElementById('sbConfirm').disabled = false
+                  document.getElementById('sbConfirm').textContent = '确认绑定'
+                })
+              }
             }
             grid.appendChild(btn)
           }
@@ -3590,8 +3584,14 @@
       }
 
       function closeSlotBind() {
+        const grid = document.getElementById('sbGrid')
+        if (grid) grid.scrollTop = 0
         document.getElementById('slotBindOverlay').classList.add('hidden')
       }
+
+      document
+        .getElementById('sbCancel')
+        .addEventListener('click', closeSlotBind)
 
       document
         .getElementById('slotBindBtn')
