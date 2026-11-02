@@ -1330,6 +1330,17 @@
         min-width: 130px;
       }
 
+      .neon-button:disabled,
+      .neon-button[disabled],
+      #sbConfirm:disabled,
+      #sbConfirm[disabled] {
+        opacity: 0.35 !important;
+        cursor: not-allowed !important;
+        pointer-events: none !important;
+        box-shadow: none !important;
+        filter: grayscale(80%) !important;
+      }
+
       .sb-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -3040,9 +3051,70 @@
       function doUpdateDevicePoBindNoBySlotNoUniqueCallback(jsonObj) {
         logBridge('doUpdateDevicePoBindNoBySlotNoUniqueCallback', jsonObj)
         if (jsonObj.code == 0) {
+          // 增量合并，避免真机仅返回单条/局部设备数据时将全量 slots 冲毁
           if (jsonObj.devicePoListJsonStr) {
-            updateDeviceList(jsonObj.devicePoListJsonStr)
+            try {
+              const updatedItems =
+                typeof jsonObj.devicePoListJsonStr === 'string'
+                  ? JSON.parse(jsonObj.devicePoListJsonStr)
+                  : jsonObj.devicePoListJsonStr
+              if (
+                Array.isArray(updatedItems) &&
+                Array.isArray(state.deviceList) &&
+                state.deviceList.length > updatedItems.length
+              ) {
+                updatedItems.forEach(item => {
+                  const idx = state.deviceList.findIndex(
+                    d => d.slotNoUnique === item.slotNoUnique
+                  )
+                  if (idx !== -1) {
+                    state.deviceList[idx] = Object.assign(
+                      {},
+                      state.deviceList[idx],
+                      item
+                    )
+                  }
+                })
+                updateDeviceList(state.deviceList)
+              } else {
+                updateDeviceList(jsonObj.devicePoListJsonStr)
+              }
+            } catch (e) {
+              logBridge('parse devicePoListJsonStr error', e)
+              updateDeviceList(jsonObj.devicePoListJsonStr)
+            }
+          } else if (sbSelectedSlot && Array.isArray(state.deviceList)) {
+            const slotNo =
+              sbSelectedSlot.slot.layer + '_' + sbSelectedSlot.slot.numb
+            const found = state.deviceList.find(d => d.slotNoUnique === slotNo)
+            if (found) {
+              found.bindNo = sbSelectedSlot.unbind
+                ? ''
+                : state.selectedPerson
+                ? state.selectedPerson.idNoUnique
+                : ''
+            }
+            updateDeviceList(state.deviceList)
           }
+
+          // 同步维护当前选中人员的 slotPositions 并在界面即时反馈
+          if (state.selectedPerson && sbSelectedSlot) {
+            const slotKey =
+              sbSelectedSlot.slot.layer + '_' + sbSelectedSlot.slot.numb
+            let currentPositions = state.selectedPerson.slotPositions
+              ? state.selectedPerson.slotPositions
+                  .split(',')
+                  .map(s => s.trim())
+                  .filter(Boolean)
+              : []
+            if (sbSelectedSlot.unbind) {
+              currentPositions = currentPositions.filter(s => s !== slotKey)
+            } else if (!currentPositions.includes(slotKey)) {
+              currentPositions.push(slotKey)
+            }
+            state.selectedPerson.slotPositions = currentPositions.join(',')
+          }
+
           if (state.currentScreen === 'manageScreen' && state.selectedPerson) {
             renderDetail(state.selectedPerson)
           }
@@ -3054,6 +3126,10 @@
           doQueryDevicePoList()
           showToast((_lastBindAction || '操作') + '成功')
         } else {
+          var confirmBtn = document.getElementById('sbConfirm')
+          if (confirmBtn && sbSelectedSlot) {
+            confirmBtn.disabled = false
+          }
           showToast('绑定/解绑失败：' + (jsonObj.msg || ''))
         }
       }
@@ -3165,6 +3241,14 @@
               doQueryDevicePoList()
             } else if (state.currentScreen === 'manageScreen') {
               renderManageList(list)
+              var sbOverlay = document.getElementById('slotBindOverlay')
+              if (
+                sbOverlay &&
+                !sbOverlay.classList.contains('hidden') &&
+                !sbSelectedSlot
+              ) {
+                openSlotBind()
+              }
             }
           } catch (e) {
             logBridge('doQueryUserPoListCallback parse error', e)
@@ -3227,6 +3311,14 @@
           }
           if (state.currentScreen === 'certificateScreen') {
             refreshSlotGrid()
+          }
+          var sbOverlay = document.getElementById('slotBindOverlay')
+          if (
+            sbOverlay &&
+            !sbOverlay.classList.contains('hidden') &&
+            !sbSelectedSlot
+          ) {
+            openSlotBind()
           }
         } else {
           logBridge(
@@ -3743,30 +3835,56 @@
               if (isMine) {
                 btn.classList.add('mine')
                 btn.addEventListener('click', () => {
+                  if (btn.classList.contains('selected')) {
+                    btn.classList.remove('selected')
+                    sbSelectedSlot = null
+                    const confirmBtn = document.getElementById('sbConfirm')
+                    if (confirmBtn) {
+                      confirmBtn.disabled = true
+                      confirmBtn.textContent = '确认绑定'
+                    }
+                    return
+                  }
                   document
                     .querySelectorAll('#sbGrid .sb-slot.selected')
                     .forEach(el => el.classList.remove('selected'))
                   btn.classList.add('selected')
                   sbSelectedSlot = { slot, unbind: true }
-                  document.getElementById('sbConfirm').disabled = false
-                  document.getElementById('sbConfirm').textContent = isOffline
-                    ? '解绑 (脱机)'
-                    : '解绑'
+                  const confirmBtn = document.getElementById('sbConfirm')
+                  if (confirmBtn) {
+                    confirmBtn.disabled = false
+                    confirmBtn.textContent = isOffline
+                      ? '解绑 (脱机)'
+                      : '解绑'
+                  }
                 })
               } else if (slot.idNos && slot.idNos.length > 0) {
                 btn.classList.add('occupied')
               } else {
                 btn.classList.add('free')
                 btn.addEventListener('click', () => {
+                  if (btn.classList.contains('selected')) {
+                    btn.classList.remove('selected')
+                    sbSelectedSlot = null
+                    const confirmBtn = document.getElementById('sbConfirm')
+                    if (confirmBtn) {
+                      confirmBtn.disabled = true
+                      confirmBtn.textContent = '确认绑定'
+                    }
+                    return
+                  }
                   document
                     .querySelectorAll('#sbGrid .sb-slot.selected')
                     .forEach(el => el.classList.remove('selected'))
                   btn.classList.add('selected')
                   sbSelectedSlot = { slot, unbind: false }
-                  document.getElementById('sbConfirm').disabled = false
-                  document.getElementById('sbConfirm').textContent = isOffline
-                    ? '确认绑定 (脱机)'
-                    : '确认绑定'
+                  const confirmBtn = document.getElementById('sbConfirm')
+                  if (confirmBtn) {
+                    confirmBtn.disabled = false
+                    confirmBtn.textContent = isOffline
+                      ? '确认绑定 (脱机)'
+                      : '确认绑定'
+                  }
                 })
               }
             }
@@ -3778,6 +3896,12 @@
       }
 
       function closeSlotBind() {
+        sbSelectedSlot = null
+        const confirmBtn = document.getElementById('sbConfirm')
+        if (confirmBtn) {
+          confirmBtn.disabled = true
+          confirmBtn.textContent = '确认绑定'
+        }
         const grid = document.getElementById('sbGrid')
         if (grid) grid.scrollTop = 0
         document.getElementById('slotBindOverlay').classList.add('hidden')
@@ -3792,8 +3916,17 @@
         .addEventListener('click', openSlotBind)
 
       document.getElementById('sbConfirm').addEventListener('click', () => {
+        const confirmBtn = document.getElementById('sbConfirm')
+        if (!confirmBtn || confirmBtn.disabled || !sbSelectedSlot) {
+          showToast('请先选择一个锁孔')
+          return
+        }
         const p = state.selectedPerson
-        if (!p || !sbSelectedSlot) return
+        if (!p) {
+          showToast('请先选择人员')
+          return
+        }
+        confirmBtn.disabled = true
         const idNoUnique = p.idNoUnique || ''
         const slot = sbSelectedSlot.slot
         const slotNoUnique = slot.layer + '_' + slot.numb
@@ -3826,10 +3959,6 @@
       document.getElementById('confirmBindNo').addEventListener('click', () => {
         closeConfirmBind()
       })
-
-      document
-        .getElementById('sbCancel')
-        .addEventListener('click', closeSlotBind)
 
       document.getElementById('primaryAction').addEventListener('click', () => {
         if (!state.selectedSlot) {
